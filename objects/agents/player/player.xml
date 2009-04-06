@@ -1,0 +1,12 @@
+<?fife type="object"?>
+<object id="boy" namespace="PARPG" blocking="1" static="0">
+	<action id="run">
+		<animation source="stand/animation.xml" direction="0" />
+	</action>
+	<action id="stand">
+		<animation source="stand/animation.xml" direction="0" />
+	</action>
+	<action id="walk">
+		<animation source="stand/animation.xml" direction="0" />
+	</action>
+</object>
