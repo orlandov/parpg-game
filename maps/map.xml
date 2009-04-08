@@ -5,6 +5,40 @@
 	<import file="../objects/ground/grass/grass-b.xml"></import>
 	<import file="../objects/ground/gravel/gravel.xml"></import>
 	<import file="../objects/ground/brick/brick.xml"></import>
+	<import file="../objects/ground/grass/transitions/grass-t01.xml"></import>
+	<import file="../objects/ground/grass/transitions/grass-t02.xml"></import>
+	<import file="../objects/ground/grass/transitions/grass-t03.xml"></import>
+	<import file="../objects/ground/grass/transitions/grass-t04.xml"></import>
+	<import file="../objects/ground/grass/transitions/grass-t05.xml"></import>
+	<import file="../objects/ground/grass/transitions/grass-t06.xml"></import>
+	<import file="../objects/ground/grass/transitions/grass-t07.xml"></import>
+	<import file="../objects/ground/grass/transitions/grass-t08.xml"></import>
+	<import file="../objects/ground/grass/transitions/grass-t09.xml"></import>
+	<import file="../objects/ground/grass/transitions/grass-t10.xml"></import>
+	<import file="../objects/ground/grass/transitions/grass-t11.xml"></import>
+	<import file="../objects/ground/grass/transitions/grass-t12.xml"></import>
+	<import file="../objects/ground/grass/transitions/grass-t13.xml"></import>
+	<import file="../objects/ground/grass/transitions/grass-t14.xml"></import>
+	<import file="../objects/ground/grass/transitions/grass-t15.xml"></import>
+	<import file="../objects/ground/grass/transitions/grass-t16.xml"></import>
+	<import file="../objects/ground/grass/transitions/grass-t17.xml"></import>
+	<import file="../objects/ground/gravel/transitions/gravel-t01.xml"></import>
+	<import file="../objects/ground/gravel/transitions/gravel-t02.xml"></import>
+	<import file="../objects/ground/gravel/transitions/gravel-t03.xml"></import>
+	<import file="../objects/ground/gravel/transitions/gravel-t04.xml"></import>
+	<import file="../objects/ground/gravel/transitions/gravel-t05.xml"></import>
+	<import file="../objects/ground/gravel/transitions/gravel-t06.xml"></import>
+	<import file="../objects/ground/gravel/transitions/gravel-t07.xml"></import>
+	<import file="../objects/ground/gravel/transitions/gravel-t08.xml"></import>
+	<import file="../objects/ground/gravel/transitions/gravel-t09.xml"></import>
+	<import file="../objects/ground/gravel/transitions/gravel-t10.xml"></import>
+	<import file="../objects/ground/gravel/transitions/gravel-t11.xml"></import>
+	<import file="../objects/ground/gravel/transitions/gravel-t12.xml"></import>
+	<import file="../objects/ground/gravel/transitions/gravel-t13.xml"></import>
+	<import file="../objects/ground/gravel/transitions/gravel-t14.xml"></import>
+	<import file="../objects/ground/gravel/transitions/gravel-t15.xml"></import>
+	<import file="../objects/ground/gravel/transitions/gravel-t16.xml"></import>
+	<import file="../objects/ground/gravel/transitions/gravel-t17.xml"></import>
 	<layer grid_type="square" id="GroundLayer" x_scale="1.0" pathing="cell_edges_only" y_scale="1.0" rotation="0.0" x_offset="0.0" y_offset="0.0">
 		<instances>
 			<i r="0" z="0.0" x="2.0" o="grass-a" y="-2.0" ns="PARPG"></i>
