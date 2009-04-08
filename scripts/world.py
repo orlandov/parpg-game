@@ -69,6 +69,7 @@ class World(EventListenerBase):
 
         # there must be a PC object on the objects layer!
         self.agentlayer = self.map.getLayer('ObjectLayer')
+        self.transitions = self.map.getLayer('TransitionLayer')
         self.PC = Hero(self.model,'PC',self.agentlayer)
         self.instance_to_agent[self.PC.agent.getFifeId()] = self.PC
         # ensure the PC starts on a default action
