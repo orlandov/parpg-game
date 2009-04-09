@@ -88,6 +88,9 @@ class World(EventListenerBase):
         keyval = evt.getKey().getValue()
         keystr = evt.getKey().getAsString().lower()
 
+        if keystr == 't':
+            self.toggle_renderer ('GridRenderer')
+
     def mousePressed(self, evt):
         """If a mouse button is pressed down, fife calss this routine
            Currently we only check for a left click, and we assume this is on
@@ -99,6 +102,11 @@ class World(EventListenerBase):
             l = fife.Location(self.agentlayer)
             l.setMapCoordinates(target_mapcoord)
             self.PC.run(l)
+            
+    def toggle_renderer (self,r_name):
+        """Enable or disable the renderer named `r_name`"""
+        renderer = self.cameras['main'].getRenderer('GridRenderer')
+        renderer.setEnabled(not renderer.isEnabled())
 
     def pump(self):
         """Routine called during each frame. Here we need to call the
