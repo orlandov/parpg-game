@@ -15,14 +15,16 @@
 
 import sys, os, shutil
 
-# magic code to make swig work ;-)
-def _jp(path):
-    return os.path.sep.join(path.split('/'))
+from scripts.common import utils
+utils.add_paths ('../../engine/swigwrappers/python', '../../engine/extensions')
+ #magic code to make swig work ;-)
+#def _jp(path):
+    #return os.path.sep.join(path.split('/'))
 
-_paths = ('../../engine/swigwrappers/python', '../../engine/extensions')
-for p in _paths:
-    if p not in sys.path:
-        sys.path.append(_jp(p))
+#_paths = ('../../engine/swigwrappers/python', '../../engine/extensions')
+#for p in _paths:
+    #if p not in sys.path:
+        #sys.path.append(_jp(p))
 
 import fife_compat
 import fife, fifelog
@@ -36,8 +38,8 @@ TDS = Setting()
 class ApplicationListener(eventlistenerbase.EventListenerBase):
     def __init__(self, engine, world):
         super(ApplicationListener, self).__init__(engine,
-            regKeys=True,regCmd=True, regMouse=False, 
-            regConsole=True, regWidget=True)
+                                                  regKeys=True,regCmd=True, regMouse=False, 
+                                                  regConsole=True, regWidget=True)
         self.engine = engine
         self.world = world
         engine.getEventManager().setNonConsumableKeys([fife.Key.ESCAPE,])
@@ -46,12 +48,17 @@ class ApplicationListener(eventlistenerbase.EventListenerBase):
 
     def keyPressed(self, evt):
         """Function to deal with keypress events
-          
            @param evt: The event that was captured"""
         keyval = evt.getKey().getValue()
         if keyval == fife.Key.ESCAPE:
             self.quit = True
         evt.consume()
+          
+    def onCommand(self, command):
+        """Enables the game to be closed via the 'X' button on the window frame"""
+        self.quit = (command.getCommandType() == fife.CMD_QUIT_GAME)
+        if self.quit:
+            command.consume()
 
 class PARPG(ApplicationBase):
     """Main Application class"""
@@ -68,8 +75,7 @@ class PARPG(ApplicationBase):
         self.settings = settings
 
         eSet = self.engine.getSettings()
-        eSet.setDefaultFontGlyphs(str(
-        TDS.readSetting("FontGlyphs",strip=False)))
+        eSet.setDefaultFontGlyphs(str(TDS.readSetting("FontGlyphs",strip=False)))
         eSet.setDefaultFontPath(str(TDS.readSetting("Font")))
         eSet.setBitsPerPixel(int(TDS.readSetting("BitsPerPixel")))
         eSet.setInitialVolume(float(TDS.readSetting("InitialVolume")))
@@ -92,8 +98,8 @@ class PARPG(ApplicationBase):
         """Initialize the LogManager"""
         LogModules = TDS.readSetting("LogModules",type='list')
         self.log = fifelog.LogManager(self.engine,
-        int(TDS.readSetting("LogToPrompt")),
-        int(TDS.readSetting("LogToFile")))
+                                      int(TDS.readSetting("LogToPrompt")),
+                                      int(TDS.readSetting("LogToFile")))
         if LogModules:
             self.log.setVisibleModules(*LogModules)
 
