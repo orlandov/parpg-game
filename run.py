@@ -16,15 +16,8 @@
 import sys, os, shutil
 
 from scripts.common import utils
+# add paths to the swig extensions
 utils.add_paths ('../../engine/swigwrappers/python', '../../engine/extensions')
- #magic code to make swig work ;-)
-#def _jp(path):
-    #return os.path.sep.join(path.split('/'))
-
-#_paths = ('../../engine/swigwrappers/python', '../../engine/extensions')
-#for p in _paths:
-    #if p not in sys.path:
-        #sys.path.append(_jp(p))
 
 import fife_compat
 import fife, fifelog
