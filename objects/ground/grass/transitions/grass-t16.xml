@@ -1,4 +1,0 @@
-<?fife type="object"?>
-<object id="grass-t16" namespace="PARPG" blocking="0" static="1">
-	<image source="grass-t16.png" direction="0" />
-</object>

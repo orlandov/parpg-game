@@ -5,40 +5,36 @@
 	<import file="../objects/ground/grass/grass-b.xml"></import>
 	<import file="../objects/ground/gravel/gravel.xml"></import>
 	<import file="../objects/ground/brick/brick.xml"></import>
-	<import file="../objects/ground/grass/transitions/grass-t01.xml"></import>
-	<import file="../objects/ground/grass/transitions/grass-t02.xml"></import>
-	<import file="../objects/ground/grass/transitions/grass-t03.xml"></import>
-	<import file="../objects/ground/grass/transitions/grass-t04.xml"></import>
-	<import file="../objects/ground/grass/transitions/grass-t05.xml"></import>
-	<import file="../objects/ground/grass/transitions/grass-t06.xml"></import>
-	<import file="../objects/ground/grass/transitions/grass-t07.xml"></import>
-	<import file="../objects/ground/grass/transitions/grass-t08.xml"></import>
-	<import file="../objects/ground/grass/transitions/grass-t09.xml"></import>
-	<import file="../objects/ground/grass/transitions/grass-t10.xml"></import>
-	<import file="../objects/ground/grass/transitions/grass-t11.xml"></import>
-	<import file="../objects/ground/grass/transitions/grass-t12.xml"></import>
-	<import file="../objects/ground/grass/transitions/grass-t13.xml"></import>
-	<import file="../objects/ground/grass/transitions/grass-t14.xml"></import>
-	<import file="../objects/ground/grass/transitions/grass-t15.xml"></import>
-	<import file="../objects/ground/grass/transitions/grass-t16.xml"></import>
-	<import file="../objects/ground/grass/transitions/grass-t17.xml"></import>
-	<import file="../objects/ground/gravel/transitions/gravel-t01.xml"></import>
-	<import file="../objects/ground/gravel/transitions/gravel-t02.xml"></import>
-	<import file="../objects/ground/gravel/transitions/gravel-t03.xml"></import>
-	<import file="../objects/ground/gravel/transitions/gravel-t04.xml"></import>
-	<import file="../objects/ground/gravel/transitions/gravel-t05.xml"></import>
-	<import file="../objects/ground/gravel/transitions/gravel-t06.xml"></import>
-	<import file="../objects/ground/gravel/transitions/gravel-t07.xml"></import>
-	<import file="../objects/ground/gravel/transitions/gravel-t08.xml"></import>
-	<import file="../objects/ground/gravel/transitions/gravel-t09.xml"></import>
-	<import file="../objects/ground/gravel/transitions/gravel-t10.xml"></import>
-	<import file="../objects/ground/gravel/transitions/gravel-t11.xml"></import>
-	<import file="../objects/ground/gravel/transitions/gravel-t12.xml"></import>
-	<import file="../objects/ground/gravel/transitions/gravel-t13.xml"></import>
-	<import file="../objects/ground/gravel/transitions/gravel-t14.xml"></import>
-	<import file="../objects/ground/gravel/transitions/gravel-t15.xml"></import>
-	<import file="../objects/ground/gravel/transitions/gravel-t16.xml"></import>
-	<import file="../objects/ground/gravel/transitions/gravel-t17.xml"></import>
+	<import file="../objects/ground/grass/transition/grass-tc01.xml"></import>
+	<import file="../objects/ground/grass/transition/grass-tc02.xml"></import>
+	<import file="../objects/ground/grass/transition/grass-tc03.xml"></import>
+	<import file="../objects/ground/grass/transition/grass-tc04.xml"></import>
+	<import file="../objects/ground/grass/transition/grass-tc05.xml"></import>
+	<import file="../objects/ground/grass/transition/grass-tc06.xml"></import>
+	<import file="../objects/ground/grass/transition/grass-tc07.xml"></import>
+	<import file="../objects/ground/grass/transition/grass-tc08.xml"></import>
+	<import file="../objects/ground/grass/transition/grass-tc09.xml"></import>
+	<import file="../objects/ground/grass/transition/grass-tc10.xml"></import>
+	<import file="../objects/ground/grass/transition/grass-tc11.xml"></import>
+	<import file="../objects/ground/grass/transition/grass-tc12.xml"></import>
+	<import file="../objects/ground/grass/transition/grass-tc13.xml"></import>
+	<import file="../objects/ground/grass/transition/grass-tc14.xml"></import>
+	<import file="../objects/ground/grass/transition/grass-tc15.xml"></import>
+	<import file="../objects/ground/grass/transition/grass-ts01.xml"></import>
+	<import file="../objects/ground/grass/transition/grass-ts02.xml"></import>
+	<import file="../objects/ground/grass/transition/grass-ts03.xml"></import>
+	<import file="../objects/ground/grass/transition/grass-ts04.xml"></import>
+	<import file="../objects/ground/grass/transition/grass-ts05.xml"></import>
+	<import file="../objects/ground/grass/transition/grass-ts06.xml"></import>
+	<import file="../objects/ground/grass/transition/grass-ts07.xml"></import>
+	<import file="../objects/ground/grass/transition/grass-ts08.xml"></import>
+	<import file="../objects/ground/grass/transition/grass-ts09.xml"></import>
+	<import file="../objects/ground/grass/transition/grass-ts10.xml"></import>
+	<import file="../objects/ground/grass/transition/grass-ts11.xml"></import>
+	<import file="../objects/ground/grass/transition/grass-ts12.xml"></import>
+	<import file="../objects/ground/grass/transition/grass-ts13.xml"></import>
+	<import file="../objects/ground/grass/transition/grass-ts14.xml"></import>
+	<import file="../objects/ground/grass/transition/grass-ts15.xml"></import>
 	<layer grid_type="square" id="GroundLayer" x_scale="1.0" pathing="cell_edges_only" y_scale="1.0" rotation="0.0" x_offset="0.0" y_offset="0.0">
 		<instances>
 			<i r="0" z="0.0" x="2.0" o="grass-a" y="-2.0" ns="PARPG"></i>
@@ -78,19 +74,6 @@
 			<i x="3.0" o="brick" z="0.0" y="0.0" r="0"></i>
 			<i x="3.0" o="brick" z="0.0" y="1.0" r="0"></i>
 			<i x="3.0" o="brick" z="0.0" y="2.0" r="0"></i>
-		</instances>
-	</layer>
-
-	<layer x_offset="0.0" pathing="cell_edges_and_diagonals" y_offset="0.0" grid_type="square" id="TransitionLayer" x_scale="1" y_scale="1" rotation="0.0">
-		<instances>
-			<i x="3.0" o="grass-t11" y="-3.0" r="0" z="0.0"></i>
-			<i x="3.0" o="grass-t11" y="-2.0" r="0" z="0.0"></i>
-			<i x="3.0" o="grass-t11" y="1.0" r="0" z="0.0"></i>
-			<i x="3.0" o="grass-t11" y="2.0" r="0" z="0.0"></i>
-			<i x="-1.0" o="gravel-t12" z="0.0" y="-3.0" r="0"></i>
-			<i x="-1.0" o="gravel-t11" z="0.0" y="-2.0" r="0"></i>
-			<i x="-1.0" o="gravel-t11" z="0.0" y="1.0" r="0"></i>
-			<i x="-1.0" o="gravel-t14" z="0.0" y="2.0" r="0"></i>
 		</instances>
 	</layer>
 
