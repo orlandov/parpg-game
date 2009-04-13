@@ -52,6 +52,7 @@ class World(EventListenerBase):
         self.view = self.engine.getView()
         self.filename = ''
         self.instance_to_agent = {}
+        self.transitions=None
 
     def reset(self):
         self.map, self.agentlayer = None, None
@@ -69,7 +70,11 @@ class World(EventListenerBase):
 
         # there must be a PC object on the objects layer!
         self.agentlayer = self.map.getLayer('ObjectLayer')
-        self.transitions = self.map.getLayer('TransitionLayer')
+        # it's possible there's no transition layer
+        for layer in self.map.getLayers():
+            # will have to check for >1 layers in reality
+            if(layer.getId()=='TransitionLayer'):
+                self.transitions = self.map.getLayer('TransitionLayer')
         self.PC = Hero(self.model,'PC',self.agentlayer)
         self.instance_to_agent[self.PC.agent.getFifeId()] = self.PC
         # ensure the PC starts on a default action
