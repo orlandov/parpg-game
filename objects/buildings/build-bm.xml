@@ -1,0 +1,4 @@
+<?fife type="object"?>
+<object id="build-bm" namespace="PARPG" blocking="1" static="1">
+	<image source="back-middle.png" direction="0" />
+</object>

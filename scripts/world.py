@@ -52,7 +52,8 @@ class World(EventListenerBase):
         self.view = self.engine.getView()
         self.filename = ''
         self.instance_to_agent = {}
-        self.transitions=[]
+        self.transitions = []
+        self.building_layer = []
 
     def reset(self):
         self.map, self.agentlayer = None, None
@@ -76,6 +77,8 @@ class World(EventListenerBase):
             # could be many layers, but hopefully no more than 3
             if(layer.getId()[:size]=='TransitionLayer'):
                 self.transitions.append(self.map.getLayer(layer.getId()))
+        # add layer for buildings (assume always present, even if empty)
+        self.building_layer = self.map.getLayer('BuildingLayer')
         self.PC = Hero(self.model,'PC',self.agentlayer)
         self.instance_to_agent[self.PC.agent.getFifeId()] = self.PC
         # ensure the PC starts on a default action

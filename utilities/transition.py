@@ -26,8 +26,11 @@ from xml.sax.handler import ContentHandler
 # and outputs another file with 1 or more added layers: the layers holding
 # the information for the transition tiles that are rendered over the ground
 
-# this is experimental code for the moment
-# awaiting rest of tile graphics for full testing
+# usage: transition.py mapfile
+# outputs file new.xml, a simple text file that contains ONLY the new layers
+# needed in the mapfile. At the moment you have to splice these in by hand;
+# they must come AFTER the ground layer but BEFORE the building and objects
+# layers. PM maximinus at the PARPG forums if any questions.
 
 # some simple defines for each part of the tile
 TOP             =   1
@@ -266,7 +269,7 @@ class LocalMap:
         return True
     
     def GetSize(self):
-        """GetSize stores both the size of the grid"""
+        """GetSize stores the size of the grid"""
         for t in self.layers[0].tiles:
             if t.x > self.max_x:
                 self.max_x = t.x
