@@ -53,7 +53,6 @@ class World(EventListenerBase):
         self.filename = ''
         self.instance_to_agent = {}
         self.transitions = []
-        self.building_layer = []
 
     def reset(self):
         self.map, self.agentlayer = None, None
@@ -77,8 +76,6 @@ class World(EventListenerBase):
             # could be many layers, but hopefully no more than 3
             if(layer.getId()[:size]=='TransitionLayer'):
                 self.transitions.append(self.map.getLayer(layer.getId()))
-        # add layer for buildings (assume always present, even if empty)
-        self.building_layer = self.map.getLayer('BuildingLayer')
         self.PC = Hero(self.model,'PC',self.agentlayer)
         self.instance_to_agent[self.PC.agent.getFifeId()] = self.PC
         # ensure the PC starts on a default action
@@ -90,15 +87,19 @@ class World(EventListenerBase):
         self.cameras['main'].attach(self.PC.agent)
         self.view.resetRenderers()
         self.target_rotation = self.cameras['main'].getRotation()
+        self.cord_render=self.cameras['main'].getRenderer('CoordinateRenderer')
 
     def keyPressed(self, evt):
-        """When a key id depressed, fife calls this routine.
-           Placeholder text left in so you can see how to read a value"""
-        keyval = evt.getKey().getValue()
-        keystr = evt.getKey().getAsString().lower()
+        """When a key is depressed, fife calls this routine."""
+        key=evt.getKey()
+        keyval = key.getValue()
 
-        if keystr == 't':
-            self.toggle_renderer ('GridRenderer')
+        if keyval == key.T:
+            self.toggle_renderer('GridRenderer')
+        if keyval == key.F5:
+            # logic would say we use similar code to above and toggle
+            # logic here does not work, my friend :-(
+            self.cord_render.setEnabled(not self.cord_render.isEnabled())
 
     def mousePressed(self, evt):
         """If a mouse button is pressed down, fife calss this routine
