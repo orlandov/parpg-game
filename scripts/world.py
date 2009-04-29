@@ -55,6 +55,7 @@ class World(EventListenerBase):
         self.transitions = []
 
     def reset(self):
+        """Rest the map to default settings"""
         self.map, self.agentlayer = None, None
         self.cameras = {}
         self.PC = None
@@ -63,6 +64,7 @@ class World(EventListenerBase):
         self.instance_to_agent = {}
 
     def load(self, filename):
+        """Load a map given the filename"""
         self.filename = filename
         self.reset()
         self.map = loadMapFile(filename, self.engine)
