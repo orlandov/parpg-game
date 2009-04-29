@@ -18,7 +18,7 @@ Miscellaneous game functions.
 
 import os, sys
 
-def add_paths (*paths):
+def addPaths (*paths):
     """
     Adds a list of paths to sys.path. Paths are expected to use forward slashes,
     for example '../../engine/extensions'. Slashes are converted to the 
