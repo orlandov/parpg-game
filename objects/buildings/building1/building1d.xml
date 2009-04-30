@@ -1,0 +1,5 @@
+<?fife type="object"?>
+<object id="building1d" namespace="PARPG" blocking="1" static="1">
+    <image source="building1d.png" direction="0" />
+</object>
+

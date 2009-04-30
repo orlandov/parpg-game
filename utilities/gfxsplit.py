@@ -28,7 +28,26 @@ class TileImage:
         self.image=picture
         self.filename=name
 
-def SaveFiles(files):
+def writeXML(name):
+    """Write the XML file as well
+       Always the same small file so we do it automatically"""
+    # we need to strip off the entire path up to the last
+    # TODO: this code will not work on windows
+    # strip off the png part and replace with the XML
+    filename=name.split('/')[-1]
+    x_file=open(name[:-4]+".xml","wt")
+    x_file.write('''<?fife type="object"?>\n''')
+    x_file.write('''<object id="''')
+    x_file.write(filename[:-4])
+    x_file.write('''" namespace="PARPG" blocking="1" static="1">\n''')
+    x_file.write('''    <image source="''')
+    x_file.write(filename)
+    x_file.write('''" direction="0" />\n''')
+    # the \n\n is ESSENTIAL otherwise the XML parser in FIFE craps out!
+    x_file.write('''</object>\n\n''')
+    x_file.close
+
+def saveFiles(files):
     """Given a list of TileImages, output them as seperate files
        Returns True if it worked"""
     # files is a list of TileImages
@@ -36,6 +55,8 @@ def SaveFiles(files):
     for i in files:
         try:
             pygame.image.save(i.image,i.filename)
+            # output the XML file as well
+            writeXML(i.filename)
         except:
             print "Error: Failed to save",filename
             # if we saved some anyway, then tell the user
@@ -49,7 +70,7 @@ def SaveFiles(files):
     # seems like all was ok
     return True
             
-def SplitImage(image,filename):
+def splitImage(image,filename):
     """Quite complex this, as there are many differing layouts on the
        hexes that we could be dealing with. However, for now we assume
        that we blit from left to right, with the image x position increasing
@@ -73,11 +94,12 @@ def SplitImage(image,filename):
                 pygame.Rect(xpos,0,TILE_WIDTH/2,height))
             xpos+=(TILE_WIDTH/2)
         # store the image for later
-        tiles.append(TileImage(new_surface,filename+str(file_counter)+".png"))
+        tiles.append(TileImage(new_surface,
+            filename+chr(ord('a')+file_counter)+".png"))
         file_counter+=1
     return tiles
             
-def ConvertFiles(filename):
+def convertFiles(filename):
     """Take a file, slice into seperate images and then save these new images
        as filename0, filename1 ... filenameN
        Returns True if everything worked"""
@@ -89,13 +111,13 @@ def ConvertFiles(filename):
         return False
     # split into seperate files
     # the [:-4] is used to split off the .png from the filename
-    images=SplitImage(image,filename[:-4])
+    images=splitImage(image,filename[:-4])
     # save it and we are done
     if(images==[]):
         # something funny happened
         print "Error: Couldn't splice given image file"
         return False
-    return(SaveFiles(images))
+    return(saveFiles(images))
 
 if __name__=="__main__":
     # check we have some options
@@ -104,5 +126,5 @@ if __name__=="__main__":
         sys.exit(False)
     # ok, so init pygame and do it
     pygame.init()
-    sys.exit(ConvertFiles(sys.argv[1]))
+    sys.exit(convertFiles(sys.argv[1]))
 
