@@ -19,7 +19,7 @@ import sys,pygame
 
 # place defines here
 
-TILE_WIDTH  =   70
+TILE_WIDTH  =   72
 
 # this is very much a simple routine, but we still have a simple class
 
