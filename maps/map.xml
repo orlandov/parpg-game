@@ -1,16 +1,18 @@
 <?xml version="1.0" encoding="ascii"?>
 <map id="my-map" format="1.0">
+    <!-- Firstly import all the gfx objects we need for this map -->
 	<import file="../objects/agents/player/player.xml"></import>
+	<import file="../objects/agents/npcs/npc_woman/npc-woman.xml"></import>
 	<import file="../objects/ground/grass/grass-a.xml"></import>
 	<import file="../objects/ground/grass/grass-b.xml"></import>
 	<import file="../objects/ground/gravel/gravel.xml"></import>
 	<import file="../objects/ground/brick/brick.xml"></import>
 	<import file="../objects/ground/block/block.xml"></import>
-	
+	<!-- import the buildings -->
 	<import file="../objects/buildings/building1/building1.xml"></import>
 	<import file="../objects/buildings/building2/building2.xml"></import>
 	<import file="../objects/buildings/building3/building3.xml"></import>
-		
+	<!-- Import the tile transition tiles -->
 	<import file="../objects/ground/grass/transition/grass-tc01.xml"></import>
 	<import file="../objects/ground/grass/transition/grass-tc02.xml"></import>
 	<import file="../objects/ground/grass/transition/grass-tc03.xml"></import>
@@ -1050,7 +1052,7 @@
 
 	<layer x_offset="0.0" pathing="cell_edges_and_diagonals" y_offset="0.0" grid_type="square" id="ObjectLayer" x_scale="1" y_scale="1" rotation="0.0">
 		<instances>
-			<i x="0.0" o="boy" y="0.0" r="0" id="PC" z="0.0"></i>
+		    <i x="0.0" o="boy" y="0.0" r="0" id="PC" z="0.0"></i>
 	        <i x="8.0" o="block" z="0.0" y="-12.0" r="0"></i>
 			<i x="9.0" o="block" z="0.0" y="-12.0" r="0"></i>
 			<i x="10.0" o="block" z="0.0" y="-12.0" r="0"></i>

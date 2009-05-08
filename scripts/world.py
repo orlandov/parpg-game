@@ -19,6 +19,7 @@ import fife
 from scripts.common.eventlistenerbase import EventListenerBase
 from loaders import loadMapFile
 from agents.hero import Hero
+from agents.npc import NPC
 from settings import Setting
 
 TDS = Setting()
@@ -38,12 +39,20 @@ class MapListener(fife.MapChangeListener):
     def onLayerDelete(self, map, layer):
         pass
 
+class Map:
+    def __init__(self,fife_map):
+        self.listener=MapListener
+        self.map=fife_map
+    
+    def addPC(self,pc):
+        pass
+    
+    def addNPC(self,pc):
+        pass
+
 class World(EventListenerBase):
     """World holds the data needed by fife to render the engine
-       Extracting information from the map file, such as is there an object
-       here, and so forth are normally done from here, so I propose this
-       acts as the map class
-       Presumably the story engine will need access to this class"""
+       The engine keeps a copy of this class"""
     def __init__(self, engine):
         super(World, self).__init__(engine, regMouse=True, regKeys=True)
         self.engine = engine
@@ -53,6 +62,8 @@ class World(EventListenerBase):
         self.filename = ''
         self.instance_to_agent = {}
         self.transitions = []
+        self.PC=None
+        self.npcs=[]
 
     def reset(self):
         """Rest the map to default settings"""
@@ -64,7 +75,10 @@ class World(EventListenerBase):
         self.instance_to_agent = {}
 
     def load(self, filename):
-        """Load a map given the filename"""
+        """Load a map given the filename
+           TODO: a map should only contain static items and floor tiles
+           Everything else should be loaded from the engine, because it
+           is subject to change"""
         self.filename = filename
         self.reset()
         self.map = loadMapFile(filename, self.engine)
@@ -78,19 +92,34 @@ class World(EventListenerBase):
             # could be many layers, but hopefully no more than 3
             if(layer.getId()[:size]=='TransitionLayer'):
                 self.transitions.append(self.map.getLayer(layer.getId()))
-        self.PC = Hero(self.model,'PC',self.agentlayer)
-        self.instance_to_agent[self.PC.agent.getFifeId()] = self.PC
-        # ensure the PC starts on a default action
-        self.PC.start()
 
         # init the camera
         for cam in self.view.getCameras():
             self.cameras[cam.getId()] = cam
-        self.cameras['main'].attach(self.PC.agent)
         self.view.resetRenderers()
         self.target_rotation = self.cameras['main'].getRotation()
         self.cord_render=self.cameras['main'].getRenderer('CoordinateRenderer')
 
+    def addPC(self,xpos,ypos):
+        """Add the player character to the map
+           The id we use is always is always PC"""
+        # first we need to add the PC as an object on the map
+        self.PC = Hero(self.model,'PC',self.agentlayer)
+        self.instance_to_agent[self.PC.agent.getFifeId()] = self.PC
+        # ensure the PC starts on a default action
+        self.PC.start()
+        # attach the main camera to the PC
+        self.cameras['main'].attach(self.PC.agent)
+    
+    def addNPC(self):
+        """Add a non=player character to the map"""
+        pass
+    
+    def addObject(self):
+        """Add an object to the map"""
+        pass
+
+    # all key / mouse event handling routines go here
     def keyPressed(self, evt):
         """When a key is depressed, fife calls this routine."""
         key=evt.getKey()
@@ -121,7 +150,7 @@ class World(EventListenerBase):
         renderer.setEnabled(not renderer.isEnabled())
 
     def pump(self):
-        """Routine called during each frame. Here we need to call the
-           story engine code"""
+        """Routine called during each frame. Our main loop is in ./run.py
+           We ignore this main loop (but FIFE complains if it is missing)"""
         pass
 

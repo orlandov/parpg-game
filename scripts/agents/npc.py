@@ -15,24 +15,35 @@
 #   You should have received a copy of the GNU General Public License
 #   along with PARPG.  If not, see <http://www.gnu.org/licenses/>.
 
-import fife
+from agent import Agent
+from settings import Setting
 
-class Agent(fife.InstanceActionListener):
-    """Base class for all NPC's and the main character"""
+TDS = Setting()
+_STATE_NONE, _STATE_IDLE, _STATE_RUN = xrange(3)
+
+class NPC(Agent):
+    """This is the class we use for all NPCs"""
     def __init__(self, model, agentName, layer, uniqInMap=True):
-        fife.InstanceActionListener.__init__(self)
-        self.model = model
-        self.agentName = agentName
-        self.layer = layer
-        if(uniqInMap==True):
-            self.agent = layer.getInstance(agentName)
-            self.agent.addActionListener(self)
+        super(NPC, self).__init__(model, agentName, layer, uniqInMap)
+        self.state = _STATE_NONE
+        self.idlecounter = 1
+        #self.speed=float(TDS.readSetting("PCSpeed"))
 
     def onInstanceActionFinished(self, instance, action):
-        """Called when an action is finished - normally overridden"""
-        print "No OnActionFinished defined for Agent"
+        self.idle()
+        if action.getId() != 'stand':
+            self.idlecounter = 1
+        else:
+            self.idlecounter += 1
 
     def start(self):
-        """Called when agent first used - normally overridden"""
-        print "No start defined for Agent"
+        self.idle()
+
+    def idle(self):
+        self.state = _STATE_IDLE
+        self.agent.act('stand', self.agent.getFacingLocation())
+
+    def run(self, location):
+        self.state = _STATE_RUN
+        self.agent.move('run',location,self.speed)
 
