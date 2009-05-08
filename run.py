@@ -22,6 +22,7 @@ utils.addPaths ('../../engine/swigwrappers/python', '../../engine/extensions')
 import fife_compat
 import fife, fifelog
 from scripts import world
+from scripts import engine
 from scripts.common import eventlistenerbase
 from basicapplication import ApplicationBase
 from settings import Setting
@@ -54,12 +55,16 @@ class ApplicationListener(eventlistenerbase.EventListenerBase):
             command.consume()
 
 class PARPG(ApplicationBase):
-    """Main Application class"""
+    """Main Application class
+       We use an MV data model.
+       self.world is our view
+       self.engine is our model"""
     def __init__(self):
         super(PARPG,self).__init__()
         self.world = world.World(self.engine)
+        self.model = engine.Engine(self.world)
         self.listener = ApplicationListener(self.engine, self.world)
-        self.world.load(str(TDS.readSetting("MapFile")))
+        self.model.loadMap(str(TDS.readSetting("MapFile")))
 
     def loadSettings(self):
         """Load the settings from a python file and load them into the engine.
