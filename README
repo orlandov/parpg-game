@@ -11,6 +11,12 @@ your /fife/clients directory. You can then run the code with the command
 command python.exe run.py). You can exit by either pressing Q or closing
 the window in the normal way.
 
+Keys:
+    F5 shows the grid co-ordinates.
+    F7 takes a screenshot.
+    T shows the grid layout.
+    Q quits.
+
 It should be noted that PARPG is in no way a complete game as of yet.
 
 For help and further information, you can try the following:
@@ -28,4 +34,5 @@ All feedback is welcome.
 
 The PARPG team.
 
-Lasy update: Monday, April 20th 2009
+Lasy update: Monday, May 11th 2009
+
