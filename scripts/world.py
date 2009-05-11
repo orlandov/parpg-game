@@ -16,6 +16,7 @@
 #   along with PARPG.  If not, see <http://www.gnu.org/licenses/>.
 
 import fife
+from datetime import date
 from scripts.common.eventlistenerbase import EventListenerBase
 from loaders import loadMapFile
 from agents.hero import Hero
@@ -67,6 +68,7 @@ class World(EventListenerBase):
         self.eventmanager=engine.getEventManager()
         self.model=engine.getModel()
         self.view=self.engine.getView()
+        self.rend_backend=self.engine.getRenderBackend()
         self.filename=''
         self.transitions=[]
         self.PC=None
@@ -141,14 +143,19 @@ class World(EventListenerBase):
             # logic would say we use similar code to above and toggle
             # logic here does not work, my friend :-(
             self.cord_render.setEnabled(not self.cord_render.isEnabled())
+        if keyval == key.F7:
+            # F7 saves a screenshot to fife/clients/parpg/screenshots
+            self.rend_backend.captureScreen("screenshots/screen-%s.png" % 
+                                             date.today().strftime('%Y-%m-%d'))
 
     def mousePressed(self, evt):
-        """If a mouse button is pressed down, fife calss this routine
+        """If a mouse button is pressed down, fife cals this routine
            Currently we only check for a left click, and we assume this is on
            the map"""
         clickpoint = fife.ScreenPoint(evt.getX(), evt.getY())
         if (evt.getButton()==fife.MouseEvent.LEFT):
-            target_mapcoord=self.cameras['main'].toMapCoordinates(clickpoint, False)
+            target_mapcoord=self.cameras['main'].toMapCoordinates(clickpoint,
+                                                                  False)
             target_mapcoord.z = 0
             l=fife.Location(self.agent_layer)
             l.setMapCoordinates(target_mapcoord)
