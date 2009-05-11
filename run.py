@@ -20,7 +20,7 @@ from scripts.common import utils
 utils.addPaths ('../../engine/swigwrappers/python', '../../engine/extensions')
 
 import fife_compat
-import fife, fifelog
+import fife,fifelog
 from scripts import world
 from scripts import engine
 from scripts.common import eventlistenerbase
@@ -29,50 +29,53 @@ from settings import Setting
 
 TDS = Setting()
 
-class ApplicationListener(eventlistenerbase.EventListenerBase):
-    def __init__(self, engine, world):
-        super(ApplicationListener, self).__init__(engine,
-                                                  regKeys=True,regCmd=True, regMouse=False, 
-                                                  regConsole=True, regWidget=True)
-        self.engine = engine
-        self.world = world
-        engine.getEventManager().setNonConsumableKeys([fife.Key.ESCAPE,])
-        self.quit = False
-        self.aboutWindow = None
+# This folder holds the main meta-data for PARPG. This file should be
+# minimal, since folding code into the controller with MVC is usually bad
+# All game and logic and data is held held and referenced in /scripts/engine.py
+# All fife stuff goes in /scripts/world.py
 
-    def keyPressed(self, evt):
-        """Function to deal with keypress events
-           @param evt: The event that was captured"""
-        keyval = evt.getKey().getValue()
-        if keyval == fife.Key.ESCAPE:
-            self.quit = True
-        evt.consume()
-          
-    def onCommand(self, command):
+class ApplicationListener(eventlistenerbase.EventListenerBase):
+    def __init__(self,engine,world):
+        super(ApplicationListener, self).__init__(engine,
+                                                  regKeys=True,regCmd=True,
+                                                  regMouse=False, 
+                                                  regConsole=True,
+                                                  regWidget=True)
+        self.engine=engine
+        self.world=world
+        engine.getEventManager().setNonConsumableKeys([fife.Key.ESCAPE,])
+        self.quit=False
+        self.aboutWindow=None
+
+    def quitGame(self):
+        """Forces a quit game on next cycle"""
+        self.quit=True
+
+    def onCommand(self,command):
         """Enables the game to be closed via the 'X' button on the window frame"""
-        self.quit = (command.getCommandType() == fife.CMD_QUIT_GAME)
-        if self.quit:
+        if(command.getCommandType()==fife.CMD_QUIT_GAME):
+            self.quit=True
             command.consume()
 
 class PARPG(ApplicationBase):
     """Main Application class
-       We use an MV data model.
-       self.world is our view
-       self.engine is our model"""
+       We use an MVC data model.
+       self.world is our view,self.engine is our model
+       This file is the minimal controller"""
     def __init__(self):
         super(PARPG,self).__init__()
-        self.world = world.World(self.engine)
-        self.model = engine.Engine(self.world)
-        self.listener = ApplicationListener(self.engine, self.world)
+        self.world=world.World(self.engine)
+        self.model=engine.Engine(self.world)
+        self.listener=ApplicationListener(self.engine,self.world)
+        self.world.quitFunction=self.listener.quitGame
         self.model.loadMap(str(TDS.readSetting("MapFile")))
 
     def loadSettings(self):
         """Load the settings from a python file and load them into the engine.
            Called in the ApplicationBase constructor."""
         import settings
-        self.settings = settings
-
-        eSet = self.engine.getSettings()
+        self.settings=settings
+        eSet=self.engine.getSettings()
         eSet.setDefaultFontGlyphs(str(TDS.readSetting("FontGlyphs",strip=False)))
         eSet.setDefaultFontPath(str(TDS.readSetting("Font")))
         eSet.setBitsPerPixel(int(TDS.readSetting("BitsPerPixel")))
@@ -94,11 +97,11 @@ class PARPG(ApplicationBase):
 
     def initLogging(self):
         """Initialize the LogManager"""
-        LogModules = TDS.readSetting("LogModules",type='list')
-        self.log = fifelog.LogManager(self.engine,
+        LogModules=TDS.readSetting("LogModules",type='list')
+        self.log=fifelog.LogManager(self.engine,
                                       int(TDS.readSetting("LogToPrompt")),
                                       int(TDS.readSetting("LogToFile")))
-        if LogModules:
+        if(LogModules):
             self.log.setVisibleModules(*LogModules)
 
     def createListener(self):
@@ -115,7 +118,7 @@ class PARPG(ApplicationBase):
 
 def main():
     """Application code starts from here"""
-    app = PARPG()
+    app=PARPG()
     app.run()
 
 if __name__ == '__main__':

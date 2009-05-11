@@ -1,4 +1,5 @@
 <Settings>
+    <!-- Runtime settings for PARPG -->
 	<FullScreen> 0 </FullScreen>
 	<PlaySounds> 1 </PlaySounds>
 	<RenderBackend> OpenGL </RenderBackend>
