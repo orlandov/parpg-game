@@ -122,6 +122,11 @@ class Engine:
         for i in self.objects:
             self.view.addObject(float(i[0]),float(i[1]),i[2])
 
+    def addNPCs(self):
+        """Add all of the NPCs we found into the fife map"""
+        for i in self.npcs:
+            self.view.addObject(float(i[0]),float(i[1]),i[2])
+
     def loadMap(self,map_file):
         """Load a new map
            TODO: needs some error checking"""
@@ -130,6 +135,7 @@ class Engine:
         # then we let FIFE load the rest of the map
         self.view.load(map_file)
         # finally, we update FIFE with the PC, NPC and object details
-        self.view.addPC(self.pc[0],self.pc[1])
+        self.view.addPC(float(self.pc[0]),float(self.pc[1]))
+        self.addNPCs()
         self.addObjects()
 

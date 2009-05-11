@@ -68,14 +68,13 @@ class World(EventListenerBase):
         self.eventmanager=engine.getEventManager()
         self.model=engine.getModel()
         self.view=self.engine.getView()
-        self.rend_backend=self.engine.getRenderBackend()
-        self.filename=''
-        self.transitions=[]
-        self.PC=None
-        self.npcs=[]
+        self.quitFunction=None
 
     def reset(self):
         """Rest the map to default settings"""
+        self.transitions=[]
+        self.PC=None
+        self.npcs=[]
         self.map,self.agent_layer=None,None
         self.cameras={}
         self.PC=None
@@ -88,9 +87,8 @@ class World(EventListenerBase):
            TODO: a map should only contain static items and floor tiles
            Everything else should be loaded from the engine, because it
            is subject to change"""
-        self.filename=filename
         self.reset()
-        self.map=loadMapFile(filename, self.engine)
+        self.map=loadMapFile(filename,self.engine)
         self.maplistener=MapListener(self.map)
 
         # there must be a PC object on the objects layer!
@@ -113,18 +111,19 @@ class World(EventListenerBase):
         """Add the player character to the map
            The id we use is always is always PC"""
         # first we need to add the PC as an object on the map
-        self.PC = Hero(self.model,'PC',self.agent_layer)
+        self.addObject(xpos,ypos,"PC")
+        # add it as an object we can deal with
+        # TODO: this is not that good. We should reference the PC gfx
+        # via fife and export this object to engine.py
+        self.PC=Hero(self.model,'PC',self.agent_layer)
         # ensure the PC starts on a default action
         self.PC.start()
         # attach the main camera to the PC
         self.cameras['main'].attach(self.PC.agent)
     
-    def addNPC(self):
-        """Add a non=player character to the map"""
-        pass
-    
     def addObject(self,xpos,ypos,name):
-        """Add an object to the map"""
+        """Add an object or an NPC to the map
+           It makes no difference to fife which is which"""
         obj=self.agent_layer.createInstance(
                 self.model.getObject(str(name),"PARPG"),
                 fife.ExactModelCoordinate(xpos,ypos,0.0),str(name))
@@ -137,16 +136,23 @@ class World(EventListenerBase):
         key=evt.getKey()
         keyval = key.getValue()
 
-        if keyval == key.T:
+        if(keyval==key.Q):
+            # we need to quit the game
+            self.quitGame()
+        if(keyval==key.T):
             self.toggle_renderer('GridRenderer')
-        if keyval == key.F5:
+        if(keyval==key.F1):
+            # display the help screen and pause the game
+            self.displayHelp()
+        if(keyval==key.F5):
             # logic would say we use similar code to above and toggle
             # logic here does not work, my friend :-(
             self.cord_render.setEnabled(not self.cord_render.isEnabled())
-        if keyval == key.F7:
+        if(keyval==key.F7):
             # F7 saves a screenshot to fife/clients/parpg/screenshots
-            self.rend_backend.captureScreen("screenshots/screen-%s.png" % 
-                                             date.today().strftime('%Y-%m-%d'))
+            # TODO: add a time stamp as well as a date stamp
+            t="screenshots/screen-%s.png" % date.today().strftime('%Y-%m-%d')
+            self.engine.getRenderBackend().captureScreen(t)
 
     def mousePressed(self, evt):
         """If a mouse button is pressed down, fife cals this routine
@@ -165,6 +171,16 @@ class World(EventListenerBase):
         """Enable or disable the renderer named `r_name`"""
         renderer = self.cameras['main'].getRenderer('GridRenderer')
         renderer.setEnabled(not renderer.isEnabled())
+
+    def displayHelp(self):
+        """Displays the pop-up info and help screen"""
+        print "Help not yet coded"
+
+    def quitGame(self):
+        """Called when user requests to quit game
+           Just calls the ApplicationListener to do the quit"""
+        if(self.quitFunction!=None):
+            self.quitFunction()
 
     def pump(self):
         """Routine called during each frame. Our main loop is in ./run.py

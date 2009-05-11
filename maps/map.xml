@@ -1053,7 +1053,7 @@
 
 	<layer x_offset="0.0" pathing="cell_edges_and_diagonals" y_offset="0.0" grid_type="square" id="ObjectLayer" x_scale="1" y_scale="1" rotation="0.0">
 		<instances>
-		    <i x="0.0" o="boy" y="0.0" r="0" id="PC" z="0.0"></i>
+		    
 	        <i x="8.0" o="block" z="0.0" y="-12.0" r="0"></i>
 			<i x="9.0" o="block" z="0.0" y="-12.0" r="0"></i>
 			<i x="10.0" o="block" z="0.0" y="-12.0" r="0"></i>
