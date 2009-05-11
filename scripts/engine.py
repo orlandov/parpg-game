@@ -16,7 +16,6 @@
 #   along with PARPG.  If not, see <http://www.gnu.org/licenses/>.
 
 # there should be NO references to FIFE here!
-import fife
 from xml.sax import make_parser
 from xml.sax.handler import ContentHandler
 from agents.hero import Hero
@@ -27,9 +26,9 @@ from agents.npc import NPC
 # format because the map editor in FIFE uses it, and secondly because it
 # save us writing a bunch of new code.
 # However, the objects and characters on a map are liable to change
-# whilst the game is being changed, so when we change the map, we
-# need to grab the objects and npc data EITHER from the engine state,
-# or from another file if in their initial state
+# whilst the game is being run, so when we change the map, we need to
+# to grab the objects and npc data EITHER from the engine state, or grab
+# from another file if in their initial state
 # This other file has the name AAA_objects.xml where AAA.xml is the name
 # of the original mapfile.
 
@@ -43,7 +42,7 @@ class LocalXMLParser(ContentHandler):
         self.npcs=[]
     
     def startElement(self,name,attrs):
-        """Called every time we meet a new element"""
+        """Called every time we meet a new element in the XML file"""
         # we are only looking for the 'layer' elements, the rest we ignore
         if(name=="PC"):
             # already have a PC?
@@ -118,6 +117,11 @@ class Engine:
         self.objects=cur_handler.objects
         return True
 
+    def addObjects(self):
+        """Add all of the objects we found into the fife map"""
+        for i in self.objects:
+            self.view.addObject(float(i[0]),float(i[1]),i[2])
+
     def loadMap(self,map_file):
         """Load a new map
            TODO: needs some error checking"""
@@ -127,4 +131,5 @@ class Engine:
         self.view.load(map_file)
         # finally, we update FIFE with the PC, NPC and object details
         self.view.addPC(self.pc[0],self.pc[1])
+        self.addObjects()
 

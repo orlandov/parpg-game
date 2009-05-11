@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="ascii"?>
+<!-- PC, NPC and objects initial data for PARPG maps -->
+<!-- All data that is subject to change by the engine during game time
+     should be stored in this file -->
 <objects format="1.0">
     <!-- There must be one and one only PC character -->
     <PC xpos="0.0" ypos="0.0"></PC>
-    <!-- There can be any numbers of NPC characters -->
+    <!-- There can be any number of NPC characters -->
     <NPC gfx="npc=woman" xpos="3.0" ypos="3.0"></NPC>
     <!-- There can be any number of objects -->
-    <object gfx="crate" xpos="3.0" ypos="4.0"></object>
-    <object gfx="crate" xpos="3.0" ypos="5.0"></object>
+    <!-- Object blocking is set in the objects own xml file -->
+    <object gfx="crate" xpos="-3.0" ypos="-4.0"></object>
+    <object gfx="crate" xpos="-4.0" ypos="-6.0"></object>
 </objects>
 

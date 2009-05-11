@@ -24,6 +24,14 @@ from settings import Setting
 
 TDS = Setting()
 
+# this file should be the meta-file for all FIFE-related code
+# engine.py handles is our data model, whilst this is our view
+# in order to not replicate data, some of our data model will naturally
+# reside on this side of the fence (PC xpos and ypos, for example).
+# we should aim to never replicate any data as this leads to maintainance
+# issues (and just looks plain bad).
+# however, any logic needed to resolve this should sit in engine.py
+
 class MapListener(fife.MapChangeListener):
     """This class listens to changes happening on the map.
        Since in theory we initiate these ourselves, do we need this class?"""
@@ -55,37 +63,36 @@ class World(EventListenerBase):
        The engine keeps a copy of this class"""
     def __init__(self, engine):
         super(World, self).__init__(engine, regMouse=True, regKeys=True)
-        self.engine = engine
-        self.eventmanager = engine.getEventManager()
-        self.model = engine.getModel()
-        self.view = self.engine.getView()
-        self.filename = ''
-        self.instance_to_agent = {}
-        self.transitions = []
+        self.engine=engine
+        self.eventmanager=engine.getEventManager()
+        self.model=engine.getModel()
+        self.view=self.engine.getView()
+        self.filename=''
+        self.transitions=[]
         self.PC=None
         self.npcs=[]
 
     def reset(self):
         """Rest the map to default settings"""
-        self.map, self.agentlayer = None, None
-        self.cameras = {}
-        self.PC = None
+        self.map,self.agent_layer=None,None
+        self.cameras={}
+        self.PC=None
+        self.npcs=[]
         self.cur_cam2_x,self.initial_cam2_x,self.cam2_scrolling_right=0,0,True
-        self.target_rotation = 0
-        self.instance_to_agent = {}
+        self.target_rotation=0
 
-    def load(self, filename):
+    def load(self,filename):
         """Load a map given the filename
            TODO: a map should only contain static items and floor tiles
            Everything else should be loaded from the engine, because it
            is subject to change"""
-        self.filename = filename
+        self.filename=filename
         self.reset()
-        self.map = loadMapFile(filename, self.engine)
-        self.maplistener = MapListener(self.map)
+        self.map=loadMapFile(filename, self.engine)
+        self.maplistener=MapListener(self.map)
 
         # there must be a PC object on the objects layer!
-        self.agentlayer = self.map.getLayer('ObjectLayer')
+        self.agent_layer=self.map.getLayer('ObjectLayer')
         # it's possible there's no transition layer
         size=len('TransitionLayer')
         for layer in self.map.getLayers():
@@ -104,8 +111,7 @@ class World(EventListenerBase):
         """Add the player character to the map
            The id we use is always is always PC"""
         # first we need to add the PC as an object on the map
-        self.PC = Hero(self.model,'PC',self.agentlayer)
-        self.instance_to_agent[self.PC.agent.getFifeId()] = self.PC
+        self.PC = Hero(self.model,'PC',self.agent_layer)
         # ensure the PC starts on a default action
         self.PC.start()
         # attach the main camera to the PC
@@ -115,9 +121,13 @@ class World(EventListenerBase):
         """Add a non=player character to the map"""
         pass
     
-    def addObject(self):
+    def addObject(self,xpos,ypos,name):
         """Add an object to the map"""
-        pass
+        obj=self.agent_layer.createInstance(
+                self.model.getObject(str(name),"PARPG"),
+                fife.ExactModelCoordinate(xpos,ypos,0.0),str(name))
+        obj.setRotation(0)
+        fife.InstanceVisual.create(obj)
 
     # all key / mouse event handling routines go here
     def keyPressed(self, evt):
@@ -140,7 +150,7 @@ class World(EventListenerBase):
         if (evt.getButton()==fife.MouseEvent.LEFT):
             target_mapcoord=self.cameras['main'].toMapCoordinates(clickpoint, False)
             target_mapcoord.z = 0
-            l = fife.Location(self.agentlayer)
+            l=fife.Location(self.agent_layer)
             l.setMapCoordinates(target_mapcoord)
             self.PC.run(l)
             

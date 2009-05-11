@@ -8,6 +8,7 @@
 	<import file="../objects/ground/gravel/gravel.xml"></import>
 	<import file="../objects/ground/brick/brick.xml"></import>
 	<import file="../objects/ground/block/block.xml"></import>
+	<import file="../objects/objects/crate/crate.xml"></import>
 	<!-- import the buildings -->
 	<import file="../objects/buildings/building1/building1.xml"></import>
 	<import file="../objects/buildings/building2/building2.xml"></import>
