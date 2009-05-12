@@ -22,6 +22,7 @@ from loaders import loadMapFile
 from agents.hero import Hero
 from agents.npc import NPC
 from settings import Setting
+from scripts import inventory
 
 TDS = Setting()
 
@@ -63,6 +64,8 @@ class World(EventListenerBase):
         self.model=engine.getModel()
         self.view=self.engine.getView()
         self.quitFunction=None
+        self.inventoryShown = False
+        self.firstInventory = True
         self.mouseCallback=None
 
     def reset(self):
@@ -140,6 +143,22 @@ class World(EventListenerBase):
             # TODO: add a time stamp as well as a date stamp
             t="screenshots/screen-%s.png" % date.today().strftime('%Y-%m-%d')
             self.engine.getRenderBackend().captureScreen(t)
+        if(keyval==key.I):
+            # show the inventory
+            if (self.firstInventory == True):
+                self.inventory = inventory.Inventory(self.engine)
+                self.firstInventory = False
+                self.inventoryShown = True
+
+            elif ((self.firstInventory == False) and 
+                  (self.inventoryShown == True)):
+                self.inventory.closeInventory()
+                self.inventoryShown = False
+
+            elif ((self.firstInventory == False) and
+                  (self.inventoryShown == False)):
+                self.inventory.showInventory()
+                self.inventoryShown = True
 
     def mousePressed(self, evt):
         """If a mouse button is pressed down, fife cals this routine
