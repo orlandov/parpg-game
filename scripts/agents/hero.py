@@ -6,10 +6,10 @@ _STATE_NONE, _STATE_IDLE, _STATE_RUN = xrange(3)
 
 class Hero(Agent):
     """This is the class we use for the PC character"""
-    def __init__(self, model, agentName, layer, uniqInMap=True):
-        super(Hero, self).__init__(model, agentName, layer, uniqInMap)
-        self.state = _STATE_NONE
-        self.idlecounter = 1
+    def __init__(self,agentName,layer):
+        super(Hero, self).__init__(agentName,layer)
+        self.state=_STATE_NONE
+        self.idlecounter=1
         self.speed=float(TDS.readSetting("PCSpeed"))
 
     def onInstanceActionFinished(self, instance, action):

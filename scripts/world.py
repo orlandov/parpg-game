@@ -52,12 +52,6 @@ class Map:
     def __init__(self,fife_map):
         self.listener=MapListener
         self.map=fife_map
-    
-    def addPC(self,pc):
-        pass
-    
-    def addNPC(self,pc):
-        pass
 
 class World(EventListenerBase):
     """World holds the data needed by fife to render the engine
@@ -69,6 +63,7 @@ class World(EventListenerBase):
         self.model=engine.getModel()
         self.view=self.engine.getView()
         self.quitFunction=None
+        self.mouseCallback=None
 
     def reset(self):
         """Rest the map to default settings"""
@@ -107,19 +102,11 @@ class World(EventListenerBase):
         self.target_rotation = self.cameras['main'].getRotation()
         self.cord_render=self.cameras['main'].getRenderer('CoordinateRenderer')
 
-    def addPC(self,xpos,ypos):
-        """Add the player character to the map
-           The id we use is always is always PC"""
-        # first we need to add the PC as an object on the map
-        self.addObject(xpos,ypos,"PC")
-        # add it as an object we can deal with
-        # TODO: this is not that good. We should reference the PC gfx
-        # via fife and export this object to engine.py
-        self.PC=Hero(self.model,'PC',self.agent_layer)
-        # ensure the PC starts on a default action
-        self.PC.start()
+    def addPC(self,agent):
+        """Add the player character to the map"""
+        # actually this is real easy, we just have to
         # attach the main camera to the PC
-        self.cameras['main'].attach(self.PC.agent)
+        self.cameras['main'].attach(agent)
     
     def addObject(self,xpos,ypos,name):
         """Add an object or an NPC to the map
@@ -165,7 +152,7 @@ class World(EventListenerBase):
             target_mapcoord.z = 0
             l=fife.Location(self.agent_layer)
             l.setMapCoordinates(target_mapcoord)
-            self.PC.run(l)
+            self.mouseCallback(l)
             
     def toggle_renderer (self,r_name):
         """Enable or disable the renderer named `r_name`"""
