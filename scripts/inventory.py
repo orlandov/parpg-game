@@ -16,7 +16,6 @@ import fife
 import fifelog
 import pychan
 from pychan.tools import callbackWithArguments as cbwa
-import application 
 
 #Main inventory class
 class Inventory():
