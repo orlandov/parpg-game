@@ -111,31 +111,44 @@ class Engine:
         if(cur_handler.pc==None):
             sys.stderr.write("Error: No PC defined\n")
             sys.exit(False)
-        # transfer the data
-        self.pc=cur_handler.pc
-        self.npcs=cur_handler.npcs
-        self.objects=cur_handler.objects
+        # now add to the map and the engine
+        self.addPC(cur_handler.pc)
+        self.addNPCs(cur_handler.npcs)
+        self.addObjects(cur_handler.objects)
         return True
 
-    def addObjects(self):
-        """Add all of the objects we found into the fife map"""
-        for i in self.objects:
+    def addPC(self,pc):
+        """Add the PC to the world"""
+        self.view.addObject(float(pc[0]),float(pc[1]),"PC")
+        self.PC=Hero("PC",self.view.agent_layer)
+        # ensure the PC starts on a default action
+        self.PC.start()
+        self.view.addPC(self.PC.agent)
+
+    def addObjects(self,objects):
+        """Add all of the objects we found into the fife map
+           and into our class
+           An NPC is just an object to FIFE"""
+        for i in objects:
             self.view.addObject(float(i[0]),float(i[1]),i[2])
 
-    def addNPCs(self):
-        """Add all of the NPCs we found into the fife map"""
-        for i in self.npcs:
+    def addNPCs(self,npcs):
+        """Add all of the NPCs we found into the fife map
+           and into this class"""
+        for i in npcs:
             self.view.addObject(float(i[0]),float(i[1]),i[2])
 
     def loadMap(self,map_file):
         """Load a new map
            TODO: needs some error checking"""
-        # first we go and grab the character details
-        self.loadObjects(map_file[:-4]+"_objects.xml")
-        # then we let FIFE load the rest of the map
+        # first we let FIFE load the rest of the map
         self.view.load(map_file)
-        # finally, we update FIFE with the PC, NPC and object details
-        self.view.addPC(float(self.pc[0]),float(self.pc[1]))
-        self.addNPCs()
-        self.addObjects()
+        # then we update FIFE with the PC, NPC and object details
+        self.loadObjects(map_file[:-4]+"_objects.xml")
+        # add a callbacks routine to handle mouse clicks
+        # TODO: not totally happy about this code
+        self.view.mouseCallback=self.handleMouseClick
+
+    def handleMouseClick(self,position):
+        self.PC.run(position)
 
