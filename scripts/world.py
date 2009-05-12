@@ -145,20 +145,18 @@ class World(EventListenerBase):
             self.engine.getRenderBackend().captureScreen(t)
         if(keyval==key.I):
             # show the inventory
-            if (self.firstInventory == True):
-                self.inventory = inventory.Inventory(self.engine)
-                self.firstInventory = False
-                self.inventoryShown = True
-
-            elif ((self.firstInventory == False) and 
-                  (self.inventoryShown == True)):
+            if(self.firstInventory==True):
+                self.inventory=inventory.Inventory(self.engine)
+                self.firstInventory=False
+                self.inventoryShown=True
+            # logically firstInventory is false here
+            elif(self.inventoryShown==True):
                 self.inventory.closeInventory()
-                self.inventoryShown = False
-
-            elif ((self.firstInventory == False) and
-                  (self.inventoryShown == False)):
+                self.inventoryShown=False
+            # and here inventoryShown must be false
+            else:
                 self.inventory.showInventory()
-                self.inventoryShown = True
+                self.inventoryShown=True
 
     def mousePressed(self, evt):
         """If a mouse button is pressed down, fife cals this routine
