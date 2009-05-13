@@ -36,50 +36,50 @@ class LocalXMLParser(ContentHandler):
     """Class inherits from ContantHandler, and is used to parse the
        local objects data"""
     def __init__(self):
-        self.search="objects"
-        self.pc=None
-        self.objects=[]
-        self.npcs=[]
+        self.search = "objects"
+        self.pc = None
+        self.objects = []
+        self.npcs = []
     
-    def startElement(self,name,attrs):
+    def startElement(self, name, attrs):
         """Called every time we meet a new element in the XML file"""
         # we are only looking for the 'layer' elements, the rest we ignore
-        if(name=="PC"):
+        if(name == "PC"):
             # already have a PC?
-            if(self.pc!=None):
+            if(self.pc != None):
                 sys.stderr.write("Error: 2 PC characters defined")
                 sys.exit(False)
             # grab the data and store that as well
             try:
-                xpos=attrs.getValue("xpos")
-                ypos=attrs.getValue("ypos")
+                xpos = attrs.getValue("xpos")
+                ypos = attrs.getValue("ypos")
             except(KeyError):
                 sys.stderr.write("Error: Data missing in PC definition")
                 sys.exit(False)
             # store for later
             self.pc=[xpos,ypos]
-        elif(name=="NPC"):
+        elif(name == "NPC"):
             # let's parse and add the data
             try:
                 xpos=attrs.getValue("xpos")
-                ypos=attrs.getValue("ypos")
-                gfx=attrs.getValue("gfx")
+                ypos = attrs.getValue("ypos")
+                gfx = attrs.getValue("gfx")
             except(KeyError):
                 sys.stderr.write("Error: Data missing in NPC definition\n")
                 sys.exit(False)
             # now we have the data, save it for later
             self.npcs.append([xpos,ypos,gfx])
-        elif(name=="object"):
+        elif(name == "object"):
             # same old same old
             try:
-                xpos=attrs.getValue("xpos")
-                ypos=attrs.getValue("ypos")
-                gfx=attrs.getValue("gfx")
+                xpos = attrs.getValue("xpos")
+                ypos = attrs.getValue("ypos")
+                gfx = attrs.getValue("gfx")
             except(KeyError):
                 sys.stderr.write("Error: Data missing in object definition\n")
                 sys.exit(False)
             # now we have the data, save it for later
-            self.objects.append([xpos,ypos,gfx])
+            self.objects.append([xpos, ypos, gfx])
 
 class Engine:
     """Engine holds the logic for the game
@@ -87,28 +87,28 @@ class Engine:
        fife, and would be pointless to replicate, we hold a instance of
        the fife view here. This also prevents us from just having a
        function heavy controller"""
-    def __init__(self,view):
-        self.view=view
-        self.PC=None
-        self.npcs=[]
-        self.objects=[]
+    def __init__(self, view):
+        self.view = view
+        self.PC = None
+        self.npcs = []
+        self.objects = []
 
-    def loadObjects(self,filename):
+    def loadObjects(self, filename):
         """Load objects from the XML file
            Returns True if it worked, False otherwise"""
         try:
-            objects_file=open(filename,'rt')
+            objects_file = open(filename, 'rt')
         except(IOError):
             sys.stderr.write("Error: Can't find objects file\n")
             return False
         # now open and read the XML file
-        parser=make_parser()
-        cur_handler=LocalXMLParser()
+        parser = make_parser()
+        cur_handler = LocalXMLParser()
         parser.setContentHandler(cur_handler)
         parser.parse(objects_file)
         objects_file.close()
         # must have at least 1 PC
-        if(cur_handler.pc==None):
+        if(cur_handler.pc == None):
             sys.stderr.write("Error: No PC defined\n")
             sys.exit(False)
         # now add to the map and the engine
@@ -119,8 +119,8 @@ class Engine:
 
     def addPC(self,pc):
         """Add the PC to the world"""
-        self.view.addObject(float(pc[0]),float(pc[1]),"PC")
-        self.PC=Hero("PC",self.view.agent_layer)
+        self.view.addObject(float(pc[0]), float(pc[1]),"PC")
+        self.PC = Hero("PC", self.view.agent_layer)
         # ensure the PC starts on a default action
         self.PC.start()
         self.view.addPC(self.PC.agent)
@@ -130,13 +130,13 @@ class Engine:
            and into our class
            An NPC is just an object to FIFE"""
         for i in objects:
-            self.view.addObject(float(i[0]),float(i[1]),i[2])
+            self.view.addObject(float(i[0]), float(i[1]), i[2])
 
     def addNPCs(self,npcs):
         """Add all of the NPCs we found into the fife map
            and into this class"""
         for i in npcs:
-            self.view.addObject(float(i[0]),float(i[1]),i[2])
+            self.view.addObject(float(i[0]), float(i[1]),i[2])
 
     def loadMap(self,map_file):
         """Load a new map
