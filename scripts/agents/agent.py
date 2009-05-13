@@ -19,12 +19,11 @@ import fife
 
 class Agent(fife.InstanceActionListener):
     """Base class for all NPC's and the main character"""
-    # self.model,'PC',self.agent_layer
-    def __init__(self,agentName,layer):
+    def __init__(self, agentName, layer):
         # add this class for callbacks from fife itself
         fife.InstanceActionListener.__init__(self)
-        self.agentName=agentName
-        self.agent=layer.getInstance(agentName)
+        self.agentName = agentName
+        self.agent = layer.getInstance(agentName)
         self.agent.addActionListener(self)
 
     def onInstanceActionFinished(self, instance, action):
