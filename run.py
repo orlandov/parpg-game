@@ -66,6 +66,7 @@ class PARPG(ApplicationBase):
         super(PARPG,self).__init__()
         self.world = world.World(self.engine)
         self.model = engine.Engine(self.world)
+        self.world.data = self.model
         self.listener = ApplicationListener(self.engine,self.world)
         self.world.quitFunction = self.listener.quitGame
         self.model.loadMap(str(TDS.readSetting("MapFile")))   
