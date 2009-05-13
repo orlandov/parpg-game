@@ -6,15 +6,15 @@ _STATE_NONE, _STATE_IDLE, _STATE_RUN = xrange(3)
 
 class Hero(Agent):
     """This is the class we use for the PC character"""
-    def __init__(self,agentName,layer):
-        super(Hero, self).__init__(agentName,layer)
-        self.state=_STATE_NONE
-        self.idlecounter=1
-        self.speed=float(TDS.readSetting("PCSpeed"))
+    def __init__(self, agentName, layer):
+        super(Hero, self).__init__(agentName, layer)
+        self.state = _STATE_NONE
+        self.idlecounter = 1
+        self.speed = float(TDS.readSetting("PCSpeed"))
 
     def onInstanceActionFinished(self, instance, action):
         self.idle()
-        if action.getId() != 'stand':
+        if(action.getId() != 'stand'):
             self.idlecounter = 1
         else:
             self.idlecounter += 1
@@ -28,5 +28,5 @@ class Hero(Agent):
 
     def run(self, location):
         self.state = _STATE_RUN
-        self.agent.move('run',location,self.speed)
+        self.agent.move('run', location, self.speed)
 

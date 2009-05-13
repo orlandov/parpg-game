@@ -24,9 +24,9 @@ TILE_WIDTH  =   72
 # this is very much a simple routine, but we still have a simple class
 
 class TileImage:
-    def __init__(self,picture,name):
-        self.image=picture
-        self.filename=name
+    def __init__(self, picture, name):
+        self.image = picture
+        self.filename = name
 
 def writeXML(name):
     """Write the XML file as well
@@ -34,8 +34,8 @@ def writeXML(name):
     # we need to strip off the entire path up to the last
     # TODO: this code will not work on windows
     # strip off the png part and replace with the XML
-    filename=name.split('/')[-1]
-    x_file=open(name[:-4]+".xml","wt")
+    filename = name.split('/')[-1]
+    x_file = open(name[:-4]+".xml","wt")
     x_file.write('''<?fife type="object"?>\n''')
     x_file.write('''<object id="''')
     x_file.write(filename[:-4])
@@ -51,16 +51,16 @@ def saveFiles(files):
     """Given a list of TileImages, output them as seperate files
        Returns True if it worked"""
     # files is a list of TileImages
-    complete=[]
+    complete = []
     for i in files:
         try:
-            pygame.image.save(i.image,i.filename)
+            pygame.image.save(i.image, i.filename)
             # output the XML file as well
             writeXML(i.filename)
         except:
             print "Error: Failed to save",filename
             # if we saved some anyway, then tell the user
-            if(complete!=[]):
+            if(complete != []):
                 print "  Managed to save",
                 for name in complete:
                     print name,
@@ -70,33 +70,34 @@ def saveFiles(files):
     # seems like all was ok
     return True
             
-def splitImage(image,filename):
+def splitImage(image, filename):
     """Quite complex this, as there are many differing layouts on the
        hexes that we could be dealing with. However, for now we assume
        that we blit from left to right, with the image x position increasing
        by one and the y value staying the same (on the grid map)"""
-    xpos=0
-    file_counter=0
-    tiles=[]
-    height=image.get_height()
+    xpos = 0
+    file_counter = 0
+    tiles = []
+    height = image.get_height()
     while(xpos<image.get_width()):
         # create a new surface the same height as the original but
         # with a width of TILE_WIDTH, and with per-pixel alpha
-        new_surface=pygame.Surface((TILE_WIDTH,height),pygame.SRCALPHA,32)
+        new_surface = pygame.Surface((TILE_WIDTH, height),pygame.SRCALPHA,32)
         # now blit a strip of the image across
-        if(xpos==0):
-            new_surface.blit(image,(0,0),pygame.Rect(0,0,TILE_WIDTH,height))
+        if(xpos == 0):
+            new_surface.blit(image,(0,0),
+			     pygame.Rect(0,0, TILE_WIDTH, height))
             # on the first time around, move ahead by the width of a tile
-            xpos+=TILE_WIDTH
+            xpos += TILE_WIDTH
         else:
             # we need to offset into halfway through the tile on other blits
-            new_surface.blit(image,((TILE_WIDTH/2)-1,0),
-                pygame.Rect(xpos,0,TILE_WIDTH/2,height))
-            xpos+=(TILE_WIDTH/2)
+            new_surface.blit(image, ((TILE_WIDTH/2)-1, 0),
+                pygame.Rect(xpos, 0, TILE_WIDTH/2, height))
+            xpos += (TILE_WIDTH/2)
         # store the image for later
         tiles.append(TileImage(new_surface,
-            filename+chr(ord('a')+file_counter)+".png"))
-        file_counter+=1
+            filename + chr(ord('a')+file_counter) + ".png"))
+        file_counter += 1
     return tiles
             
 def convertFiles(filename):
@@ -113,7 +114,7 @@ def convertFiles(filename):
     # the [:-4] is used to split off the .png from the filename
     images=splitImage(image,filename[:-4])
     # save it and we are done
-    if(images==[]):
+    if(images == []):
         # something funny happened
         print "Error: Couldn't splice given image file"
         return False
@@ -121,7 +122,7 @@ def convertFiles(filename):
 
 if __name__=="__main__":
     # check we have some options
-    if(len(sys.argv)<2):
+    if(len(sys.argv) < 2):
         sys.stderr.write("Error: No image given!\n")
         sys.exit(False)
     # ok, so init pygame and do it
