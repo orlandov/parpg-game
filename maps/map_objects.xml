@@ -6,10 +6,13 @@
     <!-- There must be one and one only PC character -->
     <PC xpos="0.0" ypos="0.0"></PC>
     <!-- There can be any number of NPC characters -->
-    <NPC gfx="npc-woman" xpos="-4.0" ypos="-7.0"></NPC>
+    <NPC gfx="npc-woman" xpos="-4.0" ypos="-7.0" id="women01"
+         text="A friendly woman"></NPC>
     <!-- There can be any number of objects -->
     <!-- Object blocking is set in the objects own xml file -->
-    <object gfx="crate" xpos="-3.0" ypos="-4.0"></object>
-    <object gfx="crate" xpos="-4.0" ypos="-6.0"></object>
+    <object gfx="crate" xpos="-3.0" ypos="-4.0" id="crate01" 
+            text="Just a crate"></object>
+    <object gfx="crate" xpos="-4.0" ypos="-6.0" id="crate02"
+            text="A dirty old crate"></object>
 </objects>
 

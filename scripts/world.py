@@ -66,6 +66,7 @@ class World(EventListenerBase):
         self.quitFunction = None
         self.inventoryShown = False
         self.firstInventory = True
+        self.data = None
         self.mouseCallback = None
 
     def reset(self):
@@ -120,9 +121,12 @@ class World(EventListenerBase):
         obj.setRotation(0)
         fife.InstanceVisual.create(obj)
 
+    def displayInventory(self):
+        """Pause the game and enter the inventory screen"""
+
     # all key / mouse event handling routines go here
     def keyPressed(self, evt):
-        """When a key is depressed, fife calls this routine."""
+        """When a key is pressed, fife calls this routine."""
         key = evt.getKey()
         keyval = key.getValue()
 
@@ -158,19 +162,29 @@ class World(EventListenerBase):
                 self.inventory.showInventory()
                 self.inventoryShown = True
 
+    def getCoords(self, click):
+        """Get the map location x, y cords that have been clicked"""
+        coord = self.cameras["main"].toMapCoordinates(click, False)
+        coord.z = 0
+        location = fife.Location(self.agent_layer)
+        location.setMapCoordinates(coord)
+        return location
+
     def mousePressed(self, evt):
         """If a mouse button is pressed down, fife cals this routine
            Currently we only check for a left click, and we assume this is on
            the map"""
-        clickpoint = fife.ScreenPoint(evt.getX(), evt.getY())
-        if (evt.getButton() == fife.MouseEvent.LEFT):
-            target_mapcoord = self.cameras['main'].toMapCoordinates(clickpoint,
-                                                                    False)
-            target_mapcoord.z = 0
-            l = fife.Location(self.agent_layer)
-            l.setMapCoordinates(target_mapcoord)
-            self.mouseCallback(l)
-            
+        click = fife.ScreenPoint(evt.getX(), evt.getY())
+        if(evt.getButton() == fife.MouseEvent.LEFT):
+            self.data.handleMouseClick(self.getCoords(click))
+        elif(evt.getButton() == fife.MouseEvent.RIGHT):
+            # there's no need to query fife about what things are where,
+            # the engine code should know....
+            coords = self.getCoords(click).getLayerCoordinates()
+            obj = self.data.getObjectString(coords.x, coords.y)
+            if(obj != ""):
+                print obj
+
     def toggle_renderer (self, r_name):
         """Enable or disable the renderer named `r_name`"""
         renderer = self.cameras['main'].getRenderer('GridRenderer')

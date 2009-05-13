@@ -20,6 +20,7 @@ from xml.sax import make_parser
 from xml.sax.handler import ContentHandler
 from agents.hero import Hero
 from agents.npc import NPC
+from objects import GameObject
 
 # design note:
 # there is a map file that FIFE reads. We use that file for half the map
@@ -64,22 +65,26 @@ class LocalXMLParser(ContentHandler):
                 xpos=attrs.getValue("xpos")
                 ypos = attrs.getValue("ypos")
                 gfx = attrs.getValue("gfx")
+                ident = attrs.getValue("id")
+                text = attrs.getValue("text")
             except(KeyError):
                 sys.stderr.write("Error: Data missing in NPC definition\n")
                 sys.exit(False)
             # now we have the data, save it for later
-            self.npcs.append([xpos,ypos,gfx])
+            self.npcs.append([xpos, ypos, gfx, ident, text])
         elif(name == "object"):
             # same old same old
             try:
                 xpos = attrs.getValue("xpos")
                 ypos = attrs.getValue("ypos")
                 gfx = attrs.getValue("gfx")
+                ident = attrs.getValue("id")
+                text = attrs.getValue("text")
             except(KeyError):
                 sys.stderr.write("Error: Data missing in object definition\n")
                 sys.exit(False)
             # now we have the data, save it for later
-            self.objects.append([xpos, ypos, gfx])
+            self.objects.append([xpos, ypos, gfx, ident, text])
 
 class Engine:
     """Engine holds the logic for the game
@@ -131,12 +136,32 @@ class Engine:
            An NPC is just an object to FIFE"""
         for i in objects:
             self.view.addObject(float(i[0]), float(i[1]), i[2])
+            # now add it as an engine object
+            self.objects.append(GameObject(int(float(i[0])),
+                                           int(float(i[1])), i[3], i[4]))
 
     def addNPCs(self,npcs):
         """Add all of the NPCs we found into the fife map
            and into this class"""
         for i in npcs:
-            self.view.addObject(float(i[0]), float(i[1]),i[2])
+            self.view.addObject(float(i[0]), float(i[1]), i[2])
+            # now add as engine data
+            self.npcs.append(NPC(int(float(i[0])), int(float(i[1])),
+                                 i[3], i[4]))
+
+    def getObjectString(self, xpos, ypos):
+        """Get the objects description of itself"""
+        # cycle through all of the objects; do we have something there?
+        for i in self.objects:
+            if((xpos == i.xpos)and(ypos == i.ypos)):
+                # yes, we have a match, so return the text
+                return i.text
+        for i in self.npcs:
+            if((xpos == i.xpos)and(ypos == i.ypos)):
+                # yes, we have a match, so return the text
+                return i.text
+        # nothing, but return the empty string in case we print it
+        return ""
 
     def loadMap(self,map_file):
         """Load a new map
@@ -145,9 +170,6 @@ class Engine:
         self.view.load(map_file)
         # then we update FIFE with the PC, NPC and object details
         self.loadObjects(map_file[:-4]+"_objects.xml")
-        # add a callbacks routine to handle mouse clicks
-        # TODO: not totally happy about this code
-        self.view.mouseCallback=self.handleMouseClick
 
     def handleMouseClick(self,position):
         self.PC.run(position)
