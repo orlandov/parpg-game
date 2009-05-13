@@ -35,26 +35,26 @@ TDS = Setting()
 # All fife stuff goes in /scripts/world.py
 
 class ApplicationListener(eventlistenerbase.EventListenerBase):
-    def __init__(self,engine,world):
+    def __init__(self, engine, world):
         super(ApplicationListener, self).__init__(engine,
                                                   regKeys=True,regCmd=True,
                                                   regMouse=False, 
                                                   regConsole=True,
                                                   regWidget=True)
-        self.engine=engine
-        self.world=world
+        self.engine = engine
+        self.world = world
         engine.getEventManager().setNonConsumableKeys([fife.Key.ESCAPE,])
-        self.quit=False
-        self.aboutWindow=None
+        self.quit = False
+        self.aboutWindow = None
 
     def quitGame(self):
         """Forces a quit game on next cycle"""
-        self.quit=True
+        self.quit = True
 
-    def onCommand(self,command):
+    def onCommand(self, command):
         """Enables the game to be closed via the 'X' button on the window frame"""
-        if(command.getCommandType()==fife.CMD_QUIT_GAME):
-            self.quit=True
+        if(command.getCommandType() == fife.CMD_QUIT_GAME):
+            self.quit = True
             command.consume()
 
 class PARPG(ApplicationBase):
@@ -64,19 +64,20 @@ class PARPG(ApplicationBase):
        This file is the minimal controller"""
     def __init__(self):
         super(PARPG,self).__init__()
-        self.world=world.World(self.engine)
-        self.model=engine.Engine(self.world)
-        self.listener=ApplicationListener(self.engine,self.world)
-        self.world.quitFunction=self.listener.quitGame
+        self.world = world.World(self.engine)
+        self.model = engine.Engine(self.world)
+        self.listener = ApplicationListener(self.engine,self.world)
+        self.world.quitFunction = self.listener.quitGame
         self.model.loadMap(str(TDS.readSetting("MapFile")))   
 
     def loadSettings(self):
         """Load the settings from a python file and load them into the engine.
            Called in the ApplicationBase constructor."""
         import settings
-        self.settings=settings
+        self.settings = settings
         eSet=self.engine.getSettings()
-        eSet.setDefaultFontGlyphs(str(TDS.readSetting("FontGlyphs",strip=False)))
+        eSet.setDefaultFontGlyphs(str(TDS.readSetting("FontGlyphs",
+                                                      strip=False)))
         eSet.setDefaultFontPath(str(TDS.readSetting("Font")))
         eSet.setBitsPerPixel(int(TDS.readSetting("BitsPerPixel")))
         eSet.setInitialVolume(float(TDS.readSetting("InitialVolume")))
@@ -97,8 +98,8 @@ class PARPG(ApplicationBase):
 
     def initLogging(self):
         """Initialize the LogManager"""
-        LogModules=TDS.readSetting("LogModules",type='list')
-        self.log=fifelog.LogManager(self.engine,
+        LogModules = TDS.readSetting("LogModules",type='list')
+        self.log = fifelog.LogManager(self.engine,
                                       int(TDS.readSetting("LogToPrompt")),
                                       int(TDS.readSetting("LogToFile")))
         if(LogModules):
@@ -106,6 +107,7 @@ class PARPG(ApplicationBase):
 
     def createListener(self):
         # already created in constructor
+        # but if we don't put here, Fife gets bitchy :-)
         pass
 
     def _pump(self):
@@ -118,7 +120,7 @@ class PARPG(ApplicationBase):
 
 def main():
     """Application code starts from here"""
-    app=PARPG()
+    app = PARPG()
     app.run()
 
 if __name__ == '__main__':
