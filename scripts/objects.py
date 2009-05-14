@@ -22,15 +22,15 @@ class GameObject:
         """Init is a little complicated becuase we have 2 types of
            constructors in one function"""
         if(data[0]==True):
-            self.xpos = int(float(i[1]))
-            self.ypos = int(float(i[2]))
-            self.gfx = i[3]
-            self.id = i[4]
-            self.text = i[5]
+            self.xpos = int(float(data[1]))
+            self.ypos = int(float(data[2]))
+            self.gfx = data[3]
+            self.id = data[4]
+            self.text = data[5]
         else:
             self.xpos = None
             self.ypos = None
-            self.gfx = i[1]
-            self.id = i[2]
-            self.text = i[3]
+            self.gfx = data[1]
+            self.id = data[2]
+            self.text = data[3]
 

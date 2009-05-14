@@ -15,8 +15,6 @@
 #   You should have received a copy of the GNU General Public License
 #   along with PARPG.  If not, see <http://www.gnu.org/licenses/>.
 
-from agent import Agent
-
 class NPC:
     """This is the class we use for all NPCs"""
     def __init__(self, xpos, ypos, ident, text):
