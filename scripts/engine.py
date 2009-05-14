@@ -75,16 +75,23 @@ class LocalXMLParser(ContentHandler):
         elif(name == "object"):
             # same old same old
             try:
-                xpos = attrs.getValue("xpos")
-                ypos = attrs.getValue("ypos")
-                gfx = attrs.getValue("gfx")
+                display = attrs.getValue("display")
+                if(display == "True"):
+                    xpos = attrs.getValue("xpos")
+                    ypos = attrs.getValue("ypos")
+                    gfx = attrs.getValue("gfx")
+                else:
+                    owner = attrs.getValue("owner")
                 ident = attrs.getValue("id")
                 text = attrs.getValue("text")
             except(KeyError):
                 sys.stderr.write("Error: Data missing in object definition\n")
                 sys.exit(False)
             # now we have the data, save it for later
-            self.objects.append([xpos, ypos, gfx, ident, text])
+            if(display == "True"):
+                self.objects.append([True, xpos, ypos, gfx, ident, text])
+            else:
+                self.objects.append([False, gfx, ident, text])
 
 class Engine:
     """Engine holds the logic for the game
@@ -135,10 +142,10 @@ class Engine:
            and into our class
            An NPC is just an object to FIFE"""
         for i in objects:
-            self.view.addObject(float(i[0]), float(i[1]), i[2])
-            # now add it as an engine object
-            self.objects.append(GameObject(int(float(i[0])),
-                                           int(float(i[1])), i[3], i[4]))
+            if(i[0] == True):
+                self.view.addObject(float(i[1]), float(i[2]), i[3])
+                # now add it as an engine object
+                self.objects.append(GameObject(i)
 
     def addNPCs(self,npcs):
         """Add all of the NPCs we found into the fife map
