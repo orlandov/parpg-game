@@ -79,9 +79,9 @@ class LocalXMLParser(ContentHandler):
                 if(display == "True"):
                     xpos = attrs.getValue("xpos")
                     ypos = attrs.getValue("ypos")
-                    gfx = attrs.getValue("gfx")
                 else:
                     owner = attrs.getValue("owner")
+                gfx = attrs.getValue("gfx")
                 ident = attrs.getValue("id")
                 text = attrs.getValue("text")
             except(KeyError):
@@ -145,7 +145,7 @@ class Engine:
             if(i[0] == True):
                 self.view.addObject(float(i[1]), float(i[2]), i[3])
                 # now add it as an engine object
-                self.objects.append(GameObject(i)
+                self.objects.append(GameObject(i))
 
     def addNPCs(self,npcs):
         """Add all of the NPCs we found into the fife map
