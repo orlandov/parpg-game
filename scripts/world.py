@@ -122,7 +122,21 @@ class World(EventListenerBase):
         fife.InstanceVisual.create(obj)
 
     def displayInventory(self):
-        """Pause the game and enter the inventory screen"""
+        """Pause the game and enter the inventory screen
+           or close the inventory screen and resume the game"""
+        # show the inventory
+        if(self.firstInventory == True):
+            self.inventory = inventory.Inventory(self.engine)
+            self.firstInventory = False
+            self.inventoryShown = True
+        # logically firstInventory is false here
+        elif(self.inventoryShown == True):
+            self.inventory.closeInventory()
+            self.inventoryShown = False
+        # and here inventoryShown must be false
+        else:
+            self.inventory.showInventory()
+            self.inventoryShown = True
 
     # all key / mouse event handling routines go here
     def keyPressed(self, evt):
@@ -148,19 +162,8 @@ class World(EventListenerBase):
             t = "screenshots/screen-%s.png" % date.today().strftime('%Y-%m-%d')
             self.engine.getRenderBackend().captureScreen(t)
         if(keyval == key.I):
-            # show the inventory
-            if(self.firstInventory == True):
-                self.inventory = inventory.Inventory(self.engine)
-                self.firstInventory = False
-                self.inventoryShown = True
-            # logically firstInventory is false here
-            elif(self.inventoryShown == True):
-                self.inventory.closeInventory()
-                self.inventoryShown = False
-            # and here inventoryShown must be false
-            else:
-                self.inventory.showInventory()
-                self.inventoryShown = True
+            self.displayInventory()
+            
 
     def getCoords(self, click):
         """Get the map location x, y cords that have been clicked"""
