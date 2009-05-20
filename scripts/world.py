@@ -16,6 +16,7 @@
 #   along with PARPG.  If not, see <http://www.gnu.org/licenses/>.
 
 import fife
+import time
 from datetime import date
 from scripts.common.eventlistenerbase import EventListenerBase
 from loaders import loadMapFile
@@ -23,6 +24,7 @@ from agents.hero import Hero
 from agents.npc import NPC
 from settings import Setting
 from scripts import inventory
+from scripts import hud
 
 TDS = Setting()
 
@@ -158,10 +160,11 @@ class World(EventListenerBase):
             self.cord_render.setEnabled(not self.cord_render.isEnabled())
         if(keyval == key.F7):
             # F7 saves a screenshot to fife/clients/parpg/screenshots
-            # TODO: add a time stamp as well as a date stamp
-            t = "screenshots/screen-%s.png" % date.today().strftime('%Y-%m-%d')
+            t = "screenshots/screen-%s-%s.png" % (date.today().strftime('%Y-%m-%d'),
+                                                  time.strftime('%H:%M:%S'))
             self.engine.getRenderBackend().captureScreen(t)
         if(keyval == key.I):
+            # I opens and closes the inventory
             self.displayInventory()
             
 
