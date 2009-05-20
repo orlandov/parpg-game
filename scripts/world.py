@@ -24,7 +24,6 @@ from agents.hero import Hero
 from agents.npc import NPC
 from settings import Setting
 from scripts import inventory
-from scripts import hud
 
 TDS = Setting()
 
@@ -166,7 +165,6 @@ class World(EventListenerBase):
         if(keyval == key.I):
             # I opens and closes the inventory
             self.displayInventory()
-            
 
     def getCoords(self, click):
         """Get the map location x, y cords that have been clicked"""
