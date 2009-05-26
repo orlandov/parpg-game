@@ -1,0 +1,27 @@
+<HBox position_technique="center:bottom" min_size="640,0">
+  <VBox>
+  <Button name="menuButton" text="Menu"  max_size="200,15"/>
+  <Button name="saveButton" text="Save" max_size="200,15"/>
+  <Button name="loadButton" text="Load" max_size="200,15"/>
+  </VBox>
+
+  <VBox max_size="50,50">
+    <Spacer />
+    <HBox><Label text="  HP:" /><Label name="HealthPoints" text="100" /></HBox>
+    <HBox><Label text="  AP:" /><Label name="ActionPoints" text="100" /></HBox>
+  </VBox>
+
+  <HBox min_size="395,50">
+    <Spacer />
+    <ScrollArea size="300,55" vertical_scrollbar="1" horizontal_scrollbar="0">
+      <ListBox name="ActionsBox" min_size="300,50"/>
+    </ScrollArea>
+  </HBox>
+
+  <Spacer />
+
+  <ToggleButton name="inventoryButton" up_image="gui/inv_images/inv_backpack.png" 
+		down_image="gui/inv_images/inv_backpack_open.png" 
+		hover_image="gui/inv_images/inv_backpack.png" />
+</HBox>
+
