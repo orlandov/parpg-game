@@ -1,0 +1,9 @@
+<Window title="PARPG Options" position_technique="center:center"
+	min_size="300,300" max_size="300,300">
+
+  <HBox min_size="120,10" max_size="120,20">
+  <Label text="Fullscreen: " />
+  <CheckBox name="FullscreenBox"/>
+  </HBox>
+
+</Window>
