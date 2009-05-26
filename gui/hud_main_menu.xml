@@ -1,0 +1,27 @@
+<Window title="Menu" position_technique="center:center" 
+	min_size="150,137" max_size="150,137">
+  <VBox min_size="150,130" max_size="150,130">
+    <Spacer />
+    <HBox min_size="105,10" max_size="105,20">
+      <Spacer />
+      <Button name="resumeButton" text="Resume Game" />
+    </HBox>
+    <HBox min_size="99,10" max_size="99,20">
+      <Spacer />
+      <Button name="saveButton" text="Save Game" />
+    </HBox>
+    <HBox min_size="99,10" max_size="99,20">
+      <Spacer />
+      <Button name="loadButton" text="Load Game" />
+    </HBox>
+    <HBox min_size="92,10" max_size="92,20">
+      <Spacer />
+      <Button name="optionsButton" text="Options" />
+    </HBox>
+    <HBox min_size="85,10" max_size="85,20">
+      <Spacer />
+      <Button name="quitButton" text="Quit" />
+    </HBox>
+  </VBox>
+
+</Window>

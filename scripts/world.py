@@ -24,6 +24,8 @@ from agents.hero import Hero
 from agents.npc import NPC
 from settings import Setting
 from scripts import inventory
+from scripts import hud
+from pychan.tools import callbackWithArguments as cbwa
 
 TDS = Setting()
 
@@ -69,6 +71,15 @@ class World(EventListenerBase):
         self.firstInventory = True
         self.data = None
         self.mouseCallback = None
+
+        self.hud = hud.Hud(self.engine)
+        self.hud.events_to_map["inventoryButton"] = cbwa(self.displayInventory, True)
+        self.hud.hud.mapEvents(self.hud.events_to_map)
+
+        self.hud.menu_events["quitButton"] = self.quitGame
+        self.hud.main_menu.mapEvents(self.hud.menu_events)
+
+        self.action_number = 1
 
     def reset(self):
         """Rest the map to default settings"""
@@ -122,22 +133,30 @@ class World(EventListenerBase):
         obj.setRotation(0)
         fife.InstanceVisual.create(obj)
 
-    def displayInventory(self):
+    def displayInventory(self, callFromHud):
         """Pause the game and enter the inventory screen
-           or close the inventory screen and resume the game"""
+           or close the inventory screen and resume the game
+           callFromHud should be set to true if you call this
+           function from the hud script"""
         # show the inventory
         if(self.firstInventory == True):
             self.inventory = inventory.Inventory(self.engine)
             self.firstInventory = False
             self.inventoryShown = True
+            if (callFromHud == False):
+                self.hud.toggleInventory()
         # logically firstInventory is false here
         elif(self.inventoryShown == True):
             self.inventory.closeInventory()
             self.inventoryShown = False
+            if (callFromHud == False):
+                self.hud.toggleInventory()
         # and here inventoryShown must be false
         else:
             self.inventory.showInventory()
             self.inventoryShown = True
+            if (callFromHud == False):
+                self.hud.toggleInventory()
 
     # all key / mouse event handling routines go here
     def keyPressed(self, evt):
@@ -164,7 +183,15 @@ class World(EventListenerBase):
             self.engine.getRenderBackend().captureScreen(t)
         if(keyval == key.I):
             # I opens and closes the inventory
-            self.displayInventory()
+            self.displayInventory(callFromHud=False)
+        if(keyval == key.A):
+            # A adds a test action to the action box
+            # The test actions will follow this format: Action 1, Action 2, etc.
+            self.hud.addAction("Action " + str(self.action_number))
+            self.action_number += 1
+        if(keyval == key.ESCAPE):
+            # Escape brings up the main menu
+            self.hud.displayMenu()
 
     def getCoords(self, click):
         """Get the map location x, y cords that have been clicked"""
