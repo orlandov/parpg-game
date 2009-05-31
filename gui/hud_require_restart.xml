@@ -1,0 +1,4 @@
+<Window title="Changes Require Restart" position_technique="center:center">
+  <Label text="Please restart PARPG for the changes to take effect " />
+  <Button name="okButton" text="Ok" />
+</Window>

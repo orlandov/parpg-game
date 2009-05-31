@@ -72,7 +72,7 @@ class World(EventListenerBase):
         self.data = None
         self.mouseCallback = None
 
-        self.hud = hud.Hud(self.engine)
+        self.hud = hud.Hud(self.engine, TDS)
         self.hud.events_to_map["inventoryButton"] = cbwa(self.displayInventory, True)
         self.hud.hud.mapEvents(self.hud.events_to_map)
 
