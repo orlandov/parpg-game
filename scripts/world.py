@@ -132,17 +132,15 @@ class World(EventListenerBase):
                 self.model.getObject(str(gfx), "PARPG"),
                 fife.ExactModelCoordinate(xpos,ypos,0.0), str(gfx))
         obj.setRotation(0)
+        fife.InstanceVisual.create(obj)
         # save it for later use
         self.obj_hash[name]=obj
-        fife.InstanceVisual.create(obj)
 
     def displayObjectText(self, obj, text):
         """Display on screen the text of the object over the object"""
         # make sure that the object exists first
         if obj in self.obj_hash:
-            # NOT WORKING!
-            #self.obj_hash[obj].say(text,3500)
-            print text
+            self.obj_hash[obj].say(str(text),3500)
 
     def displayInventory(self, callFromHud):
         """Pause the game and enter the inventory screen
