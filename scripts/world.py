@@ -83,7 +83,7 @@ class World(EventListenerBase):
         self.action_number = 1
 
     def reset(self):
-        """Rest the map to default settings"""
+        """Reset the map to default settings"""
         self.transitions = []
         self.PC = None
         self.npcs = []
@@ -118,6 +118,12 @@ class World(EventListenerBase):
         self.view.resetRenderers()
         self.target_rotation = self.cameras['main'].getRotation()
         self.cord_render = self.cameras['main'].getRenderer('CoordinateRenderer')
+        
+        # set the rnder text
+        rend = fife.FloatingTextRenderer.getInstance(self.cameras['main'])
+        text = self.engine.getGuiManager().createFont('fonts/rpgfont.png',
+                                                          0, str(TDS.readSetting("FontGlyphs", strip=False)))
+        rend.changeDefaultFont(text)
 
     def addPC(self, agent):
         """Add the player character to the map"""
@@ -140,7 +146,7 @@ class World(EventListenerBase):
         """Display on screen the text of the object over the object"""
         # make sure that the object exists first
         if obj in self.obj_hash:
-            self.obj_hash[obj].say(str(text),3500)
+            self.obj_hash[obj].say(str(text), 3500)
 
     def displayInventory(self, callFromHud):
         """Pause the game and enter the inventory screen
