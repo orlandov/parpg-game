@@ -71,6 +71,7 @@ class World(EventListenerBase):
         self.firstInventory = True
         self.data = None
         self.mouseCallback = None
+        self.obj_hash={}
 
         self.hud = hud.Hud(self.engine, TDS)
         self.hud.events_to_map["inventoryButton"] = cbwa(self.displayInventory, True)
@@ -124,14 +125,24 @@ class World(EventListenerBase):
         # attach the main camera to the PC
         self.cameras['main'].attach(agent)
     
-    def addObject(self, xpos, ypos, name):
+    def addObject(self, xpos, ypos, gfx, name):
         """Add an object or an NPC to the map
            It makes no difference to fife which is which"""
         obj = self.agent_layer.createInstance(
-                self.model.getObject(str(name), "PARPG"),
-                fife.ExactModelCoordinate(xpos,ypos,0.0), str(name))
+                self.model.getObject(str(gfx), "PARPG"),
+                fife.ExactModelCoordinate(xpos,ypos,0.0), str(gfx))
         obj.setRotation(0)
+        # save it for later use
+        self.obj_hash[name]=obj
         fife.InstanceVisual.create(obj)
+
+    def displayObjectText(self, obj, text):
+        """Display on screen the text of the object over the object"""
+        # make sure that the object exists first
+        if obj in self.obj_hash:
+            # NOT WORKING!
+            #self.obj_hash[obj].say(text,3500)
+            print text
 
     def displayInventory(self, callFromHud):
         """Pause the game and enter the inventory screen
@@ -212,9 +223,9 @@ class World(EventListenerBase):
             # there's no need to query fife about what things are where,
             # the engine code should know....
             coords = self.getCoords(click).getLayerCoordinates()
-            obj = self.data.getObjectString(coords.x, coords.y)
+            obj, text = self.data.getObjectText(coords.x, coords.y)
             if(obj != ""):
-                print obj
+                self.displayObjectText(obj, text)
 
     def toggle_renderer (self, r_name):
         """Enable or disable the renderer named `r_name`"""
