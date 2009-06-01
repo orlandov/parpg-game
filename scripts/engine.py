@@ -131,7 +131,7 @@ class Engine:
 
     def addPC(self,pc):
         """Add the PC to the world"""
-        self.view.addObject(float(pc[0]), float(pc[1]),"PC")
+        self.view.addObject(float(pc[0]), float(pc[1]),"PC","PC")
         self.PC = Hero("PC", self.view.agent_layer)
         # ensure the PC starts on a default action
         self.PC.start()
@@ -143,7 +143,7 @@ class Engine:
            An NPC is just an object to FIFE"""
         for i in objects:
             if(i[0] == True):
-                self.view.addObject(float(i[1]), float(i[2]), i[3])
+                self.view.addObject(float(i[1]), float(i[2]), i[3], i[4])
                 # now add it as an engine object
                 self.objects.append(GameObject(i))
 
@@ -151,24 +151,24 @@ class Engine:
         """Add all of the NPCs we found into the fife map
            and into this class"""
         for i in npcs:
-            self.view.addObject(float(i[0]), float(i[1]), i[2])
+            self.view.addObject(float(i[0]), float(i[1]), i[2], i[3])
             # now add as engine data
             self.npcs.append(NPC(int(float(i[0])), int(float(i[1])),
                                  i[3], i[4]))
 
-    def getObjectString(self, xpos, ypos):
-        """Get the objects description of itself"""
+    def getObjectText(self, xpos, ypos):
+        """Get the objects id and description of itself"""
         # cycle through all of the objects; do we have something there?
         for i in self.objects:
             if((xpos == i.xpos)and(ypos == i.ypos)):
                 # yes, we have a match, so return the text
-                return i.text
+                return i.id, i.text
         for i in self.npcs:
             if((xpos == i.xpos)and(ypos == i.ypos)):
                 # yes, we have a match, so return the text
-                return i.text
+                return i.id, i.text
         # nothing, but return the empty string in case we print it
-        return ""
+        return "",""
 
     def loadMap(self,map_file):
         """Load a new map
