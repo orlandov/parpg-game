@@ -1,7 +1,5 @@
 #!/usr/bin/python
 
-# Make the actions append at the top instead of the bottom
-
 """Import all necessary modules"""
 import fife
 import pychan
@@ -20,18 +18,34 @@ class Hud():
         self.hud = pychan.loadXML("gui/hud.xml")
 
         self.settings = settings
-        self.hp = self.hud.findChild(name="HealthPoints")
-        self.ap = self.hud.findChild(name="ActionPoints")
-        self.actionsBox = self.hud.findChild(name="ActionsBox")
+        self.hp = self.hud.findChild(name="healthPoints")
+        self.ap = self.hud.findChild(name="actionPoints")
+        self.actionsBox = self.hud.findChild(name="actionsBox")
         self.actionsText = []
         self.menu_displayed = False
+        
+        self.initializeHud()
+        self.initializeMainMenu()
+        self.initializeOptionsMenu()
 
+    def initializeHud(self):
         """Initialize and show the main HUD"""
         self.events_to_map = {"menuButton":self.displayMenu, "saveButton":self.saveGame,
                               "loadButton":self.loadGame}
         self.hud.mapEvents(self.events_to_map) 
+
+        screen_width = int(self.settings.readSetting('ScreenWidth'))
+        self.hud.findChild(name="mainHudWindow").size = (screen_width, 65)
+
+        self.hud.findChild(name="inventoryButton").position = (screen_width-59, 7)
+        
+        actions_width = screen_width - 175 
+        self.hud.findChild(name="actionsBox").min_size = (actions_width, 0)
+        self.hud.findChild(name="actionsScrollArea").size = (actions_width, 55)
+
         self.hud.show()
         
+    def initializeMainMenu(self):
         """Initalize the main menu"""
         self.main_menu = pychan.loadXML("gui/hud_main_menu.xml")
         self.menu_events = {"resumeButton":self.hideMenu, "saveButton":self.saveGame,
@@ -39,12 +53,28 @@ class Hud():
                             "optionsButton":self.displayOptions}
         self.main_menu.mapEvents(self.menu_events)
 
+
+    def initializeOptionsMenu(self):
         """Initalize the options menu"""
         self.options_menu = pychan.loadXML("gui/hud_options.xml")
-        self.options_events = {"applyButton":self.applyOptions, "closeButton":self.options_menu.hide}
+        self.options_events = {"applyButton":self.applyOptions,
+                               "closeButton":self.options_menu.hide}
 
-        self.options_menu.distributeData({'FullscreenBox':int(self.settings.readSetting(name="FullScreen")),
-                                          'SoundsBox':int(self.settings.readSetting(name="PlaySounds"))})
+        self.Resolutions = ['640x480', '800x600', '1024x768', '1280x1024', '1440x900']
+        self.RenderBackends = ['OpenGL', 'SDL']
+        self.renderNumber = 0
+        if (str(self.settings.readSetting('RenderBackend')) == "SDL"):
+            self.renderNumber = 1
+        self.options_menu.distributeInitialData({
+                'ResolutionBox': self.Resolutions,
+                'RenderBox': self.RenderBackends
+                })
+        self.options_menu.distributeData({
+                'FullscreenBox':int(self.settings.readSetting(name="FullScreen")), 
+                'SoundsBox':int(self.settings.readSetting(name="PlaySounds")),
+                'ResolutionBox':self.Resolutions.index(str(self.settings.readSetting("ScreenWidth")) + 'x' + str(self.settings.readSetting("ScreenHeight"))),
+                'RenderBox': self.renderNumber
+                })
         
         self.options_menu.mapEvents(self.options_events)
 
@@ -78,7 +108,7 @@ class Hud():
         Apply the current options
         """
         self.requireRestart = False
-        enable_fullscreen, enable_sound = self.options_menu.collectData('FullscreenBox', 'SoundsBox')
+        enable_fullscreen, enable_sound, screen_resolution, render_backend = self.options_menu.collectData('FullscreenBox', 'SoundsBox', 'ResolutionBox', 'RenderBox')
 
         if (int(enable_fullscreen) != int(self.settings.readSetting('FullScreen'))):
             self.setOption('FullScreen', int(enable_fullscreen))
@@ -86,6 +116,20 @@ class Hud():
             
         if (int(enable_sound) != int(self.settings.readSetting('PlaySounds'))):
             self.setOption('PlaySounds', int(enable_sound))
+            self.requireRestart = True
+
+        if (screen_resolution != self.Resolutions.index(str(self.settings.readSetting("ScreenWidth")) + 'x' + str(self.settings.readSetting("ScreenHeight")))):
+            self.setOption('ScreenWidth', int(self.Resolutions[screen_resolution].partition('x')[0]))
+            self.setOption('ScreenHeight', int(self.Resolutions[screen_resolution].partition('x')[2]))
+            self.requireRestart = True
+        
+        if (render_backend == 0):
+            render_backend = 'OpenGL'
+        else:
+            render_backend = 'SDL'
+
+        if (render_backend != str(self.settings.readSetting("RenderBackend"))):
+            self.setOption('RenderBackend', render_backend)
             self.requireRestart = True
 
         self.settings.tree.write('settings.xml')

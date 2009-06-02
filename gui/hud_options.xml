@@ -3,6 +3,14 @@
 
   <CheckBox name="FullscreenBox" text="Full Screen" />
   <CheckBox name="SoundsBox" text="Play Sounds" />
+  <HBox min_size="120,90">
+    <Label text="Resolution: " />
+    <ListBox name="ResolutionBox" min_size="120,0" />
+  </HBox>
+  <HBox min_size="120,47">
+    <Label text="Render Backend: " />
+    <ListBox name="RenderBox" min_size="120,0" />
+  </HBox>
 
   <Spacer />
   
