@@ -201,7 +201,7 @@ class World(EventListenerBase):
         if(keyval == key.F7):
             # F7 saves a screenshot to fife/clients/parpg/screenshots
             t = "screenshots/screen-%s-%s.png" % (date.today().strftime('%Y-%m-%d'),
-                                                  time.strftime('%H:%M:%S'))
+                                                  time.strftime('%H-%M-%S'))
             self.engine.getRenderBackend().captureScreen(t)
         if(keyval == key.I):
             # I opens and closes the inventory
