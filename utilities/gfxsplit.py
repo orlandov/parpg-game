@@ -15,7 +15,7 @@
 #   You should have received a copy of the GNU General Public License
 #   along with PARPG.  If not, see <http://www.gnu.org/licenses/>
 
-import sys,pygame
+import sys, pygame
 
 # place defines here
 
@@ -100,11 +100,31 @@ def splitImage(image, filename):
         file_counter += 1
     return tiles
             
-def convertFiles(filename):
+def convertFiles(filename, txt_data):
     """Take a file, slice into seperate images and then save these new images
        as filename0, filename1 ... filenameN
-       Returns True if everything worked"""
-    # first off, load the file
+       Returns True if everything worked
+       The second string gives the offsets from left to right. The first tile
+       on the LHS MUST be in the centre of the image"""
+    # first we need to ensure that the data sent is correct. split it up first
+    data=txt_data.split(",")
+    if(len(data) < 2):
+        print "Error: Invalid tile data layout"
+        return False
+    
+    # validate each data statement
+    for i in data:
+        print i
+    
+    print "sdfsdf"
+    
+    return True
+    
+    print "sdfsdf"
+    
+    # check the length of the data
+    length=(TILE_WIDTH / 2) * (len(data) + 1)
+    # then load the file
     try:
         image=pygame.image.load(filename)
     except(pygame.error):
@@ -122,10 +142,10 @@ def convertFiles(filename):
 
 if __name__=="__main__":
     # check we have some options
-    if(len(sys.argv) < 2):
-        sys.stderr.write("Error: No image given!\n")
+    if(len(sys.argv) < 3):
+        sys.stderr.write("Error: Not enough data given\n")
         sys.exit(False)
     # ok, so init pygame and do it
     pygame.init()
-    sys.exit(convertFiles(sys.argv[1]))
+    sys.exit(convertFiles(sys.argv[1], sys.argv[2]))
 
