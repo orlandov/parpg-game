@@ -20,8 +20,7 @@ class Inventory():
         self.original_cursor_id = self.engine.getCursor().getId()
 
         self.inventory = pychan.loadXML("gui/inventory.xml")
-        events_to_map = {'close_button':self.inventory.hide,
-                         'reset_button':self.resetImages}
+        self.events_to_map = {}
 
         # the images that should be used for the buttons when they are "empty"
         self.empty_images = {'A1':'gui/inv_images/inv_backpack.png',
@@ -77,12 +76,12 @@ class Inventory():
                           'belt', 'held', 'body']
         for button in self.buttons:
             # make every button's callback be self.dragDrop
-            events_to_map[button] = cbwa(self.dragDrop, button)
+            self.events_to_map[button] = cbwa(self.dragDrop, button)
             ch = self.inventory.findChild(name = button)
             # make every slot's item be empty
             ch.item = ""
 
-        self.inventory.mapEvents(events_to_map)   
+        self.inventory.mapEvents(self.events_to_map)   
         self.resetMouseCursor()
         self.inventory.show()
 
@@ -93,17 +92,6 @@ class Inventory():
     def showInventory(self):
         """Show the inventory"""
         self.inventory.show()
-
-    def resetImages(self):
-        """Reset all images in the program to the way they were when the 
-           program was first launched
-           TODO: should be taken out on release (WHY?)"""
-        for image in self.empty_images:
-            child = self.inventory.findChild(name = image)
-            original_image = self.empty_images[image]
-            child._setUpImage(original_image)
-            child._setDownImage(original_image)
-            child._setHoverImage(original_image)
 
     def setMouseCursor(self, image, dummy_image, type = "native"): 
         """Set the mouse cursor to an image"""

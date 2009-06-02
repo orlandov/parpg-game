@@ -98,7 +98,6 @@
 	<HBox min_size="500,0">
 	<Spacer />
 	<Button name="close_button" text="Close" />
-	<Button name="reset_button" text="Reset Images" />
 	</HBox>
 	
 	</VBox>

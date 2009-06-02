@@ -148,6 +148,11 @@ class World(EventListenerBase):
         if obj in self.obj_hash:
             self.obj_hash[obj].say(str(text), 3500)
 
+    def closeInventoryAndToggle(self):
+        self.inventory.closeInventory()
+        self.hud.toggleInventory()
+        self.inventoryShown = False
+
     def displayInventory(self, callFromHud):
         """Pause the game and enter the inventory screen
            or close the inventory screen and resume the game
@@ -156,6 +161,8 @@ class World(EventListenerBase):
         # show the inventory
         if(self.firstInventory == True):
             self.inventory = inventory.Inventory(self.engine)
+            self.inventory.events_to_map['close_button'] = self.closeInventoryAndToggle
+            self.inventory.inventory.mapEvents(self.inventory.events_to_map)
             self.firstInventory = False
             self.inventoryShown = True
             if (callFromHud == False):
