@@ -95,6 +95,7 @@ def splitImage(image, filename, data):
     for t in data:
         if((t[1] != 0)and(last_x == True)):
             # switchback, so this tile must fill the whole width
+            pass
         if(t[1] == 0):
             last_x = False
             # assume +1 for now
@@ -161,7 +162,7 @@ def convertFiles(filename, txt_data):
         print "Error: Couldn't load",filename
         return False        
     # check the length of the data, make sure it's long enough...
-    if((TILE_WIDTH / 2) * (len(data) + 1)>image.get_width)):
+    if((TILE_WIDTH / 2) * (len(data) + 1)>image.get_width()):
         print "Error: Target GFX too narrow"
         return False   
     # split into seperate files
