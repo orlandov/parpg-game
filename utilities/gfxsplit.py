@@ -93,6 +93,7 @@ def splitImage(image, filename, data):
     last_x = True
     x_offset = 0
     for t in data:
+        print t
         if((t[1] != 0)and(last_x == True)):
             # switchback, so this tile must fill the whole width
             pass
@@ -152,9 +153,9 @@ def convertFiles(filename, txt_data):
         else:
             # make the data a bit easier to understand
             if(i[0] == 'x'):
-                ndata.append(int(i[1]),0)
+                ndata.append([int(i[1]),0])
             else:
-                ndata.append(0,int(i[1]))
+                ndata.append([0,int(i[1])])
     # then load the file
     try:
         image = pygame.image.load(filename)
@@ -167,7 +168,7 @@ def convertFiles(filename, txt_data):
         return False   
     # split into seperate files
     # the [:-4] is used to split off the .png from the filename
-    images = splitImage(image, filename[:-4], txt_data)
+    images = splitImage(image, filename[:-4], ndata)
     # save it and we are done
     if(images == []):
         # something funny happened
