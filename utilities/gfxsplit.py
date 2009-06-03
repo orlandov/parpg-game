@@ -93,7 +93,7 @@ def splitImage(image, filename, data):
     last_x = True
     x_offset = 0
     for t in data:
-        if((t[1] != 0)and(last_x=True)):
+        if((t[1] != 0)and(last_x == True)):
             # switchback, so this tile must fill the whole width
         if(t[1] == 0):
             last_x = False
