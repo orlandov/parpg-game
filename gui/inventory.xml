@@ -1,108 +1,99 @@
 <Window title="Inventory" min_size="500,580">
-	<Label text="Character Name Here" />
+  <Label text="Character Name Here" name="charName"/>/
 
 
-	<HBox max_size="275,100">
-	<Spacer />
-	<ImageButton name="Head" up_image="gui/inv_images/inv_head.png" down_image="gui/inv_images/inv_head.png" hover_image="gui/inv_images/inv_head.png" text="" />
-	</HBox>
+  <HBox max_size="275,100">
+    <Spacer />
+    <ImageButton name="Head" up_image="gui/inv_images/inv_head.png" down_image="gui/inv_images/inv_head.png" hover_image="gui/inv_images/inv_head.png" text="" />
+  </HBox>
+  
+  <HBox max_size="460,320">
+    <Spacer />
+    
+    <VBox max_size="50,300">
+      <ImageButton name="LeftHeld" up_image="gui/inv_images/inv_litem.png" down_image="gui/inv_images/inv_litem.png" hover_image="gui/inv_images/inv_litem.png" text="" />
+      <ImageButton name="Ready1" up_image="gui/inv_images/inv_belt_pouches.png" down_image="gui/inv_images/inv_belt_pouches.png" hover_image="gui/inv_images/inv_belt_pouches.png" text="" />
+      <ImageButton name="Ready2" up_image="gui/inv_images/inv_belt_pouches.png" down_image="gui/inv_images/inv_belt_pouches.png" hover_image="gui/inv_images/inv_belt_pouches.png" text="" />
+      <Spacer />
+      <ImageButton name="LeftFoot" up_image="gui/inv_images/inv_lfoot.png" down_image="gui/inv_images/inv_lfoot.png" hover_image="gui/inv_images/inv_lfoot.png" text="" />
+    </VBox>
+    
+    <VBox max_size="50,165">
+      <ImageButton name="LeftHand" up_image="gui/inv_images/inv_lhand.png" down_image="gui/inv_images/inv_lhand.png" hover_image="gui/inv_images/inv_lhand.png" text="" />
+      <Spacer />
+      <ImageButton name="Body" up_image="gui/inv_images/inv_torso.png" down_image="gui/inv_images/inv_torso.png" hover_image="gui/inv_images/inv_torso.png" text="" />
+    </VBox>
 
-	<HBox max_size="440,300">
-	<Spacer />
-
-	<VBox min_size="50,300">
-	<ImageButton name="LeftHeld" up_image="gui/inv_images/inv_litem.png" down_image="gui/inv_images/inv_litem.png" hover_image="gui/inv_images/inv_litem.png" text="" />
-	<Spacer />
-	<ImageButton name="LeftFoot" up_image="gui/inv_images/inv_lfoot.png" down_image="gui/inv_images/inv_lfoot.png" hover_image="gui/inv_images/inv_lfoot.png" text="" />
-	</VBox>
-	
-	<VBox max_size="50,248">
-	<ImageButton name="LeftHand" up_image="gui/inv_images/inv_lhand.png" down_image="gui/inv_images/inv_lhand.png" hover_image="gui/inv_images/inv_lhand.png" text="" />
-	<Spacer />
-	</VBox>
-	
-	<VBox max_size="50,223">
-	<Spacer />
-	<ImageButton name="Ready1" up_image="gui/inv_images/inv_belt_pouches.png" down_image="gui/inv_images/inv_belt_pouches.png" hover_image="gui/inv_images/inv_belt_pouches.png" text="" />
-	<ImageButton name="Ready2" up_image="gui/inv_images/inv_belt_pouches.png" down_image="gui/inv_images/inv_belt_pouches.png" hover_image="gui/inv_images/inv_belt_pouches.png" text="" />
-	</VBox>
-
-	<VBox max_size="75,168">
-	<Spacer />
-	<ImageButton name="Body" up_image="gui/inv_images/inv_torso.png" down_image="gui/inv_images/inv_torso.png" hover_image="gui/inv_images/inv_torso.png" text="" />
-	<ImageButton name="Belt" up_image="gui/inv_images/inv_belt.png" down_image="gui/inv_images/inv_belt.png" hover_image="gui/inv_images/inv_belt.png" text="" />
-	</VBox>
-	
-	<VBox max_size="50,223">
-	<Spacer />
-	<ImageButton name="Ready3" up_image="gui/inv_images/inv_belt_pouches.png" down_image="gui/inv_images/inv_belt_pouches.png" hover_image="gui/inv_images/inv_belt_pouches.png" text="" />
-	<ImageButton name="Ready4" up_image="gui/inv_images/inv_belt_pouches.png" down_image="gui/inv_images/inv_belt_pouches.png" hover_image="gui/inv_images/inv_belt_pouches.png" text="" />
-	</VBox>
-	
-	<VBox max_size="50,248">
-	<ImageButton name="RightHand" up_image="gui/inv_images/inv_rhand.png" down_image="gui/inv_images/inv_rhand.png" hover_image="gui/inv_images/inv_rhand.png" text="" />
-	<Spacer />
-	</VBox>
-	
-	<VBox min_size="50,300">
-	<ImageButton name="RightHeld" up_image="gui/inv_images/inv_hitem.png" down_image="gui/inv_images/inv_hitem.png" hover_image="gui/inv_images/inv_hitem.png" text="" />
-	<Spacer />
-	<ImageButton name="RightFoot" up_image="gui/inv_images/inv_rfoot.png" down_image="gui/inv_images/inv_rfoot.png" hover_image="gui/inv_images/inv_rfoot.png" text="" />
-	</VBox>
-	
-	</HBox>
-	
-	<Spacer />
-	
-	<!-- Main Inventory !-->
-	<HBox>
-	<VBox>
-	<HBox max_size="385,90">
+    <VBox min_size="200,350">
+      <Spacer />
+      <Icon name="charPreview" image="gui/inv_images/char_preview.png" />
+    </VBox>
+    
+    <VBox max_size="50,165">
+      <ImageButton name="RightHand" up_image="gui/inv_images/inv_rhand.png" down_image="gui/inv_images/inv_rhand.png" hover_image="gui/inv_images/inv_rhand.png" text="" />
+      <Spacer />
+      <ImageButton name="Belt" up_image="gui/inv_images/inv_belt.png" down_image="gui/inv_images/inv_belt.png" hover_image="gui/inv_images/inv_belt.png" text="" />
+    </VBox>
+    
+    <VBox max_size="50,300">
+      <ImageButton name="RightHeld" up_image="gui/inv_images/inv_hitem.png" down_image="gui/inv_images/inv_hitem.png" hover_image="gui/inv_images/inv_hitem.png" text="" />
+      <ImageButton name="Ready3" up_image="gui/inv_images/inv_belt_pouches.png" down_image="gui/inv_images/inv_belt_pouches.png" hover_image="gui/inv_images/inv_belt_pouches.png" text="" />
+      <ImageButton name="Ready4" up_image="gui/inv_images/inv_belt_pouches.png" down_image="gui/inv_images/inv_belt_pouches.png" hover_image="gui/inv_images/inv_belt_pouches.png" text="" />
+      <Spacer />
+      <ImageButton name="RightFoot" up_image="gui/inv_images/inv_rfoot.png" down_image="gui/inv_images/inv_rfoot.png" hover_image="gui/inv_images/inv_rfoot.png" text="" />
+    </VBox>
+    
+  </HBox>
+  
+  <Spacer />
+  
+  <!-- Main Inventory !-->
+  <HBox>
+    <VBox>
+      <HBox max_size="385,90">
 	<Spacer />
 	<ImageButton name="A1" up_image="gui/inv_images/inv_backpack.png" down_image="gui/inv_images/inv_backpack.png" hover_image="gui/inv_images/inv_backpack.png" text=""/>
 	<ImageButton name="A2" up_image="gui/inv_images/inv_backpack.png" down_image="gui/inv_images/inv_backpack.png" hover_image="gui/inv_images/inv_backpack.png" text=""/>
 	<ImageButton name="A3" up_image="gui/inv_images/inv_backpack.png" down_image="gui/inv_images/inv_backpack.png" hover_image="gui/inv_images/inv_backpack.png" text=""/>
 	<ImageButton name="A4" up_image="gui/inv_images/inv_backpack.png" down_image="gui/inv_images/inv_backpack.png" hover_image="gui/inv_images/inv_backpack.png" text=""/>
 	<ImageButton name="A5" up_image="gui/inv_images/inv_backpack.png" down_image="gui/inv_images/inv_backpack.png" hover_image="gui/inv_images/inv_backpack.png" text=""/>
-	</HBox>
-	
-	<HBox max_size="385,90">
+      </HBox>
+      
+      <HBox max_size="385,90">
 	<Spacer />
 	<ImageButton name="B1" up_image="gui/inv_images/inv_backpack.png" down_image="gui/inv_images/inv_backpack.png" hover_image="gui/inv_images/inv_backpack.png" text=""/>
 	<ImageButton name="B2" up_image="gui/inv_images/inv_backpack.png" down_image="gui/inv_images/inv_backpack.png" hover_image="gui/inv_images/inv_backpack.png" text=""/>
 	<ImageButton name="B3" up_image="gui/inv_images/inv_backpack.png" down_image="gui/inv_images/inv_backpack.png" hover_image="gui/inv_images/inv_backpack.png" text=""/>
 	<ImageButton name="B4" up_image="gui/inv_images/inv_backpack.png" down_image="gui/inv_images/inv_backpack.png" hover_image="gui/inv_images/inv_backpack.png" text=""/>
 	<ImageButton name="B5" up_image="gui/inv_images/inv_backpack.png" down_image="gui/inv_images/inv_backpack.png" hover_image="gui/inv_images/inv_backpack.png" text=""/>
-	</HBox>
-	
-	<HBox max_size="385,90">
+      </HBox>
+      
+      <HBox max_size="385,90">
 	<Spacer />
 	<ImageButton name="C1" up_image="gui/inv_images/inv_backpack.png" down_image="gui/inv_images/inv_backpack.png" hover_image="gui/inv_images/inv_backpack.png" text=""/>
 	<ImageButton name="C2" up_image="gui/inv_images/inv_backpack.png" down_image="gui/inv_images/inv_backpack.png" hover_image="gui/inv_images/inv_backpack.png" text=""/>
 	<ImageButton name="C3" up_image="gui/inv_images/inv_backpack.png" down_image="gui/inv_images/inv_backpack.png" hover_image="gui/inv_images/inv_backpack.png" text=""/>
 	<ImageButton name="C4" up_image="gui/inv_images/inv_backpack.png" down_image="gui/inv_images/inv_backpack.png" hover_image="gui/inv_images/inv_backpack.png" text=""/>
 	<ImageButton name="C5" up_image="gui/inv_images/inv_backpack.png" down_image="gui/inv_images/inv_backpack.png" hover_image="gui/inv_images/inv_backpack.png" text=""/>
-	</HBox>
-	
-	<HBox max_size="385,90">
+      </HBox>
+      
+      <HBox max_size="385,90">
 	<Spacer />
 	<ImageButton name="D1" up_image="gui/inv_images/inv_backpack.png" down_image="gui/inv_images/inv_backpack.png" hover_image="gui/inv_images/inv_backpack.png" text=""/>
 	<ImageButton name="D2" up_image="gui/inv_images/inv_backpack.png" down_image="gui/inv_images/inv_backpack.png" hover_image="gui/inv_images/inv_backpack.png" text=""/>
 	<ImageButton name="D3" up_image="gui/inv_images/inv_backpack.png" down_image="gui/inv_images/inv_backpack.png" hover_image="gui/inv_images/inv_backpack.png" text=""/>
 	<ImageButton name="D4" up_image="gui/inv_images/inv_backpack.png" down_image="gui/inv_images/inv_backpack.png" hover_image="gui/inv_images/inv_backpack.png" text=""/>
 	<ImageButton name="D5" up_image="gui/inv_images/inv_backpack.png" down_image="gui/inv_images/inv_backpack.png" hover_image="gui/inv_images/inv_backpack.png" text=""/>
-	</HBox>
-	
-	<Spacer />
-	
-	<HBox min_size="500,0">
+      </HBox>
+      
+      <Spacer />
+      
+      <HBox min_size="500,0">
 	<Spacer />
 	<Button name="close_button" text="Close" />
-	</HBox>
-	
-	</VBox>
-	</HBox>
-	
+      </HBox>
+      
+    </VBox>
+  </HBox>
+  
 </Window>
-	
-
