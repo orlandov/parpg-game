@@ -9,10 +9,17 @@
 	<import file="../objects/ground/brick/brick.xml"></import>
 	<import file="../objects/ground/block/block.xml"></import>
 	<import file="../objects/objects/crate/crate.xml"></import>
+	<import file="../objects/ground/misc/test.xml"></import>
 	<!-- import the buildings -->
 	<import file="../objects/buildings/building1/building1.xml"></import>
 	<import file="../objects/buildings/building2/building2.xml"></import>
 	<import file="../objects/buildings/building3/building3.xml"></import>
+	
+	<!-- Import the test building -->
+	<import file="../objects/buildings/test-build/maximinusa.xml"></import>
+	<import file="../objects/buildings/test-build/maximinusb.xml"></import>
+	<import file="../objects/buildings/test-build/maximinusc.xml"></import>
+	
 	<!-- Import the tile transition tiles -->
 	<import file="../objects/ground/grass/transition/grass-tc01.xml"></import>
 	<import file="../objects/ground/grass/transition/grass-tc02.xml"></import>
@@ -1053,6 +1060,16 @@
 
 	<layer x_offset="0.0" pathing="cell_edges_and_diagonals" y_offset="0.0" grid_type="square" id="ObjectLayer" x_scale="1" y_scale="1" rotation="0.0">
 		<instances>
+		    <!-- Test building -->
+		    <i x="3" o="maximinusa" z="0.0" y="-4" r="0"></i>
+		    <i x="3" o="maximinusb" z="0.0" y="-3" r="0"></i>
+		    <i x="3" o="maximinusc" z="0.0" y="-2" r="0"></i>
+		    
+		    <!-- test to line up
+		    <i x="3" o="test" z="0.0" y="-4" r="0"></i>
+		    <i x="3" o="test" z="0.0" y="-3" r="0"></i>
+		    <i x="3" o="maximinusc" z="0.0" y="-2" r="0"></i> -->
+		
 	        <i x="8.0" o="block" z="0.0" y="-12.0" r="0"></i>
 			<i x="9.0" o="block" z="0.0" y="-12.0" r="0"></i>
 			<i x="10.0" o="block" z="0.0" y="-12.0" r="0"></i>
