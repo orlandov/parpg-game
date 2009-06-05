@@ -39,6 +39,8 @@ def writeXML(name, yoff):
     # TODO: this code will not work on windows
     # strip off the png part and replace with the XML
     filename = name.split('/')[-1]
+    if(filename == name):
+        filename = name.split('\\')[-1]
     x_file = open(name[:-4]+".xml","wt")
     x_file.write('''<?fife type="object"?>\n''')
     x_file.write('''<object id="''')
