@@ -107,24 +107,24 @@ def splitImage(image, filename, data):
     yoff_next = -((height - TILE_HEIGHT) / 2)
     for t in data:
         yoff = yoff_next
-        
-        print t
-        
         if(t == 'm'):
             # switchback, so this tile must fill the whole width
-            width += TILE_WIDTH
+            width += TILE_WIDTH / 2
             height_adjust = TILE_HEIGHT / 2
-            yoff_next += TILE_HEIGHT / 4 
+            yoff_next += (TILE_HEIGHT / 4) + (TILE_HEIGHT / 2)
+            xoff = 0
         elif(t == 'r'):
             # moving forward on the y axis
             width = TILE_WIDTH / 2
             height_adjust = - (TILE_HEIGHT / 2)
-            yoff_next -= TILE_HEIGHT / 4
+            yoff_next += TILE_HEIGHT / 4
+            xoff = TILE_WIDTH / 2
         elif(t == 'l'):
             # moving forward on the x axis
             width = TILE_WIDTH / 2
             height_adjust = TILE_HEIGHT / 2
             yoff_next -= TILE_HEIGHT / 4
+            xoff = 0
         else:
             # TODO: Handle integer moves (i.e. > 1 tile up down)
             print "Error: Can't handle integer tile moves yet"
@@ -132,7 +132,7 @@ def splitImage(image, filename, data):
         # build the new surface
         new_surface = pygame.Surface((TILE_WIDTH, height), pygame.SRCALPHA, 32)
         # now blit a strip of the image across
-        new_surface.blit(image, (0, 0), pygame.Rect(xpos, 0, width, height))
+        new_surface.blit(image, (0+xoff, 0), pygame.Rect(xpos, 0, width, height))
         # store the image for later
         tiles.append(TileImage(new_surface,
             filename + chr(ord('a')+file_counter) + ".png",yoff))
