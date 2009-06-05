@@ -21,7 +21,7 @@ import sys, pygame
 
 TILE_WIDTH  =   72
 TILE_HEIGHT =   36
-# is this is true, output a file of the pics together
+# is this is true, output a file of the pics together in the current folder
 STITCH      =   False
 
 # this is very much a simple routine, but we still have a simple class
@@ -107,13 +107,19 @@ def splitImage(image, filename, data):
     yoff_next = -((height - TILE_HEIGHT) / 2)
     for t in data:
         yoff = yoff_next
+        
+        print t
+        
         if(t == 'm'):
             # switchback, so this tile must fill the whole width
             width += TILE_WIDTH
+            height_adjust = TILE_HEIGHT / 2
+            yoff_next += TILE_HEIGHT / 4 
         elif(t == 'r'):
             # moving forward on the y axis
             width = TILE_WIDTH / 2
             height_adjust = - (TILE_HEIGHT / 2)
+            yoff_next -= TILE_HEIGHT / 4
         elif(t == 'l'):
             # moving forward on the x axis
             width = TILE_WIDTH / 2

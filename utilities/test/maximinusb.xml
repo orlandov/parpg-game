@@ -1,5 +1,0 @@
-<?fife type="object"?>
-<object id="maximinusb" namespace="PARPG" blocking="1" static="1">
-    <image source="maximinusb.png" direction="0" y_offset="-33" />
-</object>
-
