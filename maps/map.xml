@@ -10,15 +10,21 @@
 	<import file="../objects/ground/block/block.xml"></import>
 	<import file="../objects/objects/crate/crate.xml"></import>
 	<import file="../objects/ground/misc/test.xml"></import>
-	<!-- import the buildings -->
-	<import file="../objects/buildings/building1/building1.xml"></import>
-	<import file="../objects/buildings/building2/building2.xml"></import>
-	<import file="../objects/buildings/building3/building3.xml"></import>
 	
-	<!-- Import the test building -->
+	<!-- Import the test buildings -->
 	<import file="../objects/buildings/test-build/maximinusa.xml"></import>
 	<import file="../objects/buildings/test-build/maximinusb.xml"></import>
 	<import file="../objects/buildings/test-build/maximinusc.xml"></import>
+
+	<import file="../objects/buildings/shanty/shantya.xml"></import>
+	<import file="../objects/buildings/shanty/shantyb.xml"></import>
+	<import file="../objects/buildings/shanty/shantyc.xml"></import>
+	<import file="../objects/buildings/shanty/shantyd.xml"></import>
+	<import file="../objects/buildings/shanty/shantye.xml"></import>
+	<import file="../objects/buildings/shanty/shantyf.xml"></import>
+	<import file="../objects/buildings/shanty/shantyg.xml"></import>
+	<import file="../objects/buildings/shanty/shantyh.xml"></import>
+	<import file="../objects/buildings/shanty/shantyi.xml"></import>
 	
 	<!-- Import the tile transition tiles -->
 	<import file="../objects/ground/grass/transition/grass-tc01.xml"></import>
@@ -1070,76 +1076,16 @@
 		    <i x="3" o="test" z="0.0" y="-3" r="0"></i>
 		    <i x="3" o="maximinusc" z="0.0" y="-2" r="0"></i> -->
 		
-	        <i x="8.0" o="block" z="0.0" y="-12.0" r="0"></i>
-			<i x="9.0" o="block" z="0.0" y="-12.0" r="0"></i>
-			<i x="10.0" o="block" z="0.0" y="-12.0" r="0"></i>
-			<i x="8.0" o="building3" z="0.0" y="-13.0" r="0"></i>
-			<i x="9.0" o="block" z="0.0" y="-13.0" r="0"></i>
-			<i x="10.0" o="block" z="0.0" y="-13.0" r="0"></i>
-			<i x="8.0" o="block" z="0.0" y="-11.0" r="0"></i>
-			<i x="9.0" o="block" z="0.0" y="-11.0" r="0"></i>
-			<i x="10.0" o="block" z="0.0" y="-11.0" r="0"></i>
-			<i x="11.0" o="block" z="0.0" y="-13.0" r="0"></i>
-			<i x="11.0" o="block" z="0.0" y="-12.0" r="0"></i>
-			<i x="11.0" o="block" z="0.0" y="-11.0" r="0"></i>
-			<i x="11.0" o="block" z="0.0" y="-10.0" r="0"></i>
-			<i x="11.0" o="block" z="0.0" y="-9.0" r="0"></i>
-			<i x="11.0" o="block" z="0.0" y="-8.0" r="0"></i>
-			<i x="12.0" o="block" z="0.0" y="-13.0" r="0"></i>
-			<i x="12.0" o="block" z="0.0" y="-12.0" r="0"></i>
-			<i x="12.0" o="block" z="0.0" y="-11.0" r="0"></i>
-			<i x="12.0" o="block" z="0.0" y="-10.0" r="0"></i>
-			<i x="12.0" o="block" z="0.0" y="-9.0" r="0"></i>
-			<i x="12.0" o="block" z="0.0" y="-8.0" r="0"></i>
-			<i x="10.0" o="block" z="0.0" y="-10.0" r="0"></i>
-			<i x="10.0" o="block" z="0.0" y="-10.0" r="0"></i>
-			<i x="10.0" o="block" z="0.0" y="-9.0" r="0"></i>
-			<i x="10.0" o="block" z="0.0" y="-8.0" r="0"></i>
-			<i x="10.0" o="block" z="0.0" y="-7.0" r="0"></i>
-			<i x="11.0" o="block" z="0.0" y="-7.0" r="0"></i>
-			<i x="12.0" o="block" z="0.0" y="-7.0" r="0"></i>
-			
-			<i x="-6.0" o="block" z="0.0" y="-11.0" r="0"></i>
-			<i x="-6.0" o="building1" z="0.0" y="-12.0" r="0"></i>
-			<i x="-5.0" o="block" z="0.0" y="-12.0" r="0"></i>
-			<i x="-5.0" o="block" z="0.0" y="-11.0" r="0"></i>
-			<i x="-4.0" o="block" z="0.0" y="-11.0" r="0"></i>
-			<i x="-4.0" o="block" z="0.0" y="-12.0" r="0"></i>
-			<i x="-3.0" o="block" z="0.0" y="-11.0" r="0"></i>
-			<i x="-3.0" o="block" z="0.0" y="-12.0" r="0"></i>
-			<i x="-2.0" o="block" z="0.0" y="-12.0" r="0"></i>
-			
-			<i x="-4.0" o="block" z="0.0" y="3.0" r="0"></i>
-			<i x="-4.0" o="block" z="0.0" y="4.0" r="0"></i>
-			<i x="-4.0" o="block" z="0.0" y="5.0" r="0"></i>
-			<i x="-4.0" o="block" z="0.0" y="6.0" r="0"></i>
-			<i x="-4.0" o="block" z="0.0" y="7.0" r="0"></i>
-			<i x="-3.0" o="block" z="0.0" y="5.0" r="0"></i>
-			<i x="-2.0" o="block" z="0.0" y="5.0" r="0"></i>
-			<i x="-1.0" o="block" z="0.0" y="5.0" r="0"></i>
-			<i x="0.0" o="block" z="0.0" y="5.0" r="0"></i>
-			<i x="1.0" o="block" z="0.0" y="5.0" r="0"></i>
-			<i x="-3.0" o="block" z="0.0" y="6.0" r="0"></i>
-			<i x="-2.0" o="block" z="0.0" y="6.0" r="0"></i>
-			<i x="-1.0" o="block" z="0.0" y="6.0" r="0"></i>
-			<i x="0.0" o="block" z="0.0" y="6.0" r="0"></i>
-			<i x="1.0" o="block" z="0.0" y="6.0" r="0"></i>
-			<i x="-3.0" o="block" z="0.0" y="7.0" r="0"></i>
-			<i x="-3.0" o="block" z="0.0" y="7.0" r="0"></i>
-			<i x="-2.0" o="block" z="0.0" y="7.0" r="0"></i>
-			<i x="-1.0" o="block" z="0.0" y="7.0" r="0"></i>
-			<i x="0.0" o="block" z="0.0" y="7.0" r="0"></i>
-			<i x="1.0" o="block" z="0.0" y="7.0" r="0"></i>
-			<i x="-5.0" o="block" z="0.0" y="3.0" r="0"></i>
-			<i x="-6.0" o="building2" z="0.0" y="3.0" r="0"></i>
-			<i x="-6.0" o="block" z="0.0" y="4.0" r="0"></i>
-			<i x="-6.0" o="block" z="0.0" y="5.0" r="0"></i>
-			<i x="-6.0" o="block" z="0.0" y="6.0" r="0"></i>
-			<i x="-6.0" o="block" z="0.0" y="7.0" r="0"></i>
-			<i x="-5.0" o="block" z="0.0" y="7.0" r="0"></i>
-			<i x="-5.0" o="block" z="0.0" y="6.0" r="0"></i>
-			<i x="-5.0" o="block" z="0.0" y="5.0" r="0"></i>
-			<i x="-5.0" o="block" z="0.0" y="4.0" r="0"></i>
+            <i x="-4" o="shantya" z="0.0" y="3" r="0"></i>
+            <i x="-4" o="shantyb" z="0.0" y="4" r="0"></i>
+            <i x="-4" o="shantyc" z="0.0" y="5" r="0"></i>
+            <i x="-4" o="shantyd" z="0.0" y="6" r="0"></i>
+            <i x="-3" o="shantye" z="0.0" y="6" r="0"></i>
+            <i x="-2" o="shantyf" z="0.0" y="6" r="0"></i>
+            <i x="-1" o="shantyg" z="0.0" y="6" r="0"></i>
+            <i x="-0" o="shantyh" z="0.0" y="6" r="0"></i>
+            <i x="1" o="shantyi" z="0.0" y="6" r="0"></i>
+            
 		</instances>
 	</layer>
 
