@@ -28,6 +28,7 @@ class Hud():
         self.initializeHud()
         self.initializeMainMenu()
         self.initializeOptionsMenu()
+        self.initializeHelpMenu()
 
     def initializeHud(self):
         """Initialize and show the main HUD"""
@@ -51,9 +52,25 @@ class Hud():
         self.main_menu = pychan.loadXML("gui/hud_main_menu.xml")
         self.menu_events = {"resumeButton":self.hideMenu, "saveButton":self.saveGame,
                             "loadButton":self.loadGame, 
-                            "optionsButton":self.displayOptions}
+                            "optionsButton":self.displayOptions,
+                            "helpButton":self.displayHelp}
         self.main_menu.mapEvents(self.menu_events)
 
+    def initializeHelpMenu(self):
+        """Initialize the help menu"""
+
+        self.help_dialog = pychan.loadXML("gui/help.xml")
+        help_events = {"closeButton":self.help_dialog.hide}
+        self.help_dialog.mapEvents(help_events)
+
+        main_help_text = "Put help text here"
+
+        keybindings_text = "A : Add a test action to the actions display[br]I : Toggle the inventory screen[br]F5 : Take a screenshot [br]     (saves to <parpg>/screenshots/)[br]Q : Quit the game"
+
+        self.help_dialog.distributeInitialData({
+                "MainHelpText":main_help_text,
+                "KeybindText":keybindings_text
+                })
 
     def initializeOptionsMenu(self):
         """Initalize the options menu"""
@@ -86,6 +103,10 @@ class Hud():
         shutil.copyfile('settings-dist.xml', 'settings.xml')
         self.requireRestartDialog()
         self.options_menu.hide()
+
+    def displayHelp(self):
+        """ Display the help screen """
+        self.help_dialog.show()
 
 
     def refreshActionsBox(self):
