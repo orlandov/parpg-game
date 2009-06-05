@@ -4,6 +4,7 @@
 import fife
 import pychan
 from pychan.tools import callbackWithArguments as cbwa
+import shutil
 
 """Main Hud class"""
 class Hud():
@@ -56,9 +57,11 @@ class Hud():
 
     def initializeOptionsMenu(self):
         """Initalize the options menu"""
+
         self.options_menu = pychan.loadXML("gui/hud_options.xml")
         self.options_events = {"applyButton":self.applyOptions,
-                               "closeButton":self.options_menu.hide}
+                               "closeButton":self.options_menu.hide,
+                               "defaultsButton":self.setToDefaults}
 
         self.Resolutions = ['640x480', '800x600', '1024x768', '1280x1024', '1440x900']
         self.RenderBackends = ['OpenGL', 'SDL']
@@ -77,6 +80,11 @@ class Hud():
                 })
         
         self.options_menu.mapEvents(self.options_events)
+
+    def setToDefaults(self):
+        shutil.copyfile('settings-dist.xml', 'settings.xml')
+        self.requireRestartDialog()
+        self.options_menu.hide()
 
 
     def refreshActionsBox(self):

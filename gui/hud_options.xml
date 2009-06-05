@@ -13,10 +13,11 @@
   </HBox>
 
   <Spacer />
-  
+
   <HBox min_size="290,20" max_size="290,20">
     <Button name="closeButton" text="Close" />
     <Spacer />
+    <Button name="defaultsButton" text="Set to Defaults" />
     <Button name="applyButton" text="Apply" />
   </HBox>
 </Window>
