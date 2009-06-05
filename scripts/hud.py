@@ -1,10 +1,10 @@
 #!/usr/bin/python
 
 """Import all necessary modules"""
+import shutil
 import fife
 import pychan
 from pychan.tools import callbackWithArguments as cbwa
-import shutil
 
 """Main Hud class"""
 class Hud():
@@ -82,6 +82,7 @@ class Hud():
         self.options_menu.mapEvents(self.options_events)
 
     def setToDefaults(self):
+        """ Reset all the options to the options in settings-dist.xml """
         shutil.copyfile('settings-dist.xml', 'settings.xml')
         self.requireRestartDialog()
         self.options_menu.hide()
@@ -194,8 +195,7 @@ class Hud():
     def setHP(self, value):
         """
         Set the HP display on the HUD to value
-        NOTE: This does not in any way affect the character's actual health, only
-              what is displayed on the HUD
+        NOTE: This does not in any way affect the character's actual health, only what is displayed on the HUD
         """
         self.hp.text = value
 
