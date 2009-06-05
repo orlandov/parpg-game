@@ -19,6 +19,9 @@ from scripts.common import utils
 # add paths to the swig extensions
 utils.addPaths ('../../engine/swigwrappers/python', '../../engine/extensions')
 
+if not os.path.exists('settings.xml'):
+    shutil.copyfile('settings-dist.xml', 'settings.xml')
+
 import fife_compat
 import fife,fifelog
 from scripts import world

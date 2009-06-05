@@ -1,0 +1,21 @@
+<Settings>
+    
+	<FullScreen>0</FullScreen>
+	<PlaySounds>1</PlaySounds>
+	<RenderBackend> OpenGL </RenderBackend>
+	<ScreenWidth>640</ScreenWidth>
+	<ScreenHeight>480</ScreenHeight>
+	<BitsPerPixel> 0 </BitsPerPixel>
+	<InitialVolume> 5.0 </InitialVolume>
+	<SDLRemoveFakeAlpha> 1 </SDLRemoveFakeAlpha>
+	<WindowTitle> PARPG Demo </WindowTitle>
+	<WindowIcon>gui/icons/window_icon.png</WindowIcon>
+	<MapFile> maps/map.xml </MapFile>
+	<Font> fonts/samanata.ttf </Font>
+	<FontGlyphs> abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.,!?-+/():;%&amp;`'*#=[]\"</FontGlyphs>
+	<LogModules> controller </LogModules>
+	<LogToPrompt> 0 </LogToPrompt>
+	<LogToFile> 0 </LogToFile>
+	<ImageChunkSize> 256 </ImageChunkSize>
+	<PCSpeed> 3 </PCSpeed>
+</Settings>
