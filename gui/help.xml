@@ -1,0 +1,9 @@
+<Window title="PARPG Help" min_size="250,300" max_size="250,300">
+  <Label name="MainHelpText" />
+  <Label text="====================" />
+  <Label name="KeybindText" />
+  <Label text="====================" />
+  <Label text="[br]For more info, visit: http://wiki.parpg.net[br][br]" />
+  <Spacer />
+  <Button name="closeButton" text="Close" max_size="50,20"/>
+</Window>
