@@ -22,6 +22,10 @@
       <Spacer />
       <Button name="quitButton" text="Quit" />
     </HBox>
+    <HBox min_size="85,10" max_size="85,20">
+      <Spacer />
+      <Button name="helpButton" text="Help" />
+    </HBox>
   </VBox>
 
 </Window>
