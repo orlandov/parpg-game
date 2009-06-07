@@ -1,6 +1,6 @@
-<Window title="Menu" position_technique="center:center" 
-	min_size="150,137" max_size="150,137">
-  <VBox min_size="150,130" max_size="150,130">
+<Window title="Menu" position_technique="center:center"
+	min_size="145,153" max_size="145,153">
+  <VBox min_size="145,147" max_size="145,147">
     <Spacer />
     <HBox min_size="105,10" max_size="105,20">
       <Spacer />
@@ -20,12 +20,11 @@
     </HBox>
     <HBox min_size="85,10" max_size="85,20">
       <Spacer />
-      <Button name="quitButton" text="Quit" />
+      <Button name="helpButton" text="Help" />
     </HBox>
     <HBox min_size="85,10" max_size="85,20">
       <Spacer />
-      <Button name="helpButton" text="Help" />
+      <Button name="quitButton" text="Quit" />
     </HBox>
   </VBox>
-
 </Window>
