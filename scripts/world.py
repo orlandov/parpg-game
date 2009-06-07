@@ -68,7 +68,6 @@ class World(EventListenerBase):
         self.view = self.engine.getView()
         self.quitFunction = None
         self.inventoryShown = False
-        self.firstInventory = True
         self.data = None
         self.mouseCallback = None
         self.obj_hash={}
@@ -76,11 +75,14 @@ class World(EventListenerBase):
         self.hud = hud.Hud(self.engine, TDS)
         self.hud.events_to_map["inventoryButton"] = cbwa(self.displayInventory, True)
         self.hud.hud.mapEvents(self.hud.events_to_map)
-
         self.hud.menu_events["quitButton"] = self.quitGame
         self.hud.main_menu.mapEvents(self.hud.menu_events)
-
         self.action_number = 1
+
+        self.inventory = inventory.Inventory(self.engine, self.refreshReadyImages)
+        self.inventory.events_to_map['close_button'] = self.closeInventoryAndToggle
+        self.inventory.inventory.mapEvents(self.inventory.events_to_map)
+        self.refreshReadyImages()
 
     def reset(self):
         """Reset the map to default settings"""
@@ -148,6 +150,24 @@ class World(EventListenerBase):
         if obj in self.obj_hash:
             self.obj_hash[obj].say(str(text), 3500)
 
+    def refreshReadyImages(self):
+        """Make the Ready slot images on the HUD be the same as those on the inventory"""
+        self.setImages(self.hud.hud.findChild(name="hudReady1"),
+                       self.inventory.inventory.findChild(name="Ready1").up_image)
+        self.setImages(self.hud.hud.findChild(name="hudReady2"),
+                       self.inventory.inventory.findChild(name="Ready2").up_image)
+        self.setImages(self.hud.hud.findChild(name="hudReady3"),
+                       self.inventory.inventory.findChild(name="Ready3").up_image)
+        self.setImages(self.hud.hud.findChild(name="hudReady4"),
+                       self.inventory.inventory.findChild(name="Ready4").up_image)
+
+    def setImages(self, widget, image):
+        """ Set the up, down, and hover images of an Imagebutton """
+        widget.up_image = image
+        widget.down_image = image
+        widget.hover_image = image
+
+
     def closeInventoryAndToggle(self):
         self.inventory.closeInventory()
         self.hud.toggleInventory()
@@ -158,25 +178,14 @@ class World(EventListenerBase):
            or close the inventory screen and resume the game
            callFromHud should be set to true if you call this
            function from the hud script"""
-        # show the inventory
-        if(self.firstInventory == True):
-            self.inventory = inventory.Inventory(self.engine)
-            self.inventory.events_to_map['close_button'] = self.closeInventoryAndToggle
-            self.inventory.inventory.mapEvents(self.inventory.events_to_map)
-            self.firstInventory = False
-            self.inventoryShown = True
-            if (callFromHud == False):
-                self.hud.toggleInventory()
-        # logically firstInventory is false here
-        elif(self.inventoryShown == True):
-            self.inventory.closeInventory()
-            self.inventoryShown = False
-            if (callFromHud == False):
-                self.hud.toggleInventory()
-        # and here inventoryShown must be false
-        else:
+        if (self.inventoryShown == False):
             self.inventory.showInventory()
             self.inventoryShown = True
+            if (callFromHud == False):
+                self.hud.toggleInventory()
+        else:
+            self.inventory.closeInventory()
+            self.inventoryShown = False
             if (callFromHud == False):
                 self.hud.toggleInventory()
 
