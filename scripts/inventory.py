@@ -9,9 +9,10 @@ from pychan.tools import callbackWithArguments as cbwa
 
 class Inventory():
     """Main inventory class"""
-    def __init__(self, engine):
+    def __init__(self, engine, readyCallback):
         pychan.init(engine, debug = True)
         self.engine = engine
+        self.readyCallback = readyCallback
         self.dragging = False
         self.dragged_image = None
         self.dragged_type = None
@@ -83,7 +84,6 @@ class Inventory():
 
         self.inventory.mapEvents(self.events_to_map)   
         self.resetMouseCursor()
-        self.inventory.show()
 
     def closeInventory(self):
         """Close the inventory"""
@@ -153,6 +153,9 @@ class Inventory():
             drag_widget.item = self.dragged_item
             self.dragging = False
             self.resetMouseCursor()
+            if (self.dropped_type == 'ready'):
+                self.readyCallback()
+
         elif((self.dragged_type == self.dropped_type) and
              (self.dragged_type in self.locations)):
             drag_widget = self.inventory.findChild(name = obj)
@@ -162,6 +165,8 @@ class Inventory():
             drag_widget.item = self.dragged_item
             self.dragging = False
             self.resetMouseCursor()
+            if (self.dropped_type == 'ready'):
+                self.readyCallback()
         else:
             self.resetMouseCursor()
             self.dragging = False

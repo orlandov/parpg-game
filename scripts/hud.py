@@ -19,8 +19,6 @@ class Hud():
         self.hud = pychan.loadXML("gui/hud.xml")
 
         self.settings = settings
-        self.hp = self.hud.findChild(name="healthPoints")
-        self.ap = self.hud.findChild(name="actionPoints")
         self.actionsBox = self.hud.findChild(name="actionsBox")
         self.actionsText = []
         self.menu_displayed = False
@@ -38,10 +36,14 @@ class Hud():
 
         screen_width = int(self.settings.readSetting('ScreenWidth'))
         self.hud.findChild(name="mainHudWindow").size = (screen_width, 65)
-
         self.hud.findChild(name="inventoryButton").position = (screen_width-59, 7)
-        
-        actions_width = screen_width - 175 
+
+        self.hud.findChild(name='hudReady1').position = (screen_width-820, 7)
+        self.hud.findChild(name='hudReady2').position = (screen_width-760, 7)
+        self.hud.findChild(name='hudReady3').position = (screen_width-215, 7)
+        self.hud.findChild(name='hudReady4').position = (screen_width-155, 7)
+
+        actions_width = screen_width - 550 
         self.hud.findChild(name="actionsBox").min_size = (actions_width, 0)
         self.hud.findChild(name="actionsScrollArea").size = (actions_width, 55)
 
@@ -218,7 +220,7 @@ class Hud():
         Set the HP display on the HUD to value
         NOTE: This does not in any way affect the character's actual health, only what is displayed on the HUD
         """
-        self.hp.text = value
+        self.hud.findChild(name="healthPoints").text = value
 
     def setAP(self, value):
         """
@@ -226,7 +228,13 @@ class Hud():
         NOTE: This does no in any way affect the character's actual AP, only
               what is displayed on the HUD
         """
-        self.ap.text = value
+        self.hud.findChild(name="actionPoints").text = value
+
+    def setAC(self, value):
+        """
+        Set the armor class on the HUD display (not the characters actual armor class
+        """
+        self.hud.findChild(name="armorClass").text = value
         
     def toggleInventory(self):
         """

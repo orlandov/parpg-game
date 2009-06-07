@@ -6,11 +6,19 @@
 
   <Label name="healthPoints" text="HP: 100" position="56,14"/>
   <Label name="actionPoints" text="AP: 100" position="56,34" />
+  <Label name="armorClass" text="AC: 100" position="106,14" />
+  <Label name="tempGauge" text="Temp: 100" position="106,34" />
+  
+  <ImageButton name="hudReady1" />
+  <ImageButton name="hudReady2" />
 
   <ScrollArea name="actionsScrollArea" vertical_scrollbar="1" horizontal_scrollbar="0"
-	      position="105,5">
-    <ListBox name="actionsBox" min_size="300,48"/>
+	      position="325,5">
+    <ListBox name="actionsBox" />
   </ScrollArea>
+
+  <ImageButton name="hudReady3" />
+  <ImageButton name="hudReady4" />
 
   <ToggleButton name="inventoryButton" up_image="gui/inv_images/inv_backpack.png" 
 		down_image="gui/inv_images/inv_backpack_open.png" 
