@@ -156,6 +156,21 @@ class Engine:
             self.npcs.append(NPC(int(float(i[0])), int(float(i[1])),
                                  i[3], i[4]))
 
+    def objectActive(self, ident):
+        """Given the objects ID, pass back the object if it is active,
+           False if it doesn't exist or not displayed"""
+        for i in self.objects:
+            if((i.display == True)and(i.id == ident)):
+                # we found a match
+                return i
+        # now try NPC's
+        for i in self.npcs:
+            # all NPC's are deemed active
+            if(i.id == ident):
+                return i
+        # no match
+        return False
+
     def getObjectText(self, xpos, ypos):
         """Get the objects id and description of itself"""
         # cycle through all of the objects; do we have something there?

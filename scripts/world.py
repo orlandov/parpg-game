@@ -61,6 +61,8 @@ class World(EventListenerBase):
     """World holds the data needed by fife to render the engine
        The engine keeps a copy of this class"""
     def __init__(self, engine):
+        """Constructor for engine
+           TODO: Comment these variables"""
         super(World, self).__init__(engine, regMouse = True, regKeys = True)
         self.engine = engine
         self.eventmanager = engine.getEventManager()
@@ -120,6 +122,7 @@ class World(EventListenerBase):
         self.view.resetRenderers()
         self.target_rotation = self.cameras['main'].getRotation()
         self.cord_render = self.cameras['main'].getRenderer('CoordinateRenderer')
+        self.outline_render = fife.InstanceRenderer.getInstance(self.cameras['main'])
         
         # set the rnder text
         rend = fife.FloatingTextRenderer.getInstance(self.cameras['main'])
@@ -138,7 +141,7 @@ class World(EventListenerBase):
            It makes no difference to fife which is which"""
         obj = self.agent_layer.createInstance(
                 self.model.getObject(str(gfx), "PARPG"),
-                fife.ExactModelCoordinate(xpos,ypos,0.0), str(gfx))
+                fife.ExactModelCoordinate(xpos,ypos,0.0), str(name))
         obj.setRotation(0)
         fife.InstanceVisual.create(obj)
         # save it for later use
@@ -162,11 +165,10 @@ class World(EventListenerBase):
                        self.inventory.inventory.findChild(name="Ready4").up_image)
 
     def setImages(self, widget, image):
-        """ Set the up, down, and hover images of an Imagebutton """
+        """Set the up, down, and hover images of an Imagebutton"""
         widget.up_image = image
         widget.down_image = image
         widget.hover_image = image
-
 
     def closeInventoryAndToggle(self):
         self.inventory.closeInventory()
@@ -241,12 +243,30 @@ class World(EventListenerBase):
         if(evt.getButton() == fife.MouseEvent.LEFT):
             self.data.handleMouseClick(self.getCoords(click))
         elif(evt.getButton() == fife.MouseEvent.RIGHT):
-            # there's no need to query fife about what things are where,
-            # the engine code should know....
-            coords = self.getCoords(click).getLayerCoordinates()
-            obj, text = self.data.getObjectText(coords.x, coords.y)
-            if(obj != ""):
-                self.displayObjectText(obj, text)
+            # although the engine code knows, fife can be more accurate
+            i=self.cameras['main'].getMatchingInstances(click, self.agent_layer)
+            if(i != ()):
+                for obj in i:
+                    # check to see if this in our list at all
+                    test = self.data.objectActive(obj.getId())
+                    if(test != False):
+                        # finally, display the text    
+                        self.displayObjectText(obj.getId(), test.text)
+
+    def mouseMoved(self, evt):
+        """Called when the mouse is moved"""
+        click = fife.ScreenPoint(evt.getX(), evt.getY())
+        i=self.cameras['main'].getMatchingInstances(click, self.agent_layer)
+        # no object returns an empty tuple
+        if(i != ()):
+            for obj in i:
+                # check to see if this in our list at all
+                if(self.data.objectActive(obj.getId())!=False):
+                    # yes, so outline    
+                    self.outline_render.addOutlined(obj, 0, 137, 255, 2)
+        else:
+            # erase the outline
+            self.outline_render.removeAllOutlines()
 
     def toggle_renderer (self, r_name):
         """Enable or disable the renderer named `r_name`"""
