@@ -268,7 +268,7 @@ class World(EventListenerBase):
             # erase the outline
             self.outline_render.removeAllOutlines()
 
-    def toggle_renderer (self, r_name):
+    def toggle_renderer(self, r_name):
         """Enable or disable the renderer named `r_name`"""
         renderer = self.cameras['main'].getRenderer('GridRenderer')
         renderer.setEnabled(not renderer.isEnabled())
