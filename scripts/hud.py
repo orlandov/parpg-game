@@ -38,14 +38,54 @@ class Hud():
         self.hud.findChild(name="mainHudWindow").size = (screen_width, 65)
         self.hud.findChild(name="inventoryButton").position = (screen_width-59, 7)
 
-        self.hud.findChild(name='hudReady1').position = (screen_width-820, 7)
-        self.hud.findChild(name='hudReady2').position = (screen_width-760, 7)
-        self.hud.findChild(name='hudReady3').position = (screen_width-215, 7)
-        self.hud.findChild(name='hudReady4').position = (screen_width-155, 7)
+        ready1 = self.hud.findChild(name='hudReady1')
+        ready2 = self.hud.findChild(name='hudReady2')
+        ready3 = self.hud.findChild(name='hudReady3')
+        ready4 = self.hud.findChild(name='hudReady4')
+        actions_scroll_area = self.hud.findChild(name='actionsScrollArea')
 
-        actions_width = screen_width - 550 
+        if (screen_width == 1440):
+            ready1.position = (screen_width-1235, 7)
+            ready2.position = (screen_width-1175, 7)
+            ready3.position = (screen_width-215, 7)
+            ready4.position = (screen_width-155, 7)
+            actions_scroll_area.position = (325, 5)
+            actions_width = screen_width - 550
+
+        elif (screen_width == 1280):
+            ready1.position = (screen_width-1075, 7)
+            ready2.position = (screen_width-1015, 7)
+            ready3.position = (screen_width-215, 7)
+            ready4.position = (screen_width-155, 7)
+            actions_scroll_area.position = (325, 5)
+            actions_width = screen_width - 550
+
+        elif (screen_width == 1024):
+            ready1.position = (screen_width-820, 7)
+            ready2.position = (screen_width-760, 7)
+            ready3.position = (screen_width-215, 7)
+            ready4.position = (screen_width-155, 7)
+            actions_scroll_area.position = (325, 5)
+            actions_width = screen_width - 550
+
+        elif (screen_width == 800):
+            ready1.position = (screen_width-640, 7)
+            ready2.position = (screen_width-580, 7)
+            ready3.position = (screen_width-185, 7)
+            ready4.position = (screen_width-125, 7)
+            actions_scroll_area.position = (280, 5)
+            actions_width = screen_width - 475
+
+        else:
+            ready1.position = (screen_width-475, 7)
+            ready2.position = (screen_width-420, 7)
+            ready3.position = (screen_width-175, 7)
+            ready4.position = (screen_width-120, 7)
+            actions_scroll_area.position = (280, 5)
+            actions_width = screen_width - 465
+
         self.hud.findChild(name="actionsBox").min_size = (actions_width, 0)
-        self.hud.findChild(name="actionsScrollArea").size = (actions_width, 55)
+        actions_scroll_area.size = (actions_width, 55)
 
         self.hud.show()
         
