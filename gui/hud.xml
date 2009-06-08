@@ -12,8 +12,8 @@
   <ImageButton name="hudReady1" />
   <ImageButton name="hudReady2" />
 
-  <ScrollArea name="actionsScrollArea" vertical_scrollbar="1" horizontal_scrollbar="0"
-	      position="325,5">
+  <ScrollArea name="actionsScrollArea" vertical_scrollbar="1" 
+	      horizontal_scrollbar="0">
     <ListBox name="actionsBox" />
   </ScrollArea>
 
