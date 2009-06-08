@@ -85,7 +85,8 @@ class Hud():
             actions_width = screen_width - 465
 
         self.hud.findChild(name="actionsBox").min_size = (actions_width, 0)
-        actions_scroll_area.size = (actions_width, 55)
+        actions_scroll_area.min_size = (actions_width, 55)
+        actions_scroll_area.max_size = (actions_width, 55)
 
         self.hud.show()
         
