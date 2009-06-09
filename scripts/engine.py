@@ -16,11 +16,10 @@
 #   along with PARPG.  If not, see <http://www.gnu.org/licenses/>.
 
 # there should be NO references to FIFE here!
-from xml.sax import make_parser
-from xml.sax.handler import ContentHandler
 from agents.hero import Hero
 from agents.npc import NPC
 from objects import GameObject
+from objLoader import LocalXMLParser
 
 # design note:
 # there is a map file that FIFE reads. We use that file for half the map
@@ -32,66 +31,6 @@ from objects import GameObject
 # from another file if in their initial state
 # This other file has the name AAA_objects.xml where AAA.xml is the name
 # of the original mapfile.
-
-class LocalXMLParser(ContentHandler):
-    """Class inherits from ContantHandler, and is used to parse the
-       local objects data"""
-    def __init__(self):
-        self.search = "objects"
-        self.pc = None
-        self.objects = []
-        self.npcs = []
-    
-    def startElement(self, name, attrs):
-        """Called every time we meet a new element in the XML file"""
-        # we are only looking for the 'layer' elements, the rest we ignore
-        if(name == "PC"):
-            # already have a PC?
-            if(self.pc != None):
-                sys.stderr.write("Error: 2 PC characters defined")
-                sys.exit(False)
-            # grab the data and store that as well
-            try:
-                xpos = attrs.getValue("xpos")
-                ypos = attrs.getValue("ypos")
-            except(KeyError):
-                sys.stderr.write("Error: Data missing in PC definition")
-                sys.exit(False)
-            # store for later
-            self.pc=[xpos,ypos]
-        elif(name == "NPC"):
-            # let's parse and add the data
-            try:
-                xpos=attrs.getValue("xpos")
-                ypos = attrs.getValue("ypos")
-                gfx = attrs.getValue("gfx")
-                ident = attrs.getValue("id")
-                text = attrs.getValue("text")
-            except(KeyError):
-                sys.stderr.write("Error: Data missing in NPC definition\n")
-                sys.exit(False)
-            # now we have the data, save it for later
-            self.npcs.append([xpos, ypos, gfx, ident, text])
-        elif(name == "object"):
-            # same old same old
-            try:
-                display = attrs.getValue("display")
-                if(display == "True"):
-                    xpos = attrs.getValue("xpos")
-                    ypos = attrs.getValue("ypos")
-                else:
-                    owner = attrs.getValue("owner")
-                gfx = attrs.getValue("gfx")
-                ident = attrs.getValue("id")
-                text = attrs.getValue("text")
-            except(KeyError):
-                sys.stderr.write("Error: Data missing in object definition\n")
-                sys.exit(False)
-            # now we have the data, save it for later
-            if(display == "True"):
-                self.objects.append([True, xpos, ypos, gfx, ident, text])
-            else:
-                self.objects.append([False, gfx, ident, text])
 
 class Engine:
     """Engine holds the logic for the game
@@ -114,8 +53,8 @@ class Engine:
             sys.stderr.write("Error: Can't find objects file\n")
             return False
         # now open and read the XML file
-        parser = make_parser()
         cur_handler = LocalXMLParser()
+        parser = cur_handler.getParser()
         parser.setContentHandler(cur_handler)
         parser.parse(objects_file)
         objects_file.close()
@@ -170,20 +109,6 @@ class Engine:
                 return i
         # no match
         return False
-
-    def getObjectText(self, xpos, ypos):
-        """Get the objects id and description of itself"""
-        # cycle through all of the objects; do we have something there?
-        for i in self.objects:
-            if((xpos == i.xpos)and(ypos == i.ypos)):
-                # yes, we have a match, so return the text
-                return i.id, i.text
-        for i in self.npcs:
-            if((xpos == i.xpos)and(ypos == i.ypos)):
-                # yes, we have a match, so return the text
-                return i.id, i.text
-        # nothing, but return the empty string in case we print it
-        return "",""
 
     def loadMap(self,map_file):
         """Load a new map
