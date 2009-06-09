@@ -11,12 +11,12 @@
     <!-- There can be any number of objects -->
     <!-- Object blocking is set in the objects own xml file -->
     <object display="True" gfx="crate" xpos="-3.0" ypos="-4.0" id="crate01"
-            text="Just a crate"></object>
+            carry="0" contain="1" text="Just a crate"></object>
     <object display="True" gfx="crate" xpos="-4.0" ypos="-6.0" id="crate02"
-            text="A dirty old crate"></object>
+            carry="0" contain="1" text="A dirty old crate"></object>
     <object display="False" gfx="NONE" owner="crate02" id="letter"
-            text="A newly thrown-away letter"></object>
+            carry="1" contain="0" text="A newly thrown-away letter"></object>
     <object display="False" gfx="NONE" owner="crate02" id="battery"
-            text="An old battery"></object>
+            carry="1" contain="0" text="An old battery"></object>
 </objects>
 

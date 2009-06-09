@@ -81,10 +81,11 @@ class Engine:
            and into our class
            An NPC is just an object to FIFE"""
         for i in objects:
+            # is it visible?
             if(i[0] == True):
                 self.view.addObject(float(i[1]), float(i[2]), i[3], i[4])
-                # now add it as an engine object
-                self.objects.append(GameObject(i))
+            # now add it as an engine object
+            self.objects.append(GameObject(i))
 
     def addNPCs(self,npcs):
         """Add all of the NPCs we found into the fife map
