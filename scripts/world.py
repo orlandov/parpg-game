@@ -37,24 +37,9 @@ TDS = Setting()
 # issues (and just looks plain bad).
 # however, any logic needed to resolve this should sit in engine.py
 
-class MapListener(fife.MapChangeListener):
-    """This class listens to changes happening on the map.
-       Since in theory we initiate these ourselves, do we need this class?"""
-    def __init__(self, map):
-        fife.MapChangeListener.__init__(self)
-
-    def onMapChanged(self, map, changedLayers):
-        pass
-
-    def onLayerCreate(self, map, layer):
-        pass
-
-    def onLayerDelete(self, map, layer):
-        pass
-
-class Map:
+class Map(fife.MapChangeListener):
     def __init__(self, fife_map):
-        self.listener = MapListener
+        fife.MapChangeListener.__init__(self)
         self.map = fife_map
 
 class World(EventListenerBase):
@@ -105,7 +90,7 @@ class World(EventListenerBase):
            is subject to change"""
         self.reset()
         self.map = loadMapFile(filename, self.engine)
-        self.maplistener = MapListener(self.map)
+        self.maplistener = Map(self.map)
 
         # there must be a PC object on the objects layer!
         self.agent_layer = self.map.getLayer('ObjectLayer')
@@ -124,7 +109,7 @@ class World(EventListenerBase):
         self.cord_render = self.cameras['main'].getRenderer('CoordinateRenderer')
         self.outline_render = fife.InstanceRenderer.getInstance(self.cameras['main'])
         
-        # set the rnder text
+        # set the render text
         rend = fife.FloatingTextRenderer.getInstance(self.cameras['main'])
         text = self.engine.getGuiManager().createFont('fonts/rpgfont.png',
                                                           0, str(TDS.readSetting("FontGlyphs", strip=False)))
