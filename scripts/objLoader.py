@@ -17,6 +17,7 @@
 
 from xml.sax import make_parser
 from xml.sax.handler import ContentHandler
+import sys
 
 class LocalXMLParser(ContentHandler):
     """Class inherits from ContantHandler, and is used to parse the
@@ -73,11 +74,16 @@ class LocalXMLParser(ContentHandler):
                 gfx = attrs.getValue("gfx")
                 ident = attrs.getValue("id")
                 text = attrs.getValue("text")
+                contain = attrs.getValue("contain")
+                carry = attrs.getValue("carry")
             except(KeyError):
                 sys.stderr.write("Error: Data missing in object definition\n")
                 sys.exit(False)
             # now we have the data, save it for later
             if(display == "True"):
-                self.objects.append([True, xpos, ypos, gfx, ident, text])
+                self.objects.append([True, xpos, ypos, gfx, ident,
+                                     text, contain, carry])
             else:
-                self.objects.append([False, gfx, ident, text])
+                self.objects.append([False, gfx, ident, text,
+                                     owner, contain, carry])
+

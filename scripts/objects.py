@@ -20,14 +20,24 @@ class GameObject:
     """Class to handle GameObjects"""
     def __init__(self, data):
         """Init is a little complicated becuase we have 2 types of
-           constructors in one function"""
-        if(data[0]==True):
+           constructors in one function
+           display -> true, we display on screen
+           xpos, ypos -> position in map
+           gfx -> img data (the FIFE reference)
+           text -> descriptive text
+           owner -> what it is contained in
+           contain -> True / False is it a container
+           carry -> True / False it can be carried"""
+        if(data[0] == True):
             self.display = True
             self.xpos = int(float(data[1]))
             self.ypos = int(float(data[2]))
             self.gfx = data[3]
             self.id = data[4]
             self.text = data[5]
+            self.contain = data[6]
+            self.carry = data[7]
+            self.owner = None
         else:
             self.display = False
             self.xpos = None
@@ -35,4 +45,16 @@ class GameObject:
             self.gfx = data[1]
             self.id = data[2]
             self.text = data[3]
+            self.owner = data[4]
+            self.contain = data[5]
+            self.carry = data[6]
+        # convert the data
+        if(self.contain == u'1'):
+            self.contain = True
+        else:
+            self.contain = False
+        if(self.carry == u'1'):
+            self.carry = True
+        else:
+            self.carry= False
 
