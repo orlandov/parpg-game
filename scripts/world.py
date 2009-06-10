@@ -239,6 +239,7 @@ class World(EventListenerBase):
                 data = [["DisplayObjectID", "Display Object ID",
                          cbwa(self.contextDisplayObjectText, click)]]
                 pos = (evt.getX(), evt.getY())
+                print evt.getX()
                 self.context_menu = ContextMenu(self.engine, data, pos)
 
             else:
@@ -249,20 +250,19 @@ class World(EventListenerBase):
 
     def contextDisplayObjectText(self, click):
         # although the engine code knows, fife can be more accurate
-            i=self.cameras['main'].getMatchingInstances(click, self.agent_layer)
-            if(i != ()):
-                for obj in i:
-                    # check to see if this in our list at all
-                    test = self.data.objectActive(obj.getId())
-                    if(test != False):
-                        # finally, display the text    
-                        self.displayObjectText(obj.getId(), test.text)
-                        self.context_menu.vbox.hide()
-                        delattr(self, "context_menu")
-
-                    else:
-                        self.context_menu.vbox.hide()
-                        delattr(self, "context_menu")
+        i=self.cameras['main'].getMatchingInstances(click, self.agent_layer)
+        if(i != ()):
+            for obj in i:
+                # check to see if this in our list at all
+                test = self.data.objectActive(obj.getId())
+                if(test != False):
+                    # finally, display the text    
+                    self.displayObjectText(obj.getId(), test.text)
+                    self.context_menu.vbox.hide()
+                    delattr(self, "context_menu")
+                else:
+                    self.context_menu.vbox.hide()
+                    delattr(self, "context_menu")
             else:
                 self.context_menu.vbox.hide()
                 delattr(self, "context_menu")
