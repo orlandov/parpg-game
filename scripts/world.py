@@ -25,6 +25,7 @@ from agents.npc import NPC
 from settings import Setting
 from scripts import inventory
 from scripts import hud
+from scripts.context_menu import ContextMenu
 from pychan.tools import callbackWithArguments as cbwa
 
 TDS = Setting()
@@ -227,8 +228,27 @@ class World(EventListenerBase):
         click = fife.ScreenPoint(evt.getX(), evt.getY())
         if(evt.getButton() == fife.MouseEvent.LEFT):
             self.data.handleMouseClick(self.getCoords(click))
+            if (hasattr(self, "context_menu")):
+                self.context_menu.vbox.hide()
+                delattr(self, "context_menu")
+                
         elif(evt.getButton() == fife.MouseEvent.RIGHT):
-            # although the engine code knows, fife can be more accurate
+            if (hasattr(self, "context_menu")):
+                self.context_menu.vbox.hide()
+                delattr(self, "context_menu")
+                data = [["DisplayObjectID", "Display Object ID",
+                         cbwa(self.contextDisplayObjectText, click)]]
+                pos = (evt.getX(), evt.getY())
+                self.context_menu = ContextMenu(self.engine, data, pos)
+
+            else:
+                data = [["DisplayObjectID", "Display Object ID",
+                         cbwa(self.contextDisplayObjectText, click)]]
+                pos = (evt.getX(), evt.getY())
+                self.context_menu = ContextMenu(self.engine, data, pos)
+
+    def contextDisplayObjectText(self, click):
+        # although the engine code knows, fife can be more accurate
             i=self.cameras['main'].getMatchingInstances(click, self.agent_layer)
             if(i != ()):
                 for obj in i:
@@ -237,6 +257,15 @@ class World(EventListenerBase):
                     if(test != False):
                         # finally, display the text    
                         self.displayObjectText(obj.getId(), test.text)
+                        self.context_menu.vbox.hide()
+                        delattr(self, "context_menu")
+
+                    else:
+                        self.context_menu.vbox.hide()
+                        delattr(self, "context_menu")
+            else:
+                self.context_menu.vbox.hide()
+                delattr(self, "context_menu")
 
     def mouseMoved(self, evt):
         """Called when the mouse is moved"""
