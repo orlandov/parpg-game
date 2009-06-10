@@ -6,10 +6,12 @@
   <HBox min_size="120,90">
     <Label text="Resolution: " />
     <ListBox name="ResolutionBox" min_size="120,0" />
+    <Spacer />
   </HBox>
   <HBox min_size="120,47">
     <Label text="Render Backend: " />
     <ListBox name="RenderBox" min_size="120,0" />
+    <Spacer />
   </HBox>
 
   <Spacer />
