@@ -39,6 +39,7 @@ class Engine:
        the fife view here. This also prevents us from just having a
        function heavy controller"""
     def __init__(self, view):
+        # a World object
         self.view = view
         self.PC = None
         self.npcs = []
@@ -93,8 +94,8 @@ class Engine:
         for i in npcs:
             self.view.addObject(float(i[0]), float(i[1]), i[2], i[3])
             # now add as engine data
-            self.npcs.append(NPC(int(float(i[0])), int(float(i[1])),
-                                 i[3], i[4]))
+            self.npcs.append(NPC(i[4], str(i[3]), self.view.agent_layer))
+            self.npcs[-1].start()
 
     def objectActive(self, ident):
         """Given the objects ID, pass back the object if it is active,
@@ -106,7 +107,7 @@ class Engine:
         # now try NPC's
         for i in self.npcs:
             # all NPC's are deemed active
-            if(i.id == ident):
+            if(i.agentName == ident):
                 return i
         # no match
         return False
