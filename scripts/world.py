@@ -239,7 +239,6 @@ class World(EventListenerBase):
                 data = [["DisplayObjectID", "Display Object ID",
                          cbwa(self.contextDisplayObjectText, click)]]
                 pos = (evt.getX(), evt.getY())
-                print evt.getX()
                 self.context_menu = ContextMenu(self.engine, data, pos)
 
             else:
