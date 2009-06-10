@@ -89,6 +89,33 @@ class Hud():
         actions_scroll_area.max_size = (actions_width, 55)
 
         self.hud.show()
+
+    def refreshActionsBox(self):
+        """ 
+        Refresh the actions box so that it displays the contents of self.actionsText
+        """
+        self.actionsBox.items = self.actionsText
+
+    def addAction(self, action):
+        """ 
+        Add an action to the actions box.
+        All this function really does is append action to self.actionsText and then
+        call refreshActionsBox
+        """
+        self.actionsText.insert(0, action)
+        self.refreshActionsBox()
+
+    def showHUD(self):
+        """
+        Show the HUD
+        """
+        self.hud.show()
+
+    def hideHUD(self):
+        """
+        Hide the HUD
+        """
+        self.hud.hide()
         
     def initializeMainMenu(self):
         """Initalize the main menu"""
@@ -98,6 +125,23 @@ class Hud():
                             "optionsButton":self.displayOptions,
                             "helpButton":self.displayHelp}
         self.main_menu.mapEvents(self.menu_events)
+
+    def displayMenu(self):
+        """
+        Displays the main in-game menu
+        """
+        if (self.menu_displayed == False):
+            self.main_menu.show()
+            self.menu_displayed = True
+        elif (self.menu_displayed == True):
+            self.hideMenu()
+
+    def hideMenu(self):
+        """
+        Hides the main in-game menu
+        """
+        self.main_menu.hide()
+        self.menu_displayed = False
 
     def initializeHelpMenu(self):
         """Initialize the help menu"""
@@ -114,6 +158,10 @@ class Hud():
                 "MainHelpText":main_help_text,
                 "KeybindText":keybindings_text
                 })
+
+    def displayHelp(self):
+        """ Display the help screen """
+        self.help_dialog.show()
 
     def initializeOptionsMenu(self):
         """Initalize the options menu"""
@@ -140,33 +188,6 @@ class Hud():
                 })
         
         self.options_menu.mapEvents(self.options_events)
-
-    def setToDefaults(self):
-        """ Reset all the options to the options in settings-dist.xml """
-        shutil.copyfile('settings-dist.xml', 'settings.xml')
-        self.requireRestartDialog()
-        self.options_menu.hide()
-
-    def displayHelp(self):
-        """ Display the help screen """
-        self.help_dialog.show()
-
-
-    def refreshActionsBox(self):
-        """ 
-        Refresh the actions box so that it displays the contents of self.actionsText
-        """
-        self.actionsBox.items = self.actionsText
-
-
-    def addAction(self, action):
-        """ 
-        Add an action to the actions box.
-        All this function really does is append action to self.actionsText and then
-        call refreshActionsBox
-        """
-        self.actionsText.insert(0, action)
-        self.refreshActionsBox()
 
     def requireRestartDialog(self):
         """
@@ -221,29 +242,18 @@ class Hud():
         else:
             print 'Setting,', name, 'does not exist!'
 
+    def setToDefaults(self):
+        """ Reset all the options to the options in settings-dist.xml """
+        shutil.copyfile('settings-dist.xml', 'settings.xml')
+        self.requireRestartDialog()
+        self.options_menu.hide()
+
     def displayOptions(self):
         """
         Display the options menu
         """
         self.options_menu.show()
-
-    def displayMenu(self):
-        """
-        Displays the main in-game menu
-        """
-        if (self.menu_displayed == False):
-            self.main_menu.show()
-            self.menu_displayed = True
-        elif (self.menu_displayed == True):
-            self.hideMenu()
-
-    def hideMenu(self):
-        """
-        Hides the main in-game menu
-        """
-        self.main_menu.hide()
-        self.menu_displayed = False
-
+    
     def saveGame(self):
         """
         Open the save game dialog
@@ -255,27 +265,6 @@ class Hud():
         Open the load game dialog
         """
         print "load"
-
-    def setHP(self, value):
-        """
-        Set the HP display on the HUD to value
-        NOTE: This does not in any way affect the character's actual health, only what is displayed on the HUD
-        """
-        self.hud.findChild(name="healthPoints").text = value
-
-    def setAP(self, value):
-        """
-        Set the AP display on the HUD to value
-        NOTE: This does no in any way affect the character's actual AP, only
-              what is displayed on the HUD
-        """
-        self.hud.findChild(name="actionPoints").text = value
-
-    def setAC(self, value):
-        """
-        Set the armor class on the HUD display (not the characters actual armor class
-        """
-        self.hud.findChild(name="armorClass").text = value
         
     def toggleInventory(self):
         """
