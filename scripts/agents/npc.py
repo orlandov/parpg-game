@@ -24,7 +24,7 @@ _STATE_NONE, _STATE_IDLE, _STATE_WANDER = xrange(3)
 
 class NPC(fife.InstanceActionListener):
     """This is the class we use for all NPCs"""
-    def __init__(self, text, agentName, layer):
+    def __init__(self, text, agent_name, layer):
         """Init function.
            @param text: a string of text that will be output to screen when
                character is right clicked
@@ -32,9 +32,9 @@ class NPC(fife.InstanceActionListener):
            @param layer: a fife.Instance object, (engine.view.agent_layer)"""
         fife.InstanceActionListener.__init__(self)
         self.text = text
-        self.agentName = agentName
+        self.id = agent_name
         # a fife.Instance
-        self.agent = layer.getInstance(agentName)
+        self.agent = layer.getInstance(agent_name)
         self.agent.addActionListener(self)
         self.state = _STATE_NONE
         self.speed = float(TDS.readSetting("PCSpeed"))-1

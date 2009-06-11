@@ -35,7 +35,7 @@ class GameObject:
             self.gfx = data[3]
             self.id = data[4]
             self.text = data[5]
-            self.contain = data[6]
+            self.container = data[6]
             self.carry = data[7]
             self.owner = None
         else:
@@ -46,13 +46,13 @@ class GameObject:
             self.id = data[2]
             self.text = data[3]
             self.owner = data[4]
-            self.contain = data[5]
+            self.container = data[5]
             self.carry = data[6]
         # convert the data
-        if(self.contain == u'1'):
-            self.contain = True
+        if(self.container == u'1'):
+            self.container = True
         else:
-            self.contain = False
+            self.container = False
         if(self.carry == u'1'):
             self.carry = True
         else:
