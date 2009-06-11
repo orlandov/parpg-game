@@ -243,33 +243,22 @@ class World(EventListenerBase):
             if (hasattr(self, "context_menu")):
                 self.context_menu.vbox.hide()
                 delattr(self, "context_menu")
-                data = [["DisplayObjectID", "Display Object ID",
-                         cbwa(self.contextDisplayObjectText, click)]]
+                data = [["Placeholder", "Placeholder Button", self.placeHolderFunction, click]]
                 pos = (evt.getX(), evt.getY())
                 self.context_menu = ContextMenu(self.engine, data, pos)
 
             else:
-                data = [["DisplayObjectID", "Display Object ID",
-                         cbwa(self.contextDisplayObjectText, click)]]
+                data = [["Placeholder", "Placeholder Button", self.placeHolderFunction, click]]
                 pos = (evt.getX(), evt.getY())
                 self.context_menu = ContextMenu(self.engine, data, pos)
 
-    def contextDisplayObjectText(self, click):
-        # although the engine code knows, fife can be more accurate
-        i=self.cameras['main'].getMatchingInstances(click, self.agent_layer)
-        if(i != ()):
-            for obj in i:
-                # check to see if this is an active item
-                if(self.data.objectActive(obj.getId()) != False):
-                    # finally, display the text    
-                    self.context_menu.vbox.hide()
-                    delattr(self, "context_menu")
-                else:
-                    self.context_menu.vbox.hide()
-                    delattr(self, "context_menu")
-            else:
-                self.context_menu.vbox.hide()
-                delattr(self, "context_menu")
+    def placeHolderFunction(self):
+        """Just a simple function to make the PC say "Place Holder Function!"
+           It's in here because we needed some sort of function to test the context
+           menu with"""
+        self.agent_layer.getInstance("PC").say("Place Holder Function!", 1000)
+        self.context_menu.vbox.hide()
+        delattr(self, "context_menu")
 
     def mouseMoved(self, evt):
         """Called when the mouse is moved"""
@@ -294,10 +283,6 @@ class World(EventListenerBase):
         """Enable or disable the renderer named `r_name`"""
         renderer = self.cameras['main'].getRenderer('GridRenderer')
         renderer.setEnabled(not renderer.isEnabled())
-
-    def displayHelp(self):
-        """Displays the pop-up info and help screen"""
-        print "Help not yet coded"
 
     def quitGame(self):
         """Called when user requests to quit game
