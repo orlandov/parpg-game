@@ -131,6 +131,10 @@ def splitImage(image, filename, data):
             # TODO: Handle integer moves (i.e. > 1 tile up down)
             print "Error: Can't handle integer tile moves yet"
             sys.exit(False)
+        # if the image is 256, then adjust
+        # bug in the FIFE OpenGL code
+        if(height == 256):
+            height += 1
         # build the new surface
         new_surface = pygame.Surface((TILE_WIDTH, height), pygame.SRCALPHA, 32)
         # now blit a strip of the image across
