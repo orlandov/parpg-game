@@ -36,7 +36,7 @@
     </VBox>
     
     <VBox max_size="50,300">
-      <ImageButton name="RightHeld" up_image="gui/inv_images/inv_hitem.png" down_image="gui/inv_images/inv_hitem.png" hover_image="gui/inv_images/inv_hitem.png" text="" />
+      <ImageButton name="RightHeld" up_image="gui/inv_images/inv_ritem.png" down_image="gui/inv_images/inv_ritem.png" hover_image="gui/inv_images/inv_ritem.png" text="" />
       <ImageButton name="Ready3" up_image="gui/inv_images/inv_belt_pouches.png" down_image="gui/inv_images/inv_belt_pouches.png" hover_image="gui/inv_images/inv_belt_pouches.png" text="" />
       <ImageButton name="Ready4" up_image="gui/inv_images/inv_belt_pouches.png" down_image="gui/inv_images/inv_belt_pouches.png" hover_image="gui/inv_images/inv_belt_pouches.png" text="" />
       <Spacer />
