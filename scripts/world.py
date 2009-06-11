@@ -231,6 +231,15 @@ class World(EventListenerBase):
                 delattr(self, "context_menu")
                 
         elif(evt.getButton() == fife.MouseEvent.RIGHT):
+            # is there an object here?
+            i=self.cameras['main'].getMatchingInstances(click, self.agent_layer)
+            if(i != ()):
+                for obj in i:
+                    # check to see if this is an active item
+                    if(self.data.objectActive(obj.getId()) != False):            
+                        # yes, get the data
+                        info = self.data.getItemActions(obj.getId())
+                        print info
             if (hasattr(self, "context_menu")):
                 self.context_menu.vbox.hide()
                 delattr(self, "context_menu")

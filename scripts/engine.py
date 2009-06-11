@@ -107,10 +107,32 @@ class Engine:
         # now try NPC's
         for i in self.npcs:
             # all NPC's are deemed active
-            if(i.agentName == ident):
+            if(i.id == ident):
                 return i
         # no match
         return False
+
+    def getItemActions(self, obj_id):
+        """Given the objects ID, return the text strings and callbacks"""
+        actions=[]
+        # is it in our objects?
+        for i in self.objects:
+            if(obj_id == i.id):
+                actions.append(("Examine",None))
+                # is it a container?
+                if(i.container == True):
+                    actions.append(("Open",None))
+                # can you pick it up?
+                if(i.carry == True):
+                    actions.append(("Pick Up",None))
+                return actions
+        # is it an NPC?
+        for i in self.npcs:
+            if(obj_id == i.id):
+                # keep it simple for now
+                actions.append(("Talk",None))
+                actions.append(("Attack",None))
+        return actions
 
     def loadMap(self,map_file):
         """Load a new map
