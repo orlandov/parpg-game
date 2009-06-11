@@ -29,6 +29,13 @@
 	<import file="../objects/buildings/shanty/shantyh.xml"></import>
 	<import file="../objects/buildings/shanty/shantyi.xml"></import>
 	
+	<!--
+	<import file="../objects/buildings/windmill/windmilla.xml"></import>
+	<import file="../objects/buildings/windmill/windmillb.xml"></import>
+	<import file="../objects/buildings/windmill/windmillc.xml"></import>
+	<import file="../objects/buildings/windmill/windmilld.xml"></import>
+	<import file="../objects/buildings/windmill/windmille.xml"></import> -->
+	
 	<!-- Import the tile transition tiles -->
 	<import file="../objects/ground/grass/transition/grass-tc01.xml"></import>
 	<import file="../objects/ground/grass/transition/grass-tc02.xml"></import>
@@ -1069,15 +1076,23 @@
 
 	<layer x_offset="0.0" pathing="cell_edges_and_diagonals" y_offset="0.0" grid_type="square" id="ObjectLayer" x_scale="1" y_scale="1" rotation="0.0">
 		<instances>	
-            		<i x="-4" o="shantya" z="0.0" y="3" r="0"></i>
-            		<i x="-4" o="shantyb" z="0.0" y="4" r="0"></i>
-            		<i x="-4" o="shantyc" z="0.0" y="5" r="0"></i>
-           	        <i x="-4" o="shantyd" z="0.0" y="6" r="0"></i>
-           	        <i x="-3" o="shantye" z="0.0" y="6" r="0"></i>
-            		<i x="-2" o="shantyf" z="0.0" y="6" r="0"></i>
-            		<i x="-1" o="shantyg" z="0.0" y="6" r="0"></i>
-            		<i x="-0" o="shantyh" z="0.0" y="6" r="0"></i>
-            		<i x="1" o="shantyi" z="0.0" y="6" r="0"></i>
+            <i x="-4" o="shantya" z="0.0" y="3" r="0"></i>
+            <i x="-4" o="shantyb" z="0.0" y="4" r="0"></i>
+            <i x="-4" o="shantyc" z="0.0" y="5" r="0"></i>
+           	<i x="-4" o="shantyd" z="0.0" y="6" r="0"></i>
+           	<i x="-3" o="shantye" z="0.0" y="6" r="0"></i>
+            <i x="-2" o="shantyf" z="0.0" y="6" r="0"></i>
+            <i x="-1" o="shantyg" z="0.0" y="6" r="0"></i>
+            <i x="-0" o="shantyh" z="0.0" y="6" r="0"></i>
+            <i x="1" o="shantyi" z="0.0" y="6" r="0"></i>
+            
+            <!-- Adding windmaill images here doesn't work -->
+            <i x="6" o="shantya" z="0.0" y="-2" r="0"></i>
+            <i x="6" o="shantyb" z="0.0" y="-1" r="0"></i>
+            <i x="6" o="shantyc" z="0.0" y="0" r="0"></i>
+            <i x="7" o="shantyd" z="0.0" y="0" r="0"></i>
+            <i x="8" o="shantye" z="0.0" y="0" r="0"></i>
+            
 		</instances>
 	</layer>
 

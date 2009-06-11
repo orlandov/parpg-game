@@ -115,6 +115,13 @@ class Engine:
     def getItemActions(self, obj_id):
         """Given the objects ID, return the text strings and callbacks"""
         actions=[]
+        # note: ALWAYS check NPC's first!
+        # is it an NPC?
+        for i in self.npcs:
+            if(obj_id == i.id):
+                # keep it simple for now
+                actions.append(("Talk",None))
+                actions.append(("Attack",None))
         # is it in our objects?
         for i in self.objects:
             if(obj_id == i.id):
@@ -126,12 +133,6 @@ class Engine:
                 if(i.carry == True):
                     actions.append(("Pick Up",None))
                 return actions
-        # is it an NPC?
-        for i in self.npcs:
-            if(obj_id == i.id):
-                # keep it simple for now
-                actions.append(("Talk",None))
-                actions.append(("Attack",None))
         return actions
 
     def loadMap(self,map_file):

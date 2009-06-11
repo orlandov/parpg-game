@@ -28,7 +28,7 @@ class NPC(fife.InstanceActionListener):
         """Init function.
            @param text: a string of text that will be output to screen when
                character is right clicked
-           @param agentName: the 'id' of the NPC in the map_object.xml file
+           @param id: the 'id' of the NPC in the map_object.xml file
            @param layer: a fife.Instance object, (engine.view.agent_layer)"""
         fife.InstanceActionListener.__init__(self)
         self.text = text
@@ -63,7 +63,7 @@ class NPC(fife.InstanceActionListener):
         l = fife.Location(self.agent.getLocation())
         l.setLayerCoordinates(fife.ModelCoordinate(*tuple([x, y])))
         return l
-    
+
     def onInstanceActionFinished(self, instance, action):
         """What the NPC does when it has finished an action.
            Called somewhere else (TODO: where?)"""
