@@ -135,9 +135,7 @@ class World(EventListenerBase):
 
     def displayObjectText(self, obj, text):
         """Display on screen the text of the object over the object"""
-        # make sure that the object exists first
-        if obj in self.obj_hash:
-            self.obj_hash[obj].say(str(text), 3500)
+        obj.say(str(text), 1000)
 
     def refreshReadyImages(self):
         """Make the Ready slot images on the HUD be the same as those on the inventory"""
@@ -252,11 +250,9 @@ class World(EventListenerBase):
         i=self.cameras['main'].getMatchingInstances(click, self.agent_layer)
         if(i != ()):
             for obj in i:
-                # check to see if this in our list at all
-                test = self.data.objectActive(obj.getId())
-                if(test != False):
+                # check to see if this is an active item
+                if(self.data.objectActive(obj.getId()) != False):
                     # finally, display the text    
-                    self.displayObjectText(obj.getId(), test.text)
                     self.context_menu.vbox.hide()
                     delattr(self, "context_menu")
                 else:
@@ -277,6 +273,10 @@ class World(EventListenerBase):
                 if(self.data.objectActive(obj.getId())!=False):
                     # yes, so outline    
                     self.outline_render.addOutlined(obj, 0, 137, 255, 2)
+                    # get the text
+                    item = self.data.objectActive(obj.getId())
+                    if(item != False):
+                        self.displayObjectText(obj, item.text)
         else:
             # erase the outline
             self.outline_render.removeAllOutlines()
