@@ -18,7 +18,7 @@
 	<import file="../objects/objects/crate/crate.xml"></import>
 	<import file="../objects/ground/misc/test.xml"></import>
 	
-	<!-- Import the test buildings -->
+	<!-- Import the test buildings (and their doors) -->
 	<import file="../objects/buildings/shanty/shantya.xml"></import>
 	<import file="../objects/buildings/shanty/shantyb.xml"></import>
 	<import file="../objects/buildings/shanty/shantyc.xml"></import>
@@ -29,6 +29,7 @@
 	<import file="../objects/buildings/shanty/shantyh.xml"></import>
 	<import file="../objects/buildings/shanty/shantyi.xml"></import>
 	<import file="../objects/buildings/shanty/shanty-shadow.xml"></import>
+	<import file="../objects/buildings/shanty/shanty-door.xml"></import>
 	
 	<import file="../objects/buildings/windmill/windmilla.xml"></import>
 	<import file="../objects/buildings/windmill/windmillb.xml"></import>
