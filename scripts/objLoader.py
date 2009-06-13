@@ -27,6 +27,7 @@ class LocalXMLParser(ContentHandler):
         self.pc = None
         self.objects = []
         self.npcs = []
+        self.tele_tiles = []
     
     def getParser(self):
         """Simple one liner to remove XML dependencies in engine.py"""
@@ -86,4 +87,17 @@ class LocalXMLParser(ContentHandler):
             else:
                 self.objects.append([False, gfx, ident, text,
                                      owner, contain, carry])
+        elif name == "tele_tile":
+            try:
+                target = attrs.getValue("target")
+                xpos = attrs.getValue("xpos")
+                ypos = attrs.getValue("ypos")
+                txpos = attrs.getValue("txpos")
+                typos = attrs.getValue("typos")
+            except(KeyError):
+                sys.stderr.write("Error: Data missing in \
+                        tele_tile definition\n")
+                sys.exit(False)
+            self.tele_tiles.append([target, tuple([int(xpos), int(ypos)]), \
+                    tuple([int(txpos), int(typos)])])
 

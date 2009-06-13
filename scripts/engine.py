@@ -19,6 +19,7 @@
 from agents.hero import Hero
 from agents.npc import NPC
 from objects import GameObject
+from tele_tiles import TeleTile
 from objLoader import LocalXMLParser
 
 # design note:
@@ -44,6 +45,17 @@ class Engine:
         self.PC = None
         self.npcs = []
         self.objects = []
+        self.tele_tiles = []
+
+    def reset(self):
+        """Clears the data on a map reload so we don't have objects/npcs from
+           other maps hanging around. Right now I'm clearing the PC, but we'll
+           have to evaluate that when we get more details on how the stepping 
+           on tiles works."""
+        self.PC = None
+        self.npcs = []
+        self.objects = []
+        self.tele_tiles = []
 
     def loadObjects(self, filename):
         """Load objects from the XML file
@@ -67,6 +79,7 @@ class Engine:
         self.addPC(cur_handler.pc)
         self.addNPCs(cur_handler.npcs)
         self.addObjects(cur_handler.objects)
+        self.addTeleTiles(cur_handler.tele_tiles)
         return True
 
     def addPC(self,pc):
@@ -96,6 +109,13 @@ class Engine:
             # now add as engine data
             self.npcs.append(NPC(i[4], str(i[3]), self.view.agent_layer))
             self.npcs[-1].start()
+
+    def addTeleTiles(self, tiles):
+        """Add all of the teleportation tiles we found into this class"""
+        # we want to use the ground layer for now
+        layer = self.view.map.getLayer('GroundLayer')
+        for i in tiles:
+            self.tele_tiles.append(TeleTile(i[0], i[1], i[2], layer))
 
     def objectActive(self, ident):
         """Given the objects ID, pass back the object if it is active,
@@ -141,7 +161,18 @@ class Engine:
         # first we let FIFE load the rest of the map
         self.view.load(map_file)
         # then we update FIFE with the PC, NPC and object details
+        self.reset()
         self.loadObjects(map_file[:-4]+"_objects.xml")
+
+    def checkTeleTiles(self, location):
+        """Iterates through the possible teleportation tiles to see if the 
+            given location is a teleportation tile
+        @param location: a fife.Location to check against the tiles
+        @return: the TeleTile if a tile is matched or False"""
+        for tile in self.tele_tiles:
+            if tile.matchLocation(location):
+                return tile
+        return False
 
     def handleMouseClick(self,position):
         self.PC.run(position)

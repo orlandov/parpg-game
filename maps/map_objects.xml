@@ -18,5 +18,9 @@
             carry="1" contain="0" text="A newly thrown-away letter"></object>
     <object display="False" gfx="NONE" owner="crate02" id="battery"
             carry="1" contain="0" text="An old battery"></object>
+		<!-- There can be any number of 'trasition tiles', or tiles that move the
+		PC around -->
+		<tele_tile target="map2" xpos="-14" ypos="10" txpos="-14" typos="-17">
+						</tele_tile>
 </objects>
 

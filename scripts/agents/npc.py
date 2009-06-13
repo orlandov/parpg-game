@@ -17,10 +17,10 @@
 
 import fife
 from settings import Setting
-from random import randint
+from random import randrange
 
 TDS = Setting()
-_STATE_NONE, _STATE_IDLE, _STATE_WANDER = xrange(3)
+_STATE_NONE, _STATE_IDLE, _STATE_WANDER, _STATE_TALK = xrange(4)
 
 class NPC(fife.InstanceActionListener):
     """This is the class we use for all NPCs"""
@@ -38,8 +38,12 @@ class NPC(fife.InstanceActionListener):
         self.agent.addActionListener(self)
         self.state = _STATE_NONE
         self.speed = float(TDS.readSetting("PCSpeed"))-1
-        self.target_loc = self.getTargetLocation() 
+        # hard code this for now
+        self.distRange = (2, 4)
+        self.targetLoc = self.getTargetLocation() 
         self.text = text
+        # good to have the pc in case we ever need to follow it
+        self.pc = layer.getInstance('PC')
 
     def getX(self):
         """@return: the x coordinate of the NPC's location as an int"""
@@ -55,20 +59,32 @@ class NPC(fife.InstanceActionListener):
         x = self.getX()
         y = self.getY()
         if self.state == _STATE_WANDER:
+            """ Random Target Location """
+            l = [0, 0]
+            for i in range(len(l)):
+                sign = randrange(0, 2)
+                dist = randrange(self.distRange[0], self.distRange[1])
+                if sign == 0:
+                    dist *= -1
+                l[i] = dist
+            x += l[0]
+            y += l[1]
             """ Random Walk """
+            """
             rl = randint(-1, 1)
             ud = randint(-1, 1)
             x += rl
             y += ud
+            """
         l = fife.Location(self.agent.getLocation())
         l.setLayerCoordinates(fife.ModelCoordinate(*tuple([x, y])))
         return l
 
     def onInstanceActionFinished(self, instance, action):
         """What the NPC does when it has finished an action.
-           Called somewhere else (TODO: where?)"""
+           Called by the engine and required for InstanceActionListeners"""
         if self.state == _STATE_WANDER:
-            self.target_loc = self.getTargetLocation()
+            self.targetLoc = self.getTargetLocation()
         self.idle()
 
     def start(self):
@@ -81,11 +97,14 @@ class NPC(fife.InstanceActionListener):
             self.state = _STATE_IDLE
             self.agent.act('stand', self.agent.getFacingLocation())
         elif self.state == _STATE_IDLE:
-            self.target_loc = self.getTargetLocation()
+            self.targetLoc = self.getTargetLocation()
             self.state = _STATE_WANDER
             self.agent.act('stand', self.agent.getFacingLocation())
         elif self.state == _STATE_WANDER:
-            self.wander(self.target_loc)
+            self.wander(self.targetLoc)
+            self.state = _STATE_NONE
+        elif self.state == _STATE_TALK:
+            self.agent.act('stand', self.pc.getLocation())
 
     def wander(self, location):
         """Nice slow movement for random walking.
@@ -97,4 +116,3 @@ class NPC(fife.InstanceActionListener):
         """Faster movement than walk.
            @param location: a fife.Location object, where the NPC will run to"""
         self.agent.move('run', location, self.speed+1)
-
