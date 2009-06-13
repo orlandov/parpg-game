@@ -221,12 +221,6 @@ class World(EventListenerBase):
             # The test actions will follow this format: Action 1, Action 2, etc.
             self.hud.addAction("Action " + str(self.action_number))
             self.action_number += 1
-        if(keyval == key.C):
-            # C changes the map
-            if self.map.getId() == "my-map":
-                self.data.loadMap(str(TDS.readSetting("map2")))
-            elif self.map.getId() == "map2":
-                self.data.loadMap(str(TDS.readSetting("MapFile")))
         if(keyval == key.ESCAPE):
             # Escape brings up the main menu
             self.hud.displayMenu()
