@@ -8,7 +8,7 @@
     <!-- There can be any number of NPC characters -->
     <!-- There can be any number of objects -->
     <!-- Object blocking is set in the objects own xml file -->
-    <object display="True" gfx="crate" xpos="0.0" ypos="0.0" id="crate03"
+    <object display="True" gfx="crate" xpos="1.0" ypos="1.0" id="crate03"
             carry="0" contain="1" text="Yet another crate!"></object>
 </objects>
 

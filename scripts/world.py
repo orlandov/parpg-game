@@ -50,16 +50,19 @@ class World(EventListenerBase):
         """Constructor for engine
            TODO: Comment these variables"""
         super(World, self).__init__(engine, regMouse = True, regKeys = True)
+        # self.engine is a fife.Engine object, not an Engine object
         self.engine = engine
         self.eventmanager = engine.getEventManager()
         self.model = engine.getModel()
         self.view = self.engine.getView()
         self.quitFunction = None
         self.inventoryShown = False
+        # self.data is an engine.Engine object, but is set in run.py
         self.data = None
         self.mouseCallback = None
         self.obj_hash={}
-
+        # self.map is a Map object, set to none here
+        self.map = None
         self.hud = hud.Hud(self.engine, TDS)
         self.hud.events_to_map["inventoryButton"] = cbwa(self.displayInventory, True)
         self.hud.hud.mapEvents(self.hud.events_to_map)
@@ -74,13 +77,23 @@ class World(EventListenerBase):
 
     def reset(self):
         """Reset the map to default settings"""
+        # We have to delete the map in Fife.
+        # TODO: I'm killing the PC now, but later we will have to save the PC
+        if self.map:
+            self.model.deleteMap(self.map)
         self.transitions = []
-        self.PC = None
-        self.npcs = []
+        """ self.PC and self.npcs are never used, and can be accessed through
+            the self.data object...commented out for the time being
+            Also, why are there duplicated lines?"""
+        #self.PC = None
+        #self.npcs = []
         self.map,self.agent_layer = None,None
+        # We have to clear the cameras in the view as well, or we can't reuse
+        # camera names like 'main'
+        self.view.clearCameras()
         self.cameras = {}
-        self.PC = None
-        self.npcs = []
+        #self.PC = None
+        #self.npcs = []
         self.cur_cam2_x,self.initial_cam2_x,self.cam2_scrolling_right = 0,0,True
         self.target_rotation = 0
 
@@ -90,6 +103,7 @@ class World(EventListenerBase):
            Everything else should be loaded from the engine, because it
            is subject to change"""
         self.reset()
+
         self.map = loadMapFile(filename, self.engine)
         self.maplistener = Map(self.map)
 
@@ -207,6 +221,12 @@ class World(EventListenerBase):
             # The test actions will follow this format: Action 1, Action 2, etc.
             self.hud.addAction("Action " + str(self.action_number))
             self.action_number += 1
+        if(keyval == key.C):
+            # C changes the map
+            if self.map.getId() == "my-map":
+                self.data.loadMap(str(TDS.readSetting("map2")))
+            elif self.map.getId() == "map2":
+                self.data.loadMap(str(TDS.readSetting("MapFile")))
         if(keyval == key.ESCAPE):
             # Escape brings up the main menu
             self.hud.displayMenu()
@@ -221,8 +241,7 @@ class World(EventListenerBase):
 
     def mousePressed(self, evt):
         """If a mouse button is pressed down, fife cals this routine
-           Currently we only check for a left click, and we assume this is on
-           the map"""
+           Currently we assume this is on the map"""
         click = fife.ScreenPoint(evt.getX(), evt.getY())
         if(evt.getButton() == fife.MouseEvent.LEFT):
             self.data.handleMouseClick(self.getCoords(click))
@@ -254,7 +273,7 @@ class World(EventListenerBase):
 
     def placeHolderFunction(self):
         """Just a simple function to make the PC say "Place Holder Function!"
-           It's in here because we needed some sort of function to test the context
+           It's in here because we needed some sort of function to test the context 
            menu with"""
         self.agent_layer.getInstance("PC").say("Place Holder Function!", 1000)
         self.context_menu.vbox.hide()
