@@ -28,7 +28,6 @@ class LocalXMLParser(ContentHandler):
         self.objects = []
         self.npcs = []
         self.doors = []
-        self.tele_tiles = []
     
     def getParser(self):
         """Simple one liner to remove XML dependencies in engine.py"""
@@ -98,22 +97,11 @@ class LocalXMLParser(ContentHandler):
             # then save the other data
             try:
                 new_map = attrs.getValue("map")
-            except(KeyError):
-                sys.stderr.write("Error: Door has no map!\n")
-                sys.exit(False)
-            # format is [id,map_name]
-            self.doors.append([self.objects[-1][4],new_map])
-        elif(name == "tele_tile"):
-            try:
-                target = attrs.getValue("target")
-                xpos = attrs.getValue("xpos")
-                ypos = attrs.getValue("ypos")
                 txpos = attrs.getValue("txpos")
                 typos = attrs.getValue("typos")
             except(KeyError):
-                sys.stderr.write("Error: Data missing in \
-                                  tele_tile definition\n")
+                sys.stderr.write("Error: Door has no map or no target!\n")
                 sys.exit(False)
-            self.tele_tiles.append([target, tuple([int(xpos), int(ypos)]), \
-                    tuple([int(txpos), int(typos)])])
-
+            # format is [id,map_name,target coords on new map]
+            self.doors.append([self.objects[-1][4],new_map, \
+                    tuple([txpos, typos])])
