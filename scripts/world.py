@@ -80,20 +80,17 @@ class World(EventListenerBase):
         # We have to delete the map in Fife.
         # TODO: I'm killing the PC now, but later we will have to save the PC
         if self.map:
+            
+            print "number=",self.model.getNamespaces()
+            
+            self.model.deleteObjects()
             self.model.deleteMap(self.map)
         self.transitions = []
-        """ self.PC and self.npcs are never used, and can be accessed through
-            the self.data object...commented out for the time being
-            Also, why are there duplicated lines?"""
-        #self.PC = None
-        #self.npcs = []
         self.map,self.agent_layer = None,None
         # We have to clear the cameras in the view as well, or we can't reuse
         # camera names like 'main'
         self.view.clearCameras()
         self.cameras = {}
-        #self.PC = None
-        #self.npcs = []
         self.cur_cam2_x,self.initial_cam2_x,self.cam2_scrolling_right = 0,0,True
         self.target_rotation = 0
 
@@ -234,12 +231,12 @@ class World(EventListenerBase):
         return location
 
     def mousePressed(self, evt):
-        """If a mouse button is pressed down, fife cals this routine
+        """If a mouse button is pressed down, fife calls this routine
            Currently we assume this is on the map"""
         click = fife.ScreenPoint(evt.getX(), evt.getY())
         if(evt.getButton() == fife.MouseEvent.LEFT):
             self.data.handleMouseClick(self.getCoords(click))
-            if (hasattr(self, "context_menu")):
+            if(hasattr(self, "context_menu")):
                 self.context_menu.vbox.hide()
                 delattr(self, "context_menu")
                 
@@ -252,7 +249,9 @@ class World(EventListenerBase):
                     if(self.data.objectActive(obj.getId()) != False):            
                         # yes, get the data
                         info = self.data.getItemActions(obj.getId())
-                        print info
+                        if(info == None):
+                            # there was a map change, don't screw with the GUI
+                            return
             if (hasattr(self, "context_menu")):
                 self.context_menu.vbox.hide()
                 delattr(self, "context_menu")

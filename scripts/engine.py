@@ -63,6 +63,7 @@ class Engine:
         self.PC = None
         self.npcs = []
         self.objects = []
+        self.doors = []
         self.tele_tiles = []
 
     def loadObjects(self, filename):
@@ -89,6 +90,7 @@ class Engine:
         self.addObjects(cur_handler.objects)
         self.addTeleTiles(cur_handler.tele_tiles)
         self.addDoors(cur_handler.doors)
+        objects_file.close()
         return True
 
     def addPC(self,pc):
@@ -162,6 +164,7 @@ class Engine:
             if(obj_id == i.id):
                 # load the new map
                 self.loadMap(str(i.map))
+                return None
         # is it in our objects?
         for i in self.objects:
             if(obj_id == i.id):
@@ -181,7 +184,7 @@ class Engine:
         # first we let FIFE load the rest of the map
         self.view.load(map_file)
         # then we update FIFE with the PC, NPC and object details
-        self.reset()
+        self.reset()        
         self.loadObjects(map_file[:-4]+"_objects.xml")
 
     def checkTeleTiles(self, location):
