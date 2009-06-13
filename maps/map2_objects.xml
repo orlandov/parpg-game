@@ -9,6 +9,10 @@
     <!-- There can be any number of objects -->
     <!-- Object blocking is set in the objects own xml file -->
     <object display="True" gfx="crate" xpos="1.0" ypos="1.0" id="crate03"
-            carry="0" contain="1" text="Yet another crate!"></object>
+        carry="0" contain="1" text="Yet another crate!"></object>
+    <!-- There can be a number of doors, which serve as transition triggers -->
+    <door display="True" gfx="grass-a" xpos="-14" ypos="-17"
+          id="tt01" carry="0" contain="0" text="Start Map" map="map"
+          txpos="-14" typos="10"></door>
 </objects>
 

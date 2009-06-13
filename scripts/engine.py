@@ -19,7 +19,6 @@
 from agents.hero import Hero
 from agents.npc import NPC
 from objects import GameObject
-from tele_tiles import TeleTile
 from objLoader import LocalXMLParser
 
 # design note:
@@ -36,9 +35,12 @@ from objLoader import LocalXMLParser
 class MapDoor:
     """A MapDoor is an item that when clicked transports the player to
        another map"""
-    def __init__(self, name, new_map):
+    def __init__(self, name, new_map, targ_tup):
         self.id = name
         self.map = "maps/"+new_map+".xml"
+        # self.targ_coord: a (int, int) which stores the intended location 
+        # of the PC on the new map
+        self.targ_coords = targ_tup
 
 class Engine:
     """Engine holds the logic for the game
@@ -53,18 +55,15 @@ class Engine:
         self.npcs = []
         self.objects = []
         self.doors = []
-        self.tele_tiles = []
+        self.PC_targLoc = None
 
     def reset(self):
         """Clears the data on a map reload so we don't have objects/npcs from
-           other maps hanging around. Right now I'm clearing the PC, but we'll
-           have to evaluate that when we get more details on how the stepping 
-           on tiles works."""
+           other maps hanging around."""
         self.PC = None
         self.npcs = []
         self.objects = []
         self.doors = []
-        self.tele_tiles = []
 
     def loadObjects(self, filename):
         """Load objects from the XML file
@@ -88,14 +87,18 @@ class Engine:
         self.addPC(cur_handler.pc)
         self.addNPCs(cur_handler.npcs)
         self.addObjects(cur_handler.objects)
-        self.addTeleTiles(cur_handler.tele_tiles)
         self.addDoors(cur_handler.doors)
         objects_file.close()
         return True
 
     def addPC(self,pc):
         """Add the PC to the world"""
-        self.view.addObject(float(pc[0]), float(pc[1]),"PC","PC")
+        if self.PC_targLoc:
+            self.view.addObject(float(self.PC_targLoc[0]), \
+                    float(self.PC_targLoc[1]), "PC", "PC")
+            self.PC_targLoc = None
+        else:
+            self.view.addObject(float(pc[0]), float(pc[1]),"PC","PC")
         self.PC = Hero("PC", self.view.agent_layer)
         # ensure the PC starts on a default action
         self.PC.start()
@@ -121,18 +124,11 @@ class Engine:
             self.npcs.append(NPC(i[4], str(i[3]), self.view.agent_layer))
             self.npcs[-1].start()
 
-    def addTeleTiles(self, tiles):
-        """Add all of the teleportation tiles we found into this class"""
-        # we want to use the ground layer for now
-        layer = self.view.map.getLayer('GroundLayer')
-        for i in tiles:
-            self.tele_tiles.append(TeleTile(i[0], i[1], i[2], layer))
-
     def addDoors(self, doors):
         """Add all the doors to the map as well
            As an object they have already been added"""
         for i in doors:
-            self.doors.append(MapDoor(i[0], i[1]))
+            self.doors.append(MapDoor(i[0], i[1], i[2]))
 
     def objectActive(self, ident):
         """Given the objects ID, pass back the object if it is active,
@@ -163,6 +159,7 @@ class Engine:
         for i in self.doors:
             if(obj_id == i.id):
                 # load the new map
+                self.PC_targLoc = i.targ_coords
                 self.loadMap(str(i.map))
                 return None
         # is it in our objects?
@@ -184,18 +181,8 @@ class Engine:
         # first we let FIFE load the rest of the map
         self.view.load(map_file)
         # then we update FIFE with the PC, NPC and object details
-        self.reset()        
+        self.reset()
         self.loadObjects(map_file[:-4]+"_objects.xml")
-
-    def checkTeleTiles(self, location):
-        """Iterates through the possible teleportation tiles to see if the 
-            given location is a teleportation tile
-        @param location: a fife.Location to check against the tiles
-        @return: the TeleTile if a tile is matched or False"""
-        for tile in self.tele_tiles:
-            if tile.matchLocation(location):
-                return tile
-        return False
 
     def handleMouseClick(self,position):
         self.PC.run(position)

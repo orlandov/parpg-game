@@ -21,10 +21,10 @@
             carry="1" contain="0" text="An old battery"></object>
     <!-- There can be a number of doors, which serve as transition triggers -->
     <door display="True" gfx="shanty-door" xpos="-2.0" ypos="6.0"
-          id="sh-door" carry="0" contain="0" text="Door" map="map2"></door>
-    <!-- There can be any number of 'teleport tiles', or tiles that move the
-         PC around (perhaps the map name could be stored here) -->
-    <tele_tile target="map2" xpos="-14" ypos="10" txpos="-14" typos="-17">
-        </tele_tile>
+        id="sh-door" carry="0" contain="0" text="Door" map="map2"
+        txpos="-5" typos="-5"></door>
+    <door display="True" gfx="snow02" xpos="-14" ypos="10"
+          id="tt01" carry="0" contain="0" text="New Map" map="map2"
+          txpos="-14" typos="-17"></door>
 </objects>
 
