@@ -33,6 +33,13 @@ from objLoader import LocalXMLParser
 # This other file has the name AAA_objects.xml where AAA.xml is the name
 # of the original mapfile.
 
+class MapDoor:
+    """A MapDoor is an item that when clicked transports the player to
+       another map"""
+    def __init__(self, name, new_map):
+        self.id = name
+        self.map = "maps/"+new_map+".xml"
+
 class Engine:
     """Engine holds the logic for the game
        Since some data (object position and so forth) is held in the
@@ -45,6 +52,7 @@ class Engine:
         self.PC = None
         self.npcs = []
         self.objects = []
+        self.doors = []
         self.tele_tiles = []
 
     def reset(self):
@@ -80,6 +88,7 @@ class Engine:
         self.addNPCs(cur_handler.npcs)
         self.addObjects(cur_handler.objects)
         self.addTeleTiles(cur_handler.tele_tiles)
+        self.addDoors(cur_handler.doors)
         return True
 
     def addPC(self,pc):
@@ -117,6 +126,12 @@ class Engine:
         for i in tiles:
             self.tele_tiles.append(TeleTile(i[0], i[1], i[2], layer))
 
+    def addDoors(self, doors):
+        """Add all the doors to the map as well
+           As an object they have already been added"""
+        for i in doors:
+            self.doors.append(MapDoor(i[0], i[1]))
+
     def objectActive(self, ident):
         """Given the objects ID, pass back the object if it is active,
            False if it doesn't exist or not displayed"""
@@ -141,7 +156,12 @@ class Engine:
             if(obj_id == i.id):
                 # keep it simple for now
                 actions.append(("Talk",None))
-                actions.append(("Attack",None))
+                actions.append(("Attack",None))     
+        # is it a door?
+        for i in self.doors:
+            if(obj_id == i.id):
+                # load the new map
+                self.loadMap(str(i.map))
         # is it in our objects?
         for i in self.objects:
             if(obj_id == i.id):
