@@ -14,13 +14,17 @@
             carry="0" contain="1" text="Just a crate"></object>
     <object display="True" gfx="crate" xpos="-4.0" ypos="-6.0" id="crate02"
             carry="0" contain="1" text="A dirty old crate"></object>
+    <!-- These next things are inside other objects -->
     <object display="False" gfx="NONE" owner="crate02" id="letter"
             carry="1" contain="0" text="A newly thrown-away letter"></object>
     <object display="False" gfx="NONE" owner="crate02" id="battery"
             carry="1" contain="0" text="An old battery"></object>
-		<!-- There can be any number of 'trasition tiles', or tiles that move the
-		PC around -->
-		<tele_tile target="map2" xpos="-14" ypos="10" txpos="-14" typos="-17">
-						</tele_tile>
+    <!-- There can be a number of doors, which serve as transition triggers -->
+    <object display="True" gfx="shanty-door" xpos="-2.0" ypos="6.0"
+            id="sh-door" carry="0" contain="0" text="Door"></object>
+    <!-- There can be any number of 'teleport tiles', or tiles that move the
+         PC around (perhaps the map name could be stored here) -->
+    <tele_tile target="map2" xpos="-14" ypos="10" txpos="-14" typos="-17">
+        </tele_tile>
 </objects>
 
