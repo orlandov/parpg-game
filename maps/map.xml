@@ -28,6 +28,7 @@
 	<import file="../objects/buildings/shanty/shantyg.xml"></import>
 	<import file="../objects/buildings/shanty/shantyh.xml"></import>
 	<import file="../objects/buildings/shanty/shantyi.xml"></import>
+	<import file="../objects/buildings/shanty/shanty-shadow.xml"></import>
 	
 	<import file="../objects/buildings/windmill/windmilla.xml"></import>
 	<import file="../objects/buildings/windmill/windmillb.xml"></import>
@@ -1072,6 +1073,13 @@
 			<i x="10.0" o="gravel" z="0.0" y="10.0" r="0"></i>
 		</instances>
 	</layer>
+
+    <!-- Layer for on ground overlays -->
+    <layer x_offset="0.0" pathing="cell_edges_and_diagonals" y_offset="0.0" grid_type="square" id="OverlayLayer" x_scale="1" y_scale="1" rotation="0.0">
+        <instances>
+            <i x="-4" o="shanty-shadow" z="0.0" y="3" r="0"></i>
+        </instances>
+    </layer>
 
 	<layer x_offset="0.0" pathing="cell_edges_and_diagonals" y_offset="0.0" grid_type="square" id="ObjectLayer" x_scale="1" y_scale="1" rotation="0.0">
 		<instances>	
