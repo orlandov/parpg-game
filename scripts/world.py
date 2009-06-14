@@ -227,6 +227,8 @@ class World(EventListenerBase):
         if(keyval == key.ESCAPE):
             # Escape brings up the main menu
             self.hud.displayMenu()
+        if(keyval == key.M):
+            self.sounds.toggleMusic()
 
     def getCoords(self, click):
         """Get the map location x, y cords that have been clicked"""
