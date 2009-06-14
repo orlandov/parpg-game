@@ -22,6 +22,7 @@ from scripts.common.eventlistenerbase import EventListenerBase
 from loaders import loadMapFile
 from agents.hero import Hero
 from agents.npc import NPC
+from sounds import SoundEngine
 from settings import Setting
 from scripts import inventory
 from scripts import hud
@@ -69,11 +70,13 @@ class World(EventListenerBase):
         self.hud.menu_events["quitButton"] = self.quitGame
         self.hud.main_menu.mapEvents(self.hud.menu_events)
         self.action_number = 1
-
+        # setup the inventory
         self.inventory = inventory.Inventory(self.engine, self.refreshReadyImages)
         self.inventory.events_to_map['close_button'] = self.closeInventoryAndToggle
         self.inventory.inventory.mapEvents(self.inventory.events_to_map)
         self.refreshReadyImages()
+        # init the sound (don't start playing yet)
+        self.sounds = SoundEngine(self.engine)
 
     def reset(self):
         """Reset the map to default settings"""
@@ -126,6 +129,9 @@ class World(EventListenerBase):
         text = self.engine.getGuiManager().createFont('fonts/rpgfont.png',
                                                           0, str(TDS.readSetting("FontGlyphs", strip=False)))
         rend.changeDefaultFont(text)
+        # start playing the music
+        # TODO: remove hard coding by putting this in the level data
+        self.sounds.playMusic("/music/preciouswasteland.ogg")
 
     def addPC(self, agent):
         """Add the player character to the map"""
@@ -252,7 +258,7 @@ class World(EventListenerBase):
                         if(info == None):
                             # there was a map change, don't screw with the GUI
                             return
-            if (hasattr(self, "context_menu")):
+            if(hasattr(self, "context_menu")):
                 self.context_menu.vbox.hide()
                 delattr(self, "context_menu")
                 data = [["Placeholder", "Placeholder Button", self.placeHolderFunction, click]]
