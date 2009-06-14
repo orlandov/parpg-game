@@ -172,8 +172,8 @@ class Engine:
                 # can you pick it up?
                 if(i.carry == True):
                     actions.append(("Pick Up",None))
-                return actions
-        return actions
+                #return actions
+        #return actions
 
     def loadMap(self,map_file):
         """Load a new map
