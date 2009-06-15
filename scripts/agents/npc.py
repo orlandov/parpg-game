@@ -28,8 +28,8 @@ class NPC(fife.InstanceActionListener):
         """Init function.
            @type text: string
            @param text: The text to draw when character is right clicked.
-           @type id: string
-           @param id: the ID of the NPC
+           @type agent_name: string
+           @param agent_name: the ID of the NPC
            @type layer: ???
            @param layer: ???
            @return: None"""

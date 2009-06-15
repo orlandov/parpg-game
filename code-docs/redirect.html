@@ -1,0 +1,38 @@
+<html><head><title>Epydoc Redirect Page</title>
+<meta http-equiv="cache-control" content="no-cache" />
+<meta http-equiv="expires" content="0" />
+<meta http-equiv="pragma" content="no-cache" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+<body>
+<script type="text/javascript">
+<!--
+var pages = ["scripts.common.eventlistenerbase.EventListenerBase-c", "scripts.common.eventlistenerbase-m", "scripts.context_menu.ContextMenu-c", "scripts.objLoader.LocalXMLParser-c", "scripts.inventory.Inventory-c", "scripts.objects.GameObject-c", "scripts.sounds.SoundEngine-c", "scripts.agents.hero.Hero-c", "run.ApplicationListener-c", "scripts.agents.npc.NPC-c", "scripts.engine.MapDoor-c", "scripts.engine.Engine-c", "scripts.common.utils-m", "scripts.context_menu-m", "scripts.agents.hero-m", "scripts.world.World-c", "scripts.agents.npc-m", "scripts.inventory-m", "scripts.objLoader-m", "scripts.world.Map-c", "scripts.objects-m", "scripts.hud.Hud-c", "scripts.agents-m", "scripts.common-m", "scripts.engine-m", "scripts.sounds-m", "scripts.world-m", "scripts.hud-m", "run.PARPG-c", "scripts-m", "run-m"];
+var dottedName = get_anchor();
+if (dottedName) {
+    var target = redirect_url(dottedName);
+    if (target) window.location.replace(target);
+}
+// -->
+</script>
+
+<h3>Epydoc Auto-redirect page</h3>
+
+<p>When javascript is enabled, this page will redirect URLs of
+the form <tt>redirect.html#<i>dotted.name</i></tt> to the
+documentation for the object with the given fully-qualified
+dotted name.</p>
+<p><a id="message"> &nbsp; </a></p>
+
+<script type="text/javascript">
+<!--
+if (dottedName) {
+    var msg = document.getElementById("message");
+    msg.innerHTML = "No documentation found for <tt>"+
+                    dottedName+"</tt>";
+}
+// -->
+</script>
+
+</body>
+</html>

@@ -21,8 +21,8 @@ def addPaths (*paths):
     """Adds a list of paths to sys.path. Paths are expected to use forward
        slashes, for example '../../engine/extensions'. Slashes are converted
        to the OS-specific equivalent.
-       @type *paths: ???
-       @param *paths: Paths to files?
+       @type paths: ???
+       @param paths: Paths to files?
        @return: None"""
     for p in paths:
         if not p in sys.path:

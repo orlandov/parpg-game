@@ -57,8 +57,8 @@ class Engine:
        function heavy controller."""
     def __init__(self, view):
         """Initialise the instance.
-           @type engine: world
-           @param engine: A world instance
+           @type view: world
+           @param view: A world instance
            @return: None"""
         # a World object
         self.view = view
@@ -150,8 +150,8 @@ class Engine:
     def addDoors(self, doors):
         """Add all the doors to the map as well.
            As an object they will have already been added.
-           @type engine: list
-           @param engine: List of doors
+           @type doors: list
+           @param doors: List of doors
            @return: None"""
         for i in doors:
             self.doors.append(MapDoor(i[0], i[1], i[2]))
