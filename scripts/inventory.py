@@ -23,7 +23,7 @@ class Inventory():
     def __init__(self, engine, readyCallback):
         """Initialise the instance.
            @type engine: fife.Engine
-           @param name: An instance of the fife engine
+           @param engine: An instance of the fife engine
            @type readyCallback: function
            @param readyCallback: ???
            @return: None"""

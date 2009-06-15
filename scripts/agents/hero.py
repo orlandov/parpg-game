@@ -24,8 +24,8 @@ class Hero(fife.InstanceActionListener):
         """This is the class we use for the PC character.
            @type agentName: string
            @param agentName: name of the agent
-           @type name: string
-           @param name Layer to place agent on
+           @type layer: string
+           @param layer: Layer to place agent on
            @return: None"""
         # add this class for callbacks from fife itself
         fife.InstanceActionListener.__init__(self)
