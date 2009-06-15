@@ -25,6 +25,7 @@ class SoundEngine:
         # set up the sound
         self.music = self.sound_engine.createEmitter()
         self.music_on = False
+        self.music_init = False
     
     def playMusic(self, sfile = None):
         if(sfile != None):
@@ -32,16 +33,18 @@ class SoundEngine:
             sound = self.engine.getSoundClipPool().addResourceFromFile(sfile)
             self.music.setSoundClip(sound)
             self.music.setLooping(True)
+            self.music_init = True
         self.music.play()
         self.music_on = True
-    
+
     def pauseMusic(self):
         """Stop current playback"""
-        self.music.pause()
-        self.music_on = False
+        if(self.music_init == True):
+            self.music.pause()
+            self.music_on = False
 
     def toggleMusic(self):
-        if(self.music_on == False):
+        if((self.music_on == False)and(self.music_init == True)):
             self.playMusic()
         else:
             self.pauseMusic()
