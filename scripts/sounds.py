@@ -19,6 +19,10 @@
 
 class SoundEngine:
     def __init__(self, fife_engine):
+        """Initialise the SoundEngine instance
+           @type fife_engine: fine.Engine
+           @param fife_engine: Instance of the Fife engine
+           @return: None"""
         self.engine = fife_engine
         self.sound_engine = self.engine.getSoundManager()
         self.sound_engine.init()
@@ -28,6 +32,10 @@ class SoundEngine:
         self.music_init = False
     
     def playMusic(self, sfile = None):
+        """Play music, with the given file if passed
+           @type sfile: string
+           @param sfile: Filename to play
+           @return: None"""
         if(sfile != None):
             # setup the new sound
             sound = self.engine.getSoundClipPool().addResourceFromFile(sfile)
@@ -38,17 +46,24 @@ class SoundEngine:
         self.music_on = True
 
     def pauseMusic(self):
-        """Stop current playback"""
+        """Stops current playback
+           @return: None"""
         if(self.music_init == True):
             self.music.pause()
             self.music_on = False
 
     def toggleMusic(self):
+        """Toggle status of music, either on or off
+           @return: None"""
         if((self.music_on == False)and(self.music_init == True)):
             self.playMusic()
         else:
             self.pauseMusic()
 
     def setVolume(self, volume):
+        """Set the volume of the music
+           @type volume: integer
+           @param volume: The volume wanted, 0 to 100
+           @return: None"""
         pass
 
