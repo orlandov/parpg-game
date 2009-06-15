@@ -83,9 +83,6 @@ class World(EventListenerBase):
         # We have to delete the map in Fife.
         # TODO: I'm killing the PC now, but later we will have to save the PC
         if self.map:
-            
-            print "number=",self.model.getNamespaces()
-            
             self.model.deleteObjects()
             self.model.deleteMap(self.map)
         self.transitions = []
@@ -103,10 +100,14 @@ class World(EventListenerBase):
            Everything else should be loaded from the engine, because it
            is subject to change"""
         self.reset()
-
+        # some messy code to handle music changes when we enter a new map
+        if(self.sounds.music_on == True):
+            self.sounds.pauseMusic()
+            unpause = True
+        else:
+            unpause = False
         self.map = loadMapFile(filename, self.engine)
         self.maplistener = Map(self.map)
-
         # there must be a PC object on the objects layer!
         self.agent_layer = self.map.getLayer('ObjectLayer')
         # it's possible there's no transition layer
@@ -131,7 +132,11 @@ class World(EventListenerBase):
         rend.changeDefaultFont(text)
         # start playing the music
         # TODO: remove hard coding by putting this in the level data
-        self.sounds.playMusic("/music/preciouswasteland.ogg")
+        # don't force restart if skipping to new section
+        if(self.sounds.music_init == False):
+            self.sounds.playMusic("/music/preciouswasteland.ogg")
+        elif(unpause == True):
+            self.sounds.playMusic()
 
     def addPC(self, agent):
         """Add the player character to the map"""
