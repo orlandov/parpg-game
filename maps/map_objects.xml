@@ -5,23 +5,24 @@
 <objects format="1.0">
     <!-- There must be one and one only PC character -->
     <PC xpos="0.0" ypos="0.0"></PC>
+
     <!-- There can be any number of NPC characters -->
     <NPC gfx="npc-woman" xpos="-4.0" ypos="-7.0" id="women01"
          text="A friendly woman"></NPC>
+
     <!-- There can be any number of objects -->
     <!-- Object blocking is set in the objects own xml file -->
     <object display="True" gfx="crate" xpos="-3.0" ypos="-4.0" id="crate01"
             carry="0" contain="1" text="Just a crate"></object>
     <object display="True" gfx="crate" xpos="-4.0" ypos="-6.0" id="crate02"
             carry="0" contain="1" text="A dirty old crate"></object>
+
     <!-- These next things are inside other objects -->
     <object display="False" gfx="NONE" owner="crate02" id="letter"
             carry="1" contain="0" text="A newly thrown-away letter"></object>
     <object display="False" gfx="NONE" owner="crate02" id="battery"
             carry="1" contain="0" text="An old battery"></object>
-    <!-- Some objects are just plain visual aids -->
-    <visual xpos="-3.0" ypos="-4.0" gfx="wall-up"></visual>
-    <visual xpos="-2.0" ypos="-4.0" gfx="wall-up"></visual>
+
     <!-- There can be a number of doors, which serve as transition triggers -->
     <door display="True" gfx="shanty-door" xpos="-2.0" ypos="6.0"
         id="sh-door" text="Enter building" map="shanty"
