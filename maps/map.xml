@@ -36,7 +36,10 @@
 	<import file="../objects/buildings/windmill/windmillc.xml"></import>
 	<import file="../objects/buildings/windmill/windmilld.xml"></import>
 	<import file="../objects/buildings/windmill/windmille.xml"></import>
-	
+
+    <!-- Import the purely visual objects -->
+    <import file="../objects/ground/walls/wall_rear/wall-up.xml"></import>
+
 	<!-- Import the tile transition tiles -->
 	<import file="../objects/ground/grass/transition/grass-tc01.xml"></import>
 	<import file="../objects/ground/grass/transition/grass-tc02.xml"></import>

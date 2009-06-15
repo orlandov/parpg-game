@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="ascii"?>
+<!-- PC, NPC and objects initial data for PARPG maps -->
+<!-- All data that is subject to change by the engine during game time
+     should be stored in this file -->
+<objects format="1.0">
+    <!-- There must be one and one only PC character -->
+    <PC xpos="0.0" ypos="0.0"></PC>
+    <!-- There can be a number of doors, which serve as transition triggers -->
+    <door display="True" gfx="fdoor" xpos="-1.0" ypos="3.0"
+        id="sh-door" text="Exit building" map="map" txpos="-2" typos="7"></door>
+</objects>
+
