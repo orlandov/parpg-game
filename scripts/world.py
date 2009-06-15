@@ -15,8 +15,7 @@
 #   You should have received a copy of the GNU General Public License
 #   along with PARPG.  If not, see <http://www.gnu.org/licenses/>.
 
-import fife
-import time
+import fife, time
 from datetime import date
 from scripts.common.eventlistenerbase import EventListenerBase
 from loaders import loadMapFile
@@ -24,8 +23,7 @@ from agents.hero import Hero
 from agents.npc import NPC
 from sounds import SoundEngine
 from settings import Setting
-from scripts import inventory
-from scripts import hud
+from scripts import inventory, hud
 from scripts.context_menu import ContextMenu
 from pychan.tools import callbackWithArguments as cbwa
 
@@ -40,6 +38,7 @@ TDS = Setting()
 # however, any logic needed to resolve this should sit in engine.py
 
 class Map(fife.MapChangeListener):
+    """Map class used to flag changes in the map"""
     def __init__(self, fife_map):
         fife.MapChangeListener.__init__(self)
         self.map = fife_map
@@ -49,7 +48,9 @@ class World(EventListenerBase):
        The engine keeps a copy of this class"""
     def __init__(self, engine):
         """Constructor for engine
-           TODO: Comment these variables"""
+           @type engine: fife.Engine
+           @param engine: A fife.Engine instance
+           @return: None"""
         super(World, self).__init__(engine, regMouse = True, regKeys = True)
         # self.engine is a fife.Engine object, not an Engine object
         self.engine = engine
@@ -79,7 +80,8 @@ class World(EventListenerBase):
         self.sounds = SoundEngine(self.engine)
 
     def reset(self):
-        """Reset the map to default settings"""
+        """Reset the data to default settings.
+           @return: None"""
         # We have to delete the map in Fife.
         # TODO: I'm killing the PC now, but later we will have to save the PC
         if self.map:
@@ -95,10 +97,10 @@ class World(EventListenerBase):
         self.target_rotation = 0
 
     def load(self, filename):
-        """Load a map given the filename
-           TODO: a map should only contain static items and floor tiles
-           Everything else should be loaded from the engine, because it
-           is subject to change"""
+        """Load a map given the filename.
+           @type filename: string
+           @param filename: Name of map to load
+           @return: None"""
         self.reset()
         # some messy code to handle music changes when we enter a new map
         if(self.sounds.music_on == True):
@@ -116,7 +118,6 @@ class World(EventListenerBase):
             # could be many layers, but hopefully no more than 3
             if(layer.getId()[:size] == 'TransitionLayer'):
                 self.transitions.append(self.map.getLayer(layer.getId()))
-
         # init the camera
         for cam in self.view.getCameras():
             self.cameras[cam.getId()] = cam
@@ -124,11 +125,10 @@ class World(EventListenerBase):
         self.target_rotation = self.cameras['main'].getRotation()
         self.cord_render = self.cameras['main'].getRenderer('CoordinateRenderer')
         self.outline_render = fife.InstanceRenderer.getInstance(self.cameras['main'])
-        
         # set the render text
         rend = fife.FloatingTextRenderer.getInstance(self.cameras['main'])
         text = self.engine.getGuiManager().createFont('fonts/rpgfont.png',
-                                                          0, str(TDS.readSetting("FontGlyphs", strip=False)))
+                                                       0, str(TDS.readSetting("FontGlyphs", strip=False)))
         rend.changeDefaultFont(text)
         # start playing the music
         # TODO: remove hard coding by putting this in the level data
@@ -139,14 +139,26 @@ class World(EventListenerBase):
             self.sounds.playMusic()
 
     def addPC(self, agent):
-        """Add the player character to the map"""
+        """Add the player character to the map
+           @type agent: Fife.instance
+           @param : The object to use as the PC sprite
+           @return: None"""
         # actually this is real easy, we just have to
         # attach the main camera to the PC
         self.cameras['main'].attach(agent)
 
     def addObject(self, xpos, ypos, gfx, name):
-        """Add an object or an NPC to the map
-           It makes no difference to fife which is which"""
+        """Add an object or an NPC to the map.
+           It makes no difference to fife which is which.
+           @type xpos: integer
+           @param xpos: x position of object
+           @type ypos: integer
+           @param ypos: y position of object
+           @type gfx: string
+           @param gfx: name of gfx image
+           @type name: string
+           @param name: name of object
+           @return: None"""
         obj = self.agent_layer.createInstance(
                 self.model.getObject(str(gfx), "PARPG"),
                 fife.ExactModelCoordinate(xpos,ypos,0.0), str(name))
@@ -156,11 +168,18 @@ class World(EventListenerBase):
         self.obj_hash[name]=obj
 
     def displayObjectText(self, obj, text):
-        """Display on screen the text of the object over the object"""
+        """Display on screen the text of the object over the object.
+           @type obj: fife.instance
+           @param obj: object to draw over
+           @type text: text
+           @param text: text to display over object
+           @return: None"""
         obj.say(str(text), 1000)
 
     def refreshReadyImages(self):
-        """Make the Ready slot images on the HUD be the same as those on the inventory"""
+        """Make the Ready slot images on the HUD be the same as those 
+           on the inventory
+           @return: None"""
         self.setImages(self.hud.hud.findChild(name="hudReady1"),
                        self.inventory.inventory.findChild(name="Ready1").up_image)
         self.setImages(self.hud.hud.findChild(name="hudReady2"),
@@ -171,35 +190,45 @@ class World(EventListenerBase):
                        self.inventory.inventory.findChild(name="Ready4").up_image)
 
     def setImages(self, widget, image):
-        """Set the up, down, and hover images of an Imagebutton"""
+        """Set the up, down, and hover images of an Imagebutton.
+           @type widget: pychan.widget
+           @param widget: widget to set
+           @type image: ???
+           @param image: image to use
+           @return: None"""
         widget.up_image = image
         widget.down_image = image
         widget.hover_image = image
 
     def closeInventoryAndToggle(self):
+        """Close the inventory screen.
+           @return: None"""
         self.inventory.closeInventory()
         self.hud.toggleInventory()
         self.inventoryShown = False
 
     def displayInventory(self, callFromHud):
-        """Pause the game and enter the inventory screen
-           or close the inventory screen and resume the game
-           callFromHud should be set to true if you call this
-           function from the hud script"""
+        """Pause the game and enter the inventory screen, or close the
+           inventory screen and resume the game. callFromHud should be true
+           (must be True?) if you call this function from the HUD script
+           @type callFromHud: ???
+           @param callFromHud: ???
+           @return: None"""
         if (self.inventoryShown == False):
             self.inventory.showInventory()
             self.inventoryShown = True
-            if (callFromHud == False):
-                self.hud.toggleInventory()
         else:
             self.inventory.closeInventory()
             self.inventoryShown = False
-            if (callFromHud == False):
-                self.hud.toggleInventory()
+        if (callFromHud == False):
+            self.hud.toggleInventory()
 
     # all key / mouse event handling routines go here
     def keyPressed(self, evt):
-        """When a key is pressed, fife calls this routine."""
+        """Whenever a key is pressed, fife calls this routine.
+           @type evt: fife.event
+           @param evt: The event that fife caught
+           @return: None"""
         key = evt.getKey()
         keyval = key.getValue()
 
@@ -235,17 +264,11 @@ class World(EventListenerBase):
         if(keyval == key.M):
             self.sounds.toggleMusic()
 
-    def getCoords(self, click):
-        """Get the map location x, y cords that have been clicked"""
-        coord = self.cameras["main"].toMapCoordinates(click, False)
-        coord.z = 0
-        location = fife.Location(self.agent_layer)
-        location.setMapCoordinates(coord)
-        return location
-
     def mousePressed(self, evt):
-        """If a mouse button is pressed down, fife calls this routine
-           Currently we assume this is on the map"""
+        """If a mouse button is pressed down, fife calls this routine.
+           @type evt: fife.event
+           @param evt: The event that fife caught
+           @return: None"""
         click = fife.ScreenPoint(evt.getX(), evt.getY())
         if(evt.getButton() == fife.MouseEvent.LEFT):
             self.data.handleMouseClick(self.getCoords(click))
@@ -277,16 +300,11 @@ class World(EventListenerBase):
                 pos = (evt.getX(), evt.getY())
                 self.context_menu = ContextMenu(self.engine, data, pos)
 
-    def placeHolderFunction(self):
-        """Just a simple function to make the PC say "Place Holder Function!"
-           It's in here because we needed some sort of function to test the context 
-           menu with"""
-        self.agent_layer.getInstance("PC").say("Place Holder Function!", 1000)
-        self.context_menu.vbox.hide()
-        delattr(self, "context_menu")
-
     def mouseMoved(self, evt):
-        """Called when the mouse is moved"""
+        """Called when the mouse is moved
+           @type evt: fife.event
+           @param evt: The event that fife caught
+           @return: None"""
         click = fife.ScreenPoint(evt.getX(), evt.getY())
         i=self.cameras['main'].getMatchingInstances(click, self.agent_layer)
         # no object returns an empty tuple
@@ -304,19 +322,42 @@ class World(EventListenerBase):
             # erase the outline
             self.outline_render.removeAllOutlines()
 
-    def toggle_renderer(self, r_name):
-        """Enable or disable the renderer named `r_name`"""
+    def placeHolderFunction(self):
+        """Just a simple function to make the PC say "Place Holder Function!"
+           It's in here because we needed some sort of function to test the
+           context menu with.
+           @return: None"""
+        self.agent_layer.getInstance("PC").say("Place Holder Function!", 1000)
+        self.context_menu.vbox.hide()
+        delattr(self, "context_menu")
+
+    def getCoords(self, click):
+        """Get the map location x, y cords from the screen co-ords
+           @type click: fife.ScreenPoint
+           @param click: Screen co-ords
+           @rtype: fife.Location
+           @return: The map co-ords"""
+        coord = self.cameras["main"].toMapCoordinates(click, False)
+        coord.z = 0
+        location = fife.Location(self.agent_layer)
+        location.setMapCoordinates(coord)
+        return location
+
+    def toggle_renderer(self):
+        """Enable or disable the grid renderer.
+           @return: None"""
         renderer = self.cameras['main'].getRenderer('GridRenderer')
         renderer.setEnabled(not renderer.isEnabled())
 
     def quitGame(self):
-        """Called when user requests to quit game
-           Just calls the ApplicationListener to do the quit"""
+        """Called when user requests to quit game.
+           TODO: Should give an 'Are you sure?' message
+           @return: None"""
         if(self.quitFunction != None):
             self.quitFunction()
 
     def pump(self):
         """Routine called during each frame. Our main loop is in ./run.py
-           We ignore this main loop (but FIFE complains if it is missing)"""
+           We ignore this main loop (but FIFE complains if it is missing)."""
         pass
 
