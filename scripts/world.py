@@ -138,7 +138,7 @@ class World(EventListenerBase):
         # actually this is real easy, we just have to
         # attach the main camera to the PC
         self.cameras['main'].attach(agent)
-    
+
     def addObject(self, xpos, ypos, gfx, name):
         """Add an object or an NPC to the map
            It makes no difference to fife which is which"""
