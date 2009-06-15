@@ -27,7 +27,10 @@ class GameObject:
            text -> descriptive text
            owner -> what it is contained in
            contain -> True / False is it a container
-           carry -> True / False it can be carried"""
+           carry -> True / False it can be carried
+           @type data: list
+           @param data: List of data for the object
+           @return: None"""
         if(data[0] == True):
             self.display = True
             self.xpos = int(float(data[1]))

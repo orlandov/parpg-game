@@ -23,6 +23,8 @@ class LocalXMLParser(ContentHandler):
     """Class inherits from ContantHandler, and is used to parse the
        local objects data"""
     def __init__(self):
+        """Initialise the instance.
+           @return: None"""
         self.search = "objects"
         self.pc = None
         self.objects = []
@@ -30,11 +32,16 @@ class LocalXMLParser(ContentHandler):
         self.doors = []
     
     def getParser(self):
-        """Simple one liner to remove XML dependencies in engine.py"""
+        """Simple one liner to remove XML dependencies in engine.py.
+           @rtype: parser
+           @return: A parser to work with"""
         return make_parser()
     
     def getObject(self, attrs):
-        """Grab the object details from the XML"""
+        """Grab the object details from the XML data.
+           @type attrs: ???
+           @param attrs: XML attributes
+           @return: None"""
         try:
             display = attrs.getValue("display")
             if(display == "True"):
@@ -59,7 +66,10 @@ class LocalXMLParser(ContentHandler):
                                  owner, contain, carry])
 
     def getDoor(self, attrs):
-        """Grab door data"""
+        """Grab the door data.
+           @type attrs: ???
+           @param attrs: XML attributes
+           @return: None"""
         try:
             display = attrs.getValue("display")
             if(display == "True"):
@@ -82,7 +92,12 @@ class LocalXMLParser(ContentHandler):
                                  owner, "0", "0"])
 
     def startElement(self, name, attrs):
-        """Called every time we meet a new element in the XML file"""
+        """Called every time we meet a new element in the XML file
+           @type name: string
+           @param name: XML element?
+           @type attrs: ???
+           @param attrs: XML attributes
+           @return: None"""
         # we are only looking for the 'layer' elements, the rest we ignore
         if(name == "PC"):
             # already have a PC?
@@ -128,3 +143,4 @@ class LocalXMLParser(ContentHandler):
             # format is [id,map_name,target coords on new map]
             self.doors.append([self.objects[-1][4],new_map, \
                     tuple([txpos, typos])])
+

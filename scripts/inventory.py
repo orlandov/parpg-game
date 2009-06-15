@@ -1,15 +1,32 @@
 #!/usr/bin/python
 
-import sys,os
+#   This file is part of PARPG.
 
-import fife
-import fifelog
-import pychan
+#   PARPG is free software: you can redistribute it and/or modify
+#   it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation, either version 3 of the License, or
+#   (at your option) any later version.
+
+#   PARPG is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
+
+#   You should have received a copy of the GNU General Public License
+#   along with PARPG.  If not, see <http://www.gnu.org/licenses/>.
+
+import sys, os, fife, fifelog, pychan
 from pychan.tools import callbackWithArguments as cbwa
 
 class Inventory():
     """Main inventory class"""
     def __init__(self, engine, readyCallback):
+        """Initialise the instance.
+           @type engine: fife.Engine
+           @param name: An instance of the fife engine
+           @type readyCallback: function
+           @param readyCallback: ???
+           @return: None"""
         pychan.init(engine, debug = True)
         self.engine = engine
         self.readyCallback = readyCallback
@@ -19,10 +36,9 @@ class Inventory():
         self.dragged_item = None
         self.dropped_type = None
         self.original_cursor_id = self.engine.getCursor().getId()
-
+        # TODO: remove hard-coded string?
         self.inventory = pychan.loadXML("gui/inventory.xml")
         self.events_to_map = {}
-
         # the images that should be used for the buttons when they are "empty"
         self.empty_images = {'A1':'gui/inv_images/inv_backpack.png',
                              'A2':'gui/inv_images/inv_backpack.png',
@@ -57,7 +73,6 @@ class Inventory():
                              'Ready4':'gui/inv_images/inv_belt_pouches.png',
                              'LeftFoot':'gui/inv_images/inv_lfoot.png',
                              'RightFoot':'gui/inv_images/inv_rfoot.png'}
-
         # every button on the inventory and its category
         self.buttons = {'A1':'main_inv', 'A2':'main_inv', 'A3':'main_inv',
                         'A4':'main_inv', 'A5':'main_inv', 'B1':'main_inv',
@@ -81,20 +96,28 @@ class Inventory():
             ch = self.inventory.findChild(name = button)
             # make every slot's item be empty
             ch.item = ""
-
         self.inventory.mapEvents(self.events_to_map)   
         self.resetMouseCursor()
 
     def closeInventory(self):
-        """Close the inventory"""
+        """Close the inventory.
+           @return: None"""
         self.inventory.hide()
 
     def showInventory(self):
-        """Show the inventory"""
+        """Show the inventory.
+           @return: None"""
         self.inventory.show()
 
     def setMouseCursor(self, image, dummy_image, type = "native"): 
-        """Set the mouse cursor to an image"""
+        """Set the mouse cursor to an image.
+           @type image: ???
+           @param image: ???
+           @type dummy_image: ???
+           @param dummy_image: ???
+           @type type: string
+           @param type: ???
+           @return: None"""
         cursor = self.engine.getCursor()
         cursor_type = fife.CURSOR_IMAGE
         img_pool = self.engine.getImagePool()
@@ -110,7 +133,8 @@ class Inventory():
             cursor.setDrag(cursor_type,zero_cursor_id)
             
     def resetMouseCursor(self):
-        """Reset cursor to default image"""
+        """Reset cursor to default image.
+           @return: None"""
         c = self.engine.getCursor()
         img_pool = self.engine.getImagePool()
         cursor_type = fife.CURSOR_NATIVE
@@ -119,15 +143,22 @@ class Inventory():
         c.setDrag(cursor_type, cursor_id)
         c.set(cursor_type, cursor_id)
         
-    # decide whether to drag or drop the image
     def dragDrop(self, obj):
+        """Decide whether to drag or drop the image.
+           @type obj: ???
+           @param obj: ???
+           @return: None"""
         if(self.dragging == True):
             self.dropObject(obj)
         elif(self.dragging == False):
             self.dragObject(obj)
                 
-    # drag the selected object
     def dragObject(self, obj):
+        """Drag the selected object.
+           @type obj: ???
+           @param obj: ???
+           @return: None"""
+        # TODO: add some comments - what's the logic?
         drag_widget = self.inventory.findChild(name = obj)
         self.dragged_type = self.buttons[obj]
         self.dragged_item = drag_widget.item
@@ -136,13 +167,16 @@ class Inventory():
         self.setMouseCursor(up_image,down_image)
         self.dragged_image = up_image
         self.dragging = True
-
         drag_widget._setUpImage(self.empty_images[obj])
         drag_widget._setDownImage(self.empty_images[obj])
         drag_widget._setHoverImage(self.empty_images[obj])
         
     def dropObject(self, obj):
-        """Drops the object being dropped"""
+        """Drops the object being dropped
+           @type obj: ???
+           @param obj: ???
+           @return: None"""
+        # TODO: add some comments
         self.dropped_type  =  self.buttons[obj]
         if((self.dragged_type == 'main_inv') or
            (self.dropped_type == 'main_inv')):
@@ -155,7 +189,6 @@ class Inventory():
             self.resetMouseCursor()
             if (self.dropped_type == 'ready'):
                 self.readyCallback()
-
         elif((self.dragged_type == self.dropped_type) and
              (self.dragged_type in self.locations)):
             drag_widget = self.inventory.findChild(name = obj)
@@ -165,8 +198,9 @@ class Inventory():
             drag_widget.item = self.dragged_item
             self.dragging = False
             self.resetMouseCursor()
-            if (self.dropped_type == 'ready'):
+            if(self.dropped_type == 'ready'):
                 self.readyCallback()
         else:
             self.resetMouseCursor()
             self.dragging = False
+
