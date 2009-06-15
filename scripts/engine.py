@@ -88,7 +88,6 @@ class Engine:
         self.addNPCs(cur_handler.npcs)
         self.addObjects(cur_handler.objects)
         self.addDoors(cur_handler.doors)
-        self.addVisuals(cur_handler.visuals)
         objects_file.close()
         return True
 
@@ -130,11 +129,6 @@ class Engine:
            As an object they have already been added"""
         for i in doors:
             self.doors.append(MapDoor(i[0], i[1], i[2]))
-
-    def addVisuals(self, visuals):
-        """Add all the non-interacting objects"""
-        for i in visuals:
-            self.view.addObject(float(i[0]),float(i[1]),i[2],i[3])
 
     def objectActive(self, ident):
         """Given the objects ID, pass back the object if it is active,

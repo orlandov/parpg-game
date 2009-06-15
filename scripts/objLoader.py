@@ -28,9 +28,6 @@ class LocalXMLParser(ContentHandler):
         self.objects = []
         self.npcs = []
         self.doors = []
-        self.visuals = []
-        # create unique names for all of the visuals
-        self.visual_count = 0
     
     def getParser(self):
         """Simple one liner to remove XML dependencies in engine.py"""
@@ -84,19 +81,6 @@ class LocalXMLParser(ContentHandler):
             self.objects.append([False, gfx, ident, text,
                                  owner, "0", "0"])
 
-    def getVisual(self, attrs):
-        """Visual elements are there just for the eye candy"""
-        try:
-            xpos = attrs.getValue("xpos")
-            ypos = attrs.getValue("ypos")
-            gfx = attrs.getValue("gfx")
-        except(KeyError):
-            sys.stderr.write("Error: Data missing in visual definition\n")
-            sys.exit(False)
-        name = "visual-"+str(self.visual_count)
-        self.visual_count += 1
-        self.visuals.append([xpos,ypos,gfx,name])
-  
     def startElement(self, name, attrs):
         """Called every time we meet a new element in the XML file"""
         # we are only looking for the 'layer' elements, the rest we ignore
@@ -130,8 +114,6 @@ class LocalXMLParser(ContentHandler):
         elif(name == "object"):
             # same old same old
             self.getObject(attrs)
-        elif(name == "visual"):
-            self.getVisual(attrs)
         elif(name == "door"):
             # firstly, add the object
             self.getDoor(attrs)
