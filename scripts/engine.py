@@ -35,20 +35,31 @@ from objLoader import LocalXMLParser
 class MapDoor:
     """A MapDoor is an item that when clicked transports the player to
        another map"""
-    def __init__(self, name, new_map, targ_tup):
+    def __init__(self, name, new_map, location):
+        """@type name: string
+           @param name: name of fife object
+           @type new_map: string
+           @param new_map: name of new map
+           @type location: tuple
+           @param location: where to put the PC when map is loaded
+           @return: None"""
         self.id = name
         self.map = "maps/"+new_map+".xml"
-        # self.targ_coord: a (int, int) which stores the intended location 
+        # location is an (int, int) which stores the intended location 
         # of the PC on the new map
-        self.targ_coords = targ_tup
+        self.targ_coords = location
 
 class Engine:
-    """Engine holds the logic for the game
+    """Engine holds the logic for the game.
        Since some data (object position and so forth) is held in the
        fife, and would be pointless to replicate, we hold a instance of
        the fife view here. This also prevents us from just having a
-       function heavy controller"""
+       function heavy controller."""
     def __init__(self, view):
+        """Initialise the instance.
+           @type engine: world
+           @param engine: A world instance
+           @return: None"""
         # a World object
         self.view = view
         self.PC = None
@@ -59,7 +70,8 @@ class Engine:
 
     def reset(self):
         """Clears the data on a map reload so we don't have objects/npcs from
-           other maps hanging around."""
+           other maps hanging around.
+           @return: None"""
         self.PC = None
         self.npcs = []
         self.objects = []
@@ -67,7 +79,11 @@ class Engine:
 
     def loadObjects(self, filename):
         """Load objects from the XML file
-           Returns True if it worked, False otherwise"""
+           Returns True if it worked, False otherwise.
+           @type filename: string
+           @param filename: The XML file to read.
+           @rtype: boolean
+           @return: Status of result (True/False)"""
         try:
             objects_file = open(filename, 'rt')
         except(IOError):
@@ -92,7 +108,10 @@ class Engine:
         return True
 
     def addPC(self,pc):
-        """Add the PC to the world"""
+        """Add the PC to the world
+           @type pc: list
+           @param pc: List of data for PC attributes
+           @return: None"""
         if self.PC_targLoc:
             self.view.addObject(float(self.PC_targLoc[0]), \
                     float(self.PC_targLoc[1]), "PC", "PC")
@@ -106,8 +125,10 @@ class Engine:
 
     def addObjects(self,objects):
         """Add all of the objects we found into the fife map
-           and into our class
-           An NPC is just an object to FIFE"""
+           and into our class. An NPC is just an object to FIFE
+           @type objects: list
+           @param objects: List of objects to add
+           @return: None"""
         for i in objects:
             # is it visible?
             if(i[0] == True):
@@ -116,8 +137,10 @@ class Engine:
             self.objects.append(GameObject(i))
 
     def addNPCs(self,npcs):
-        """Add all of the NPCs we found into the fife map
-           and into this class"""
+        """Add all of the NPCs we found into the fife map to FIFE.
+           @type npcs: list
+           @param npcs: List of NPC's to add
+           @return: None"""
         for i in npcs:
             self.view.addObject(float(i[0]), float(i[1]), i[2], i[3])
             # now add as engine data
@@ -125,14 +148,21 @@ class Engine:
             self.npcs[-1].start()
 
     def addDoors(self, doors):
-        """Add all the doors to the map as well
-           As an object they have already been added"""
+        """Add all the doors to the map as well.
+           As an object they will have already been added.
+           @type engine: list
+           @param engine: List of doors
+           @return: None"""
         for i in doors:
             self.doors.append(MapDoor(i[0], i[1], i[2]))
 
     def objectActive(self, ident):
         """Given the objects ID, pass back the object if it is active,
-           False if it doesn't exist or not displayed"""
+           False if it doesn't exist or not displayed
+           @type ident: string
+           @param ident: ID of object
+           @rtype: boolean
+           @return: Status of result (True/False)"""
         for i in self.objects:
             if((i.display == True)and(i.id == ident)):
                 # we found a match
@@ -146,7 +176,11 @@ class Engine:
         return False
 
     def getItemActions(self, obj_id):
-        """Given the objects ID, return the text strings and callbacks"""
+        """Given the objects ID, return the text strings and callbacks.
+           @type obj_id: string
+           @param obj_id: ID of object
+           @rtype: list
+           @return: List of text and callbacks"""
         actions=[]
         # note: ALWAYS check NPC's first!
         # is it an NPC?
@@ -176,8 +210,10 @@ class Engine:
         #return actions
 
     def loadMap(self,map_file):
-        """Load a new map
-           TODO: needs some error checking"""
+        """Load a new map. TODO: needs some error checking
+           @type map_file: string
+           @param map_file: Name of map file to load
+           @return: None"""
         # first we let FIFE load the rest of the map
         self.view.load(map_file)
         # then we update FIFE with the PC, NPC and object details
@@ -185,5 +221,9 @@ class Engine:
         self.loadObjects(map_file[:-4]+"_objects.xml")
 
     def handleMouseClick(self,position):
+        """Code called when user left clicks the screen.
+           @type position: fife.ScreenPoint
+           @param position: Screen position of click
+           @return: None"""
         self.PC.run(position)
 
