@@ -22,8 +22,7 @@ utils.addPaths ('../../engine/swigwrappers/python', '../../engine/extensions')
 if not os.path.exists('settings.xml'):
     shutil.copyfile('settings-dist.xml', 'settings.xml')
 
-import fife_compat
-import fife,fifelog
+import fife_compat, fife, fifelog
 from scripts import world
 from scripts import engine
 from scripts.common import eventlistenerbase
@@ -32,13 +31,19 @@ from settings import Setting
 
 TDS = Setting()
 
-# This folder holds the main meta-data for PARPG. This file should be
-# minimal, since folding code into the controller with MVC is usually bad
-# All game and logic and data is held held and referenced in /scripts/engine.py
-# All fife stuff goes in /scripts/world.py
+"""This folder holds the main meta-data for PARPG. This file should be
+   minimal, since folding code into the controller with MVC is usually bad
+   All game and logic and data is held held and referenced in /scripts/engine.py
+   All fife stuff goes in /scripts/world.py"""
 
 class ApplicationListener(eventlistenerbase.EventListenerBase):
     def __init__(self, engine, world):
+        """Initialise the instance.
+           @type engine: ???
+           @param engine: ???
+           @type world: ???
+           @param world: ???
+           @return: None"""
         super(ApplicationListener, self).__init__(engine,
                                                   regKeys=True,regCmd=True,
                                                   regMouse=False, 
@@ -51,11 +56,15 @@ class ApplicationListener(eventlistenerbase.EventListenerBase):
         self.aboutWindow = None
 
     def quitGame(self):
-        """Forces a quit game on next cycle"""
+        """Forces a quit game on next cycle.
+           @return: None"""
         self.quit = True
 
     def onCommand(self, command):
-        """Enables the game to be closed via the 'X' button on the window frame"""
+        """Enables the game to be closed via the 'X' button on the window frame
+           @type command: fife.Command
+           @param command: The command to read.
+           @return: None"""
         if(command.getCommandType() == fife.CMD_QUIT_GAME):
             self.quit = True
             command.consume()
@@ -66,6 +75,8 @@ class PARPG(ApplicationBase):
        self.world is our view,self.engine is our model
        This file is the minimal controller"""
     def __init__(self):
+        """Initialise the instance.
+           @return: None"""
         super(PARPG,self).__init__()
         self.world = world.World(self.engine)
         self.model = engine.Engine(self.world)
@@ -76,7 +87,8 @@ class PARPG(ApplicationBase):
 
     def loadSettings(self):
         """Load the settings from a python file and load them into the engine.
-           Called in the ApplicationBase constructor."""
+           Called in the ApplicationBase constructor.
+           @return: None"""
         import settings
         self.settings = settings
         eSet=self.engine.getSettings()
@@ -101,7 +113,8 @@ class PARPG(ApplicationBase):
             pass
 
     def initLogging(self):
-        """Initialize the LogManager"""
+        """Initialize the LogManager.
+           @return: None"""
         LogModules = TDS.readSetting("LogModules",type='list')
         self.log = fifelog.LogManager(self.engine,
                                       int(TDS.readSetting("LogToPrompt")),
@@ -110,13 +123,15 @@ class PARPG(ApplicationBase):
             self.log.setVisibleModules(*LogModules)
 
     def createListener(self):
+        """@return: None"""
         # already created in constructor
-        # but if we don't put here, Fife gets bitchy :-)
+        # but if we don't put one here, Fife gets all fussy :-)
         pass
 
     def _pump(self):
-        """Main game loop
-           There are in fact 2 main loops, this one and the one in World"""
+        """Main game loop.
+           There are in fact 2 main loops, this one and the one in World.
+           @return: None"""
         if self.listener.quit:
             self.breakRequested = True
         else:

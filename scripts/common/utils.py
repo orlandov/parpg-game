@@ -11,19 +11,20 @@
 #   You should have received a copy of the GNU General Public License
 #   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-"""
-Miscellaneous game functions.
-
-"""
+# Miscellaneous game functions
 
 import os, sys
 
+# TODO: Having a file like this just looks cheap and 'hackish'. Fix if possible
+
 def addPaths (*paths):
-    """
-    Adds a list of paths to sys.path. Paths are expected to use forward slashes,
-    for example '../../engine/extensions'. Slashes are converted to the 
-    OS-sepcific equivalent.
-    """
+    """Adds a list of paths to sys.path. Paths are expected to use forward
+       slashes, for example '../../engine/extensions'. Slashes are converted
+       to the OS-specific equivalent.
+       @type *paths: ???
+       @param *paths: Paths to files?
+       @return: None"""
     for p in paths:
         if not p in sys.path:
             sys.path.append(os.path.sep.join(p.split('/')))
+

@@ -26,10 +26,13 @@ class NPC(fife.InstanceActionListener):
     """This is the class we use for all NPCs"""
     def __init__(self, text, agent_name, layer):
         """Init function.
-           @param text: a string of text that will be output to screen when
-               character is right clicked
-           @param id: the 'id' of the NPC in the map_object.xml file
-           @param layer: a fife.Instance object, (engine.view.agent_layer)"""
+           @type text: string
+           @param text: The text to draw when character is right clicked.
+           @type id: string
+           @param id: the ID of the NPC
+           @type layer: ???
+           @param layer: ???
+           @return: None"""
         fife.InstanceActionListener.__init__(self)
         self.text = text
         self.id = agent_name
@@ -46,16 +49,20 @@ class NPC(fife.InstanceActionListener):
         self.pc = layer.getInstance('PC')
 
     def getX(self):
-        """@return: the x coordinate of the NPC's location as an int"""
+        """Get the NPC's x position on the map.
+           @rtype: integer"
+           @return: the x coordinate of the NPC's location"""
         return self.agent.getLocation().getLayerCoordinates().x
 
     def getY(self):
-        """@return: the y coordinate of the NPC's location as an int"""
+        """Get the NPC's y position on the map.
+           @rtype: integer
+           @return: the y coordinate of the NPC's location"""
         return self.agent.getLocation().getLayerCoordinates().y
 
     def getTargetLocation(self):
-        """@return: a fife.Location object based off of the NPC's
-           position and current state"""
+        """@rtype: fife.Location
+           @return: NPC's position"""
         x = self.getX()
         y = self.getY()
         if self.state == _STATE_WANDER:
@@ -69,30 +76,32 @@ class NPC(fife.InstanceActionListener):
                 l[i] = dist
             x += l[0]
             y += l[1]
-            """ Random Walk """
-            """
-            rl = randint(-1, 1)
-            ud = randint(-1, 1)
-            x += rl
-            y += ud
-            """
+            # Random walk is
+            # rl = randint(-1, 1);ud = randint(-1, 1);x += rl;y += ud
         l = fife.Location(self.agent.getLocation())
         l.setLayerCoordinates(fife.ModelCoordinate(*tuple([x, y])))
         return l
 
     def onInstanceActionFinished(self, instance, action):
         """What the NPC does when it has finished an action.
-           Called by the engine and required for InstanceActionListeners"""
+           Called by the engine and required for InstanceActionListeners.
+           @type instance: ???
+           @param instance: ???
+           @type action: ???
+           @param action: ???
+           @return: None"""
         if self.state == _STATE_WANDER:
             self.targetLoc = self.getTargetLocation()
         self.idle()
 
     def start(self):
+        """@return: None"""
         self.idle()
 
     def idle(self):
         """Controls the NPC when it is idling. Different actions
-           based on the NPC's state"""
+           based on the NPC's state.
+           @return: None"""
         if self.state == _STATE_NONE:
             self.state = _STATE_IDLE
             self.agent.act('stand', self.agent.getFacingLocation())
@@ -108,11 +117,14 @@ class NPC(fife.InstanceActionListener):
 
     def wander(self, location):
         """Nice slow movement for random walking.
-           @param location: a fife.Location object, where the NPC
-           will walk to"""
+           @type location: fife.Location
+           @param location: Where the NPC will walk to.
+           @return: None"""
         self.agent.move('walk', location, self.speed-1)
 
     def run(self, location):
         """Faster movement than walk.
-           @param location: a fife.Location object, where the NPC will run to"""
+           @type location: fife.Location
+           @param location: Where the NPC will run to."""
         self.agent.move('run', location, self.speed+1)
+

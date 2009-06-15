@@ -20,8 +20,13 @@ TDS = Setting()
 _STATE_NONE, _STATE_IDLE, _STATE_RUN = xrange(3)
 
 class Hero(fife.InstanceActionListener):
-    """This is the class we use for the PC character"""
     def __init__(self, agentName, layer):
+        """This is the class we use for the PC character.
+           @type agentName: string
+           @param agentName: name of the agent
+           @type name: string
+           @param name Layer to place agent on
+           @return: None"""
         # add this class for callbacks from fife itself
         fife.InstanceActionListener.__init__(self)
         self.agentName = agentName
@@ -32,6 +37,11 @@ class Hero(fife.InstanceActionListener):
         self.speed = float(TDS.readSetting("PCSpeed"))
 
     def onInstanceActionFinished(self, instance, action):
+        """@type instance: ???
+           @param instance: ???
+           @type action: ???
+           @param action: ???
+           @return: None"""
         self.idle()
         if(action.getId() != 'stand'):
             self.idlecounter = 1
@@ -39,13 +49,18 @@ class Hero(fife.InstanceActionListener):
             self.idlecounter += 1
 
     def start(self):
+        """@return: None"""
         self.idle()
 
     def idle(self):
+        """@return: None"""
         self.state = _STATE_IDLE
         self.agent.act('stand', self.agent.getFacingLocation())
 
     def run(self, location):
+        """@type location: ???
+           @param location: ???
+           @return: None"""
         self.state = _STATE_RUN
         self.agent.move('run', location, self.speed)
 

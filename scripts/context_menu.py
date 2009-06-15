@@ -18,12 +18,16 @@
 import fife, pychan
 
 class ContextMenu():
-    """Arguments:
-       menu_items : A list of items containing the name and 
-                    text for the menu item and callback
-                    i.e. [["menuitem1", "Menu Item 1",  menuCallback1],
-                          ["menuitem2", "Menu Item 2", menuCallback2]]"""
     def __init__(self, engine, menu_items, pos):
+        """@type engine: ???
+           @param engine: ??? 
+           @type menu_items: list
+           @param menu_items: A list of items containing the name and 
+                              text for the menu item and callback
+                              i.e. [["menu", "Some text",  Callback]
+           @type pos: ???
+           @param pos: Screen position to use 
+           @return: None"""
         pychan.init(engine, debug = True)
         self.vbox = pychan.widgets.VBox(position=pos)
         events_to_map = {}
