@@ -343,7 +343,7 @@ class World(EventListenerBase):
         location.setMapCoordinates(coord)
         return location
 
-    def toggle_renderer(self):
+    def toggle_renderer(self, r_name):
         """Enable or disable the grid renderer.
            @return: None"""
         renderer = self.cameras['main'].getRenderer('GridRenderer')
