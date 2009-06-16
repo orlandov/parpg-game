@@ -1097,11 +1097,34 @@
             <i x="-0" o="shantyh" z="0.0" y="6" r="0"></i>
             <i x="1" o="shantyi" z="0.0" y="6" r="0"></i>
 
+            <!-- block tiles for shanty building -->
+            <i x="-3" o="block" z="0.0" y="3" r="0"></i>
+            <i x="-2" o="block" z="0.0" y="3" r="0"></i>
+            <i x="-1" o="block" z="0.0" y="3" r="0"></i>
+            <i x="0" o="block" z="0.0" y="3" r="0"></i>
+            <i x="1" o="block" z="0.0" y="3" r="0"></i>
+            <i x="-3" o="block" z="0.0" y="4" r="0"></i>
+            <i x="-2" o="block" z="0.0" y="4" r="0"></i>
+            <i x="-1" o="block" z="0.0" y="4" r="0"></i>
+            <i x="0" o="block" z="0.0" y="4" r="0"></i>
+            <i x="1" o="block" z="0.0" y="4" r="0"></i>            
+            <i x="-3" o="block" z="0.0" y="5" r="0"></i>
+            <i x="-2" o="block" z="0.0" y="5" r="0"></i>
+            <i x="-1" o="block" z="0.0" y="5" r="0"></i>
+            <i x="0" o="block" z="0.0" y="5" r="0"></i>
+            <i x="1" o="block" z="0.0" y="5" r="0"></i>
+
             <i x="6" o="windmilla" z="0.0" y="-4" r="0"></i>
             <i x="6" o="windmillb" z="0.0" y="-3" r="0"></i>
             <i x="6" o="windmillc" z="0.0" y="-2" r="0"></i>
             <i x="7" o="windmilld" z="0.0" y="-2" r="0"></i>
             <i x="8" o="windmille" z="0.0" y="-2" r="0"></i>
+            
+            <!-- more block tiles -->
+            <i x="7" o="block" z="0.0" y="-4" r="0"></i>
+            <i x="7" o="block" z="0.0" y="-3" r="0"></i>
+            <i x="8" o="block" z="0.0" y="-4" r="0"></i>
+            <i x="8" o="block" z="0.0" y="-3" r="0"></i>
 		</instances>
 	</layer>
 
