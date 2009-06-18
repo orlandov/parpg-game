@@ -3,6 +3,8 @@
 
   <CheckBox name="FullscreenBox" text="Full Screen" />
   <CheckBox name="SoundsBox" text="Play Sounds" />
+  <Label name="InitialVolumeLabel" />
+  <Slider name="InitialVolumeSlider" scale_start="0" scale_end="10" />
   <HBox min_size="120,90">
     <Label text="Resolution: " />
     <ListBox name="ResolutionBox" min_size="120,0" />
