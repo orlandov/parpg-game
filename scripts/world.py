@@ -28,6 +28,7 @@ from scripts.context_menu import ContextMenu
 from pychan.tools import callbackWithArguments as cbwa
 
 TDS = Setting()
+SAVE_FILE = 'my-save.pic'
 
 # this file should be the meta-file for all FIFE-related code
 # engine.py handles is our data model, whilst this is our view
@@ -67,8 +68,12 @@ class World(EventListenerBase):
         self.map = None
         self.hud = hud.Hud(self.engine, TDS)
         self.hud.events_to_map["inventoryButton"] = cbwa(self.displayInventory, True)
+        self.hud.events_to_map["saveButton"] = self.saveGame
+        self.hud.events_to_map["loadButton"] = self.loadGame
         self.hud.hud.mapEvents(self.hud.events_to_map)
         self.hud.menu_events["quitButton"] = self.quitGame
+        self.hud.menu_events["saveButton"] = self.saveGame
+        self.hud.menu_events["loadButton"] = self.loadGame
         self.hud.main_menu.mapEvents(self.hud.menu_events)
         self.action_number = 1
         # setup the inventory
@@ -311,13 +316,12 @@ class World(EventListenerBase):
         if(i != ()):
             for obj in i:
                 # check to see if this in our list at all
-                if(self.data.objectActive(obj.getId())!=False):
+                item = self.data.objectActive(obj.getId())
+                if(item!=False):
                     # yes, so outline    
                     self.outline_render.addOutlined(obj, 0, 137, 255, 2)
                     # get the text
-                    item = self.data.objectActive(obj.getId())
-                    if(item != False):
-                        self.displayObjectText(obj, item.text)
+                    self.displayObjectText(obj, item.text)
         else:
             # erase the outline
             self.outline_render.removeAllOutlines()
@@ -355,6 +359,18 @@ class World(EventListenerBase):
            @return: None"""
         if(self.quitFunction != None):
             self.quitFunction()
+
+    def saveGame(self):
+        """ Called when the user wants to save the game.
+            TODO: allow the user to select a file
+            @return: None"""
+        self.data.save(SAVE_FILE)
+
+    def loadGame(self):
+        """ Called when the user wants to load a game.
+            TODO: allow the user to select a file
+            @return: None"""
+        self.data.load(SAVE_FILE)
 
     def pump(self):
         """Routine called during each frame. Our main loop is in ./run.py
