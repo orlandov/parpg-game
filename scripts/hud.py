@@ -177,25 +177,40 @@ class Hud():
         self.options_menu = pychan.loadXML("gui/hud_options.xml")
         self.options_events = {"applyButton":self.applyOptions,
                                "closeButton":self.options_menu.hide,
-                               "defaultsButton":self.setToDefaults}
+                               "defaultsButton":self.setToDefaults,
+                               "InitialVolumeSlider":self.updateVolumeText}
         self.Resolutions = ['640x480', '800x600',
                             '1024x768', '1280x1024', '1440x900']
         self.RenderBackends = ['OpenGL', 'SDL']
         self.renderNumber = 0
         if (str(self.settings.readSetting('RenderBackend')) == "SDL"):
             self.renderNumber = 1
+        initialVolume = float(self.settings.readSetting('InitialVolume'))
+        initialVolumeText = str('Initial Volume: %.0f%s' %
+                                (int(initialVolume*10), "%"))
         self.options_menu.distributeInitialData({
                 'ResolutionBox': self.Resolutions,
-                'RenderBox': self.RenderBackends
+                'RenderBox': self.RenderBackends,
+                'InitialVolumeLabel' : initialVolumeText
                 })
         # TODO: fix bad line length here
         self.options_menu.distributeData({
                 'FullscreenBox':int(self.settings.readSetting(name="FullScreen")), 
                 'SoundsBox':int(self.settings.readSetting(name="PlaySounds")),
                 'ResolutionBox':self.Resolutions.index(str(self.settings.readSetting("ScreenWidth")) + 'x' + str(self.settings.readSetting("ScreenHeight"))),
-                'RenderBox': self.renderNumber
+                'RenderBox': self.renderNumber,
+                'InitialVolumeSlider':initialVolume
                 })
         self.options_menu.mapEvents(self.options_events)
+
+    def updateVolumeText(self):
+        """
+        Update the initial volume label to reflect the value of the slider
+        """
+        volume = float(self.options_menu.collectData("InitialVolumeSlider"))
+        volume_label = self.options_menu.findChild(name="InitialVolumeLabel")
+        volume_label.text = unicode("Initial Volume: %.0f%s" %
+                                    (int(volume*10), "%"))
 
     def requireRestartDialog(self):
         """Show a dialog asking the user to restart PARPG in order for their
@@ -211,7 +226,8 @@ class Hud():
         # TODO: line lengths here are horrible
         # TODO: add comments
         self.requireRestart = False
-        enable_fullscreen, enable_sound, screen_resolution, render_backend = self.options_menu.collectData('FullscreenBox', 'SoundsBox', 'ResolutionBox', 'RenderBox')
+        enable_fullscreen, enable_sound, screen_resolution, render_backend, initial_volume = self.options_menu.collectData('FullscreenBox', 'SoundsBox', 'ResolutionBox', 'RenderBox', 'InitialVolumeSlider')
+        initial_volume = "%.1f" % initial_volume
 
         if (int(enable_fullscreen) != int(self.settings.readSetting('FullScreen'))):
             self.setOption('FullScreen', int(enable_fullscreen))
@@ -233,6 +249,10 @@ class Hud():
 
         if (render_backend != str(self.settings.readSetting("RenderBackend"))):
             self.setOption('RenderBackend', render_backend)
+            self.requireRestart = True
+
+        if (initial_volume != float(self.settings.readSetting("InitialVolume"))):
+            self.setOption('InitialVolume', initial_volume)
             self.requireRestart = True
 
         self.settings.tree.write('settings.xml')
