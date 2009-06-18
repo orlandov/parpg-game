@@ -36,6 +36,18 @@ class Hero(fife.InstanceActionListener):
         self.idlecounter = 1
         self.speed = float(TDS.readSetting("PCSpeed"))
 
+    def getX(self):
+        """ Get the Hero's position on the map.
+            @rtype: integer
+            @return: the x coordinate of the NPC's location"""
+        return self.agent.getLocation().getLayerCoordinates().x
+
+    def getY(self):
+        """ Get the Hero's position on the map.
+            @rtype: integer
+            @return: the y coordinate of the NPC's location"""
+        return self.agent.getLocation().getLayerCoordinates().y
+
     def onInstanceActionFinished(self, instance, action):
         """@type instance: ???
            @param instance: ???

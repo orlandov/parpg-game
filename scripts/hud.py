@@ -43,7 +43,7 @@ class Hud():
     def initializeHud(self):
         """Initialize and show the main HUD
            @return: None"""
-        self.events_to_map = {"menuButton":self.displayMenu, "saveButton":self.saveGame,
+        self.events_to_map = {"menuButton":self.displayMenu,
                               "loadButton":self.loadGame}
         self.hud.mapEvents(self.events_to_map) 
         # set HUD size accoriding to screen size
@@ -127,7 +127,7 @@ class Hud():
         """Initalize the main menu.
            @return: None"""
         self.main_menu = pychan.loadXML("gui/hud_main_menu.xml")
-        self.menu_events = {"resumeButton":self.hideMenu, "saveButton":self.saveGame,
+        self.menu_events = {"resumeButton":self.hideMenu,
                             "loadButton":self.loadGame, 
                             "optionsButton":self.displayOptions,
                             "helpButton":self.displayHelp}

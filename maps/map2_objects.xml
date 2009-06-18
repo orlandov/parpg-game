@@ -13,6 +13,6 @@
     <!-- There can be a number of doors, which serve as transition triggers -->
     <door display="True" gfx="grass-a" xpos="-14" ypos="-17"
           id="tt01" carry="0" contain="0" text="Start Map" map="map"
-          txpos="-14" typos="10"></door>
+          txpos="-14" typos="9"></door>
 </objects>
 

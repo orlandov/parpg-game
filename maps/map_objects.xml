@@ -29,6 +29,6 @@
         txpos="-1" typos="1"></door>
     <door display="True" gfx="snow02" xpos="-14" ypos="10"
         id="tt01" text="New Map" map="map2"
-        txpos="-14" typos="-17"></door>
+        txpos="-14" typos="-16"></door>
 </objects>
 

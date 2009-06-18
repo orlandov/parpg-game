@@ -85,8 +85,9 @@ class NPC(fife.InstanceActionListener):
     def onInstanceActionFinished(self, instance, action):
         """What the NPC does when it has finished an action.
            Called by the engine and required for InstanceActionListeners.
-           @type instance: ???
-           @param instance: ???
+           @type instance: fife.Instance
+           @param instance: self.agent (the NPC listener is listening for this
+            instance)
            @type action: ???
            @param action: ???
            @return: None"""

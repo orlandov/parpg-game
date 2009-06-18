@@ -20,6 +20,8 @@ from agents.hero import Hero
 from agents.npc import NPC
 from objects import GameObject
 from objLoader import LocalXMLParser
+from saver import Saver
+import pickle
 
 # design note:
 # there is a map file that FIFE reads. We use that file for half the map
@@ -67,6 +69,7 @@ class Engine:
         self.objects = []
         self.doors = []
         self.PC_targLoc = None
+        self.saver = Saver()
 
     def reset(self):
         """Clears the data on a map reload so we don't have objects/npcs from
@@ -76,6 +79,36 @@ class Engine:
         self.npcs = []
         self.objects = []
         self.doors = []
+
+    def save(self, filename):
+        """ Writes the saver to a file.
+            @type filename: string
+            @param filename: the name of the file to write to
+            @return: None"""
+        self.updateSaver()
+        f = open(filename, 'w')
+        pickle.dump(self.saver, f)
+        f.close()
+
+    def load(self, filename):
+        """ Loads a saver from a file.
+            @type filename: string
+            @param filename: the name of the file to load from
+            @return: None"""
+        f = open(filename, 'r')
+        self.saver = pickle.load(f)
+        f.close()
+        self.loadMap(self.saver.curMap+'.xml', False)
+
+    def updateSaver(self):
+        """ Saves existing object/npc/door/pc data to the saver by calling
+            the saver's update functions.
+            @return: None"""
+        # TODO: add calls to other functions and write those functions for 
+        # other bits of state that change. For now, the only one we can do is
+        # NPC info
+        self.saver.updatePC(self.PC)
+        self.saver.updateNPCs(self.npcs)
 
     def loadObjects(self, filename):
         """Load objects from the XML file
@@ -104,8 +137,20 @@ class Engine:
         self.addNPCs(cur_handler.npcs)
         self.addObjects(cur_handler.objects)
         self.addDoors(cur_handler.doors)
-        objects_file.close()
+        # Save the initial map state
+        self.saver.addData(cur_handler.pc, cur_handler.npcs, \
+                cur_handler.objects, cur_handler.doors)
         return True
+   
+    def loadFromSaved(self, data):
+        """ Loads objects from a previously stored SavedData object.
+            @type data: saver.SavedData
+            @param data: The stored entry from which to get information
+            @return: None"""
+        self.addPC(data.PC)
+        self.addNPCs(data.getList("npcs"))
+        self.addObjects(data.getList("objects"))
+        self.addDoors(data.getList("doors"))
 
     def addPC(self,pc):
         """Add the PC to the world
@@ -194,7 +239,7 @@ class Engine:
             if(obj_id == i.id):
                 # load the new map
                 self.PC_targLoc = i.targ_coords
-                self.loadMap(str(i.map))
+                self.loadMap(str(i.map), True)
                 return None
         # is it in our objects?
         for i in self.objects:
@@ -209,16 +254,29 @@ class Engine:
                 #return actions
         #return actions
 
-    def loadMap(self,map_file):
+    def loadMap(self, map_file, update):
         """Load a new map. TODO: needs some error checking
            @type map_file: string
            @param map_file: Name of map file to load
+           @type update: bool
+           @param update: whether or not to update the saver
            @return: None"""
-        # first we let FIFE load the rest of the map
+        # first we update anything that has to be updated (npcs, objects, etc)
+        if update:
+            self.updateSaver()
+        # then we let FIFE load the rest of the map
         self.view.load(map_file)
         # then we update FIFE with the PC, NPC and object details
         self.reset()
-        self.loadObjects(map_file[:-4]+"_objects.xml")
+        # we set the current map in the saver
+        self.saver.setCurMap(map_file[:-4])
+        # we have to check if we have saved a previous version of this filename
+        savedData = self.saver.getData(map_file[:-4])
+        # then we update FIFE with the PC, NPC and object details
+        if savedData:
+            self.loadFromSaved(savedData)
+        else:
+            self.loadObjects(map_file[:-4]+"_objects.xml")
 
     def handleMouseClick(self,position):
         """Code called when user left clicks the screen.
@@ -226,4 +284,3 @@ class Engine:
            @param position: Screen position of click
            @return: None"""
         self.PC.run(position)
-
