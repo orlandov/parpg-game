@@ -43,8 +43,7 @@ class Hud():
     def initializeHud(self):
         """Initialize and show the main HUD
            @return: None"""
-        self.events_to_map = {"menuButton":self.displayMenu,
-                              "loadButton":self.loadGame}
+        self.events_to_map = {"menuButton":self.displayMenu,}
         self.hud.mapEvents(self.events_to_map) 
         # set HUD size accoriding to screen size
         screen_width = int(self.settings.readSetting('ScreenWidth'))
@@ -127,8 +126,7 @@ class Hud():
         """Initalize the main menu.
            @return: None"""
         self.main_menu = pychan.loadXML("gui/hud_main_menu.xml")
-        self.menu_events = {"resumeButton":self.hideMenu,
-                            "loadButton":self.loadGame, 
+        self.menu_events = {"resumeButton":self.hideMenu, 
                             "optionsButton":self.displayOptions,
                             "helpButton":self.displayHelp}
         self.main_menu.mapEvents(self.menu_events)
@@ -286,16 +284,6 @@ class Hud():
            @return: None"""
         self.options_menu.show()
     
-    def saveGame(self):
-        """Open the save game dialog.
-           @return: None"""
-        print "Save not yet enabled"
-
-    def loadGame(self):
-        """Open the load game dialog.
-           @return: None"""
-        print "Load not yet enabled"
-        
     def toggleInventory(self):
         """Manually toggles the inventory button.
            @return: None"""
