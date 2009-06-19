@@ -17,7 +17,7 @@ import fife
 from settings import Setting
 
 TDS = Setting()
-_STATE_NONE, _STATE_IDLE, _STATE_RUN = xrange(3)
+_STATE_NONE, _STATE_IDLE, _STATE_RUN, _STATE_TALK = xrange(4)
 
 class Hero(fife.InstanceActionListener):
     def __init__(self, agentName, layer, engine):
@@ -68,7 +68,9 @@ class Hero(fife.InstanceActionListener):
         if action.getId() == 'approachDoor':
             # issue map change
             self.engine.changeMap(self.targetMap, self.targetLocation)
-        
+        if self.state == _STATE_TALK:
+            # TODO: do something
+            pass
         self.idle()
         if(action.getId() != 'stand'):
             self.idlecounter = 1
@@ -91,16 +93,32 @@ class Hero(fife.InstanceActionListener):
         self.state = _STATE_RUN
         self.agent.move('run', location, self.speed)
 
+    def approachNPC(self, npcLoc):
+        """Approaches an npc and then ???.
+           @type npcLoc: fife.Location
+           @param npcLoc: the location of the NPC to approach
+           @return: None"""
+        self.state = _STATE_TALK
+        self.agent.move('run', npcLoc, self.speed)
+
     def approachDoor(self, doorLocation, map, targetLocation):
         """Approach a door and then teleport to the new map.
-           @type doorLocation: fife.ScreenPoint
-           @param doorLocation: ???
+           @type doorLocation: list
+           @param doorLocation: list that is converted to a fife.Location
+            that tells the PC where the door is
            @type map: ???
            @param map: ???
-           @type targetLocation: ???
-           @param targetLocation: ???
+           @type targetLocation: list
+           @param targetLocation: list that is converted to a tuple
+            that tels the PC where it should appear on the target map
            @return: None"""
+        # The casting here is HORRIBLE, but I think it is preferable to having
+        # doors behave differently than other objects, hence the change.
         self.state = _STATE_RUN
+        targetLocation = tuple([int(float(i)) for i in targetLocation])
+        doorLocation = tuple([int(float(i)) for i in doorLocation])
         self.targetMap = map
         self.targetLocation = targetLocation
-        self.agent.move('approachDoor', doorLocation, self.speed)
+        l = fife.Location(self.agent.getLocation())
+        l.setLayerCoordinates(fife.ModelCoordinate(*doorLocation))
+        self.agent.move('approachDoor', l, self.speed)

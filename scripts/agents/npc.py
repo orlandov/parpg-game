@@ -60,6 +60,13 @@ class NPC(fife.InstanceActionListener):
            @return: the y coordinate of the NPC's location"""
         return self.agent.getLocation().getLayerCoordinates().y
 
+    def getLocation(self):
+        """ Get the NPC's position as a fife.Location object. Basically a
+            wrapper.
+            @rtype: fife.Location
+            @return: the location of the NPC"""
+        return self.agent.getLocation()
+
     def getTargetLocation(self):
         """@rtype: fife.Location
            @return: NPC's position"""
@@ -129,3 +136,8 @@ class NPC(fife.InstanceActionListener):
            @param location: Where the NPC will run to."""
         self.agent.move('run', location, self.speed+1)
 
+    def talk(self):
+        """ Makes the NPC ready to talk to the PC
+            @return: None"""
+        self.state = _STATE_TALK
+        self.idle()
