@@ -65,5 +65,5 @@ class SoundEngine:
            @type volume: integer
            @param volume: The volume wanted, 0 to 100
            @return: None"""
-        pass
+        self.sound_engine.setVolume(0.01*volume)
 
