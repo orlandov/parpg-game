@@ -90,8 +90,8 @@ class Saver(object):
 
     def addData(self, pc, npcs, objects, doors):
         """ Adds a new maps worth of data to the maps object.
-            @type PC: list
-            @param PC: a list of the x y coordinates of the PC
+            @type pc: list
+            @param pc: a list of the x y coordinates of the PC
             @type npcs: list
             @param npcs: a list of various npc information as from .xml files
             @type objects: list

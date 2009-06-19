@@ -16,14 +16,13 @@
 #   along with PARPG.  If not, see <http://www.gnu.org/licenses/>.
 
 # there should be NO references to FIFE here!
+import pickle
 from agents.hero import Hero
 from agents.npc import NPC
-from objects import GameObject
 from objLoader import LocalXMLParser
 from saver import Saver
-import pickle
-from gamestate import GameState
 from gamedata import *
+from gamedata import BaseObjectData
 
 # design note:
 # there is a map file that FIFE reads. We use that file for half the map
@@ -35,23 +34,6 @@ from gamedata import *
 # from another file if in their initial state
 # This other file has the name AAA_objects.xml where AAA.xml is the name
 # of the original mapfile.
-
-class MapDoor:
-    """A MapDoor is an item that when clicked transports the player to
-       another map"""
-    def __init__(self, name, new_map, location):
-        """@type name: string
-           @param name: name of fife object
-           @type new_map: string
-           @param new_map: name of new map
-           @type location: tuple
-           @param location: where to put the PC when map is loaded
-           @return: None"""
-        self.id = name
-        self.map = new_map
-        # location is an (int, int) which stores the intended location 
-        # of the PC on the new map
-        self.targ_coords = location
 
 class Engine:
     """Engine holds the logic for the game.
@@ -65,14 +47,16 @@ class Engine:
            @type view: world
            @param view: A world instance
            @return: None"""
-        # a World object
+        # a World object (the fife stuff, essentially)
         self.view = view
-        self.gameState = GameState()
         self.doors = {}
-        self.objects = []
         self.npcs = []
         self.PC = None
         self.mapchange = False
+        # below this needs to be pickled
+        self.PC_old = None
+        self.objects = {}
+        self.currentMap = None
 
     def reset(self):
         """Clears the data on a map reload so we don't have objects/npcs from
@@ -80,7 +64,6 @@ class Engine:
            @return: None"""
         self.PC = None
         self.npcs = []
-        self.objects = []
         self.doors = {}
 
     def save(self, filename):
@@ -89,8 +72,14 @@ class Engine:
            @param filename: the name of the file to write to
            @return: None"""
         self.updateGameState()
-        f = open(filename, 'w')
-        pickle.dump(self.gameState, f)
+        try:
+            f = open(filename, 'r')
+        except(IOError):
+            sys.stderr.write("Error: Can't find save game\n")
+            return
+        pickle.dump(self.PC_old, f)
+        pickle.dump(self.objects, f)
+        pickle.dump(self.currentMap, f)
         f.close()
 
     def load(self, filename):
@@ -98,22 +87,28 @@ class Engine:
            @type filename: string
            @param filename: the name of the file to load from
            @return: None"""
-        f = open(filename, 'r')
-        self.gameState = pickle.load(f)
+        try:
+            f = open(filename, 'r')
+        except(IOError):
+            sys.stderr.write("Error: Can't find save game file\n")
+            return
+        self.PC_old = pickle.load(f)
+        self.objects = pickle.load(f)
+        self.currentMap = pickle.load(f)
         f.close()
         if self.gameState.currentMap:
             self.loadMap(self.gameState.currentMap)
             
     def updateGameState(self):
-        """Stores the current npcs positons in the game state."""
-        #save the PC position
-        self.gameState.PC.posx = self.PC.getX()
-        self.gameState.PC.posy = self.PC.getY()
+        """Stores the current pc and npcs positons in the game state."""
+        # save the PC position
+        self.PC_old.posx = self.PC.getX()
+        self.PC_old.posy = self.PC.getY()
         #save npc positions
         for i in self.npcs:
-            if str(i.id) in self.gameState.objects:
-                self.gameState.getObjectById(str(i.id)).posx = i.getX()
-                self.gameState.getObjectById(str(i.id)).posy = i.getY()
+            if str(i.id) in self.objects:
+                self.getObjectById(str(i.id)).posx = i.getX()
+                self.getObjectById(str(i.id)).posy = i.getY()
 
     def loadObjects(self, filename):
         """Load objects from the XML file
@@ -150,17 +145,16 @@ class Engine:
            @param pc: List of data for PC attributes
            @return: None"""
         # sync with game data
-        posx, posy = 0, 0
-        if self.gameState.PC:
+        if self.PC_old:
             # use existing position
-            posx = self.gameState.PC.posx
-            posy = self.gameState.PC.posy
+            posx = self.PC_old.posx
+            posy = self.PC_old.posy
         else:
             posx = pc[0]
             posy = pc[1]
             # save the new PC to the game data
-            self.gameState.PC = HeroData("PC", posx, posy, "PC", self.gameState.currentMap)
-            
+            self.PC_old = HeroData("PC", posx, posy, "PC", self.currentMap)
+        # add to game data    
         self.view.addObject(float(posx), float(posy),"PC","PC")
          # create the PC agent
         self.PC = Hero("PC", self.view.agent_layer, self)
@@ -174,18 +168,19 @@ class Engine:
            @param objects: List of objects to add
            @return: None"""
         for i in objects:
-            # add it to the game state
-            ref = self.gameState.getObjectById(i.id) 
+            # already in game data?
+            ref = self.getObjectById(i.id)
             if ref is None:
-                i.map = self.gameState.currentMap
-                self.gameState.objects[str(i.id)] = i
+                # no, add it to the game state
+                i.map = self.currentMap
+                self.objects[i.id] = i
             else:
-                # use the current game state data
+                # yes, use the current game state data
                 i.posx = ref.posx
                 i.posy = ref.posy
                 i.gfx = ref.gfx        
             # is it visible?
-            if(i.display):
+            if(i.display == True):
                 self.view.addObject(i.posx, i.posy, i.gfx, i.id)
 
     def addNPCs(self,npcs):
@@ -194,13 +189,14 @@ class Engine:
            @param npcs: List of NPC's to add
            @return: None"""
         for i in npcs:
-            # add it to the game state
-            ref = self.gameState.getObjectById(i.id) 
+            # already in the game data?
+            ref = self.getObjectById(i.id) 
             if ref is None:
-                i.map = self.gameState.currentMap
-                self.gameState.objects[i.id] = i
+                # no, add it to the game state
+                i.map = self.currentMap
+                self.objects[i.id] = i
             else:
-                # use the current game state data
+                # yes, use the current game state data
                 i.posx = ref.posx
                 i.posy = ref.posy
                 i.gfx = ref.gfx              
@@ -226,7 +222,7 @@ class Engine:
            @param ident: ID of object
            @rtype: boolean
            @return: Status of result (True/False)"""
-        for i in self.gameState.getObjectsFromMap(self.gameState.currentMap):
+        for i in self.getObjectsFromMap(self.currentMap):
             if i.display and (i.id == ident):
                 # we found a match
                 return i         
@@ -242,7 +238,7 @@ class Engine:
         actions=[]
         # note: ALWAYS check NPC's first!
         # is it an NPC?
-        for i in self.gameState.getObjectsFromMap(self.gameState.currentMap):
+        for i in self.getObjectsFromMap(self.currentMap):
             if(obj_id == i.id):
                 if isinstance(i, NpcData):
                     # keep it simple for now, None to be replaced by callbacks
@@ -273,7 +269,7 @@ class Engine:
         self.view.load(str(map_file))
         # then we update FIFE with the PC, NPC and object details
         self.reset()
-        self.gameState.currentMap = map_file
+        self.currentMap = map_file
         self.loadObjects(map_file[:-4] + "_objects.xml")
 
     def handleMouseClick(self,position):
@@ -293,12 +289,27 @@ class Engine:
         # save the postions
         self.updateGameState()
         # set the PC position
-        self.gameState.PC.posx = targetPosition[0]
-        self.gameState.PC.posy = targetPosition[1]
+        self.PC_old.posx = targetPosition[0]
+        self.PC_old.posy = targetPosition[1]
         # set the parameters for the mapchange
         self.targetMap = map
         # issue the mapchange
         self.mapchange = True
+
+    def getObjectsFromMap(self, cmap):
+        """Gets all objects that are currently on the given map.
+           @type cmap: String
+           @param cmap: The map name.
+           @returns: The list of objects on this map."""
+        return [i for i in self.objects.values() if i.map == cmap]
+    
+    def getObjectById(self, ident):
+        """Gets an object by it's id
+           @type ident: String
+           @param ident: The id of the object.
+           @returns: The object or None."""
+        if ident in self.objects:
+            return self.objects[ident]
 
     def handleCommands(self):
         if self.mapchange:
