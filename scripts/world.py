@@ -280,10 +280,7 @@ class World(EventListenerBase):
         click = fife.ScreenPoint(evt.getX(), evt.getY())
         if(evt.getButton() == fife.MouseEvent.LEFT):
             self.data.handleMouseClick(self.getCoords(click))
-            if(hasattr(self, "context_menu")):
-                self.context_menu.vbox.hide()
-                delattr(self, "context_menu")
-                
+            self.clearMenu() 
         elif(evt.getButton() == fife.MouseEvent.RIGHT):
             # is there an object here?
             i=self.cameras['main'].getMatchingInstances(click, self.agent_layer)
@@ -294,20 +291,9 @@ class World(EventListenerBase):
                     if(self.data.objectActive(obj.getId())):            
                         # yes, get the data
                         info = self.data.getItemActions(obj.getId())
-                        if(isinstance(info, MapDoor)):
-                            # approach the door
-                            self.data.PC.approachDoor(self.getCoords(click),
-                                                      info.map,
-                                                      info.targ_coords)
-                            return
-                        else:
-                            # show the context menu
-                            break
-                        
+                        break
             # delete the old context menu
-            if(hasattr(self, "context_menu")):
-                self.context_menu.vbox.hide()
-                delattr(self, "context_menu")       
+            self.clearMenu()
             if info:
                 # take the menu items returned by the engine
                 data = info
@@ -321,8 +307,7 @@ class World(EventListenerBase):
         """Callback sample for the context menu.
         """
         self.data.PC.run(click)
-        self.context_menu.vbox.hide()
-        delattr(self, "context_menu")
+        self.clearMenu()
 
     def mouseMoved(self, evt):
         """Called when the mouse is moved
@@ -363,6 +348,13 @@ class World(EventListenerBase):
            @return: None"""
         renderer = self.cameras['main'].getRenderer('GridRenderer')
         renderer.setEnabled(not renderer.isEnabled())
+
+    def clearMenu(self):
+        """ Hides the context menu. Just nice to have it as a function.
+            @return: None"""
+        if hasattr(self, "context_menu"):
+            self.context_menu.vbox.hide()
+            delattr(self, "context_menu")
 
     def quitGame(self):
         """Called when user requests to quit game.
