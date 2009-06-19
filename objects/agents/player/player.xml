@@ -9,4 +9,7 @@
 	<action id="walk">
 		<animation source="stand/animation.xml" direction="0" />
 	</action>
+	<action id="approachDoor">
+		<animation source="stand/animation.xml" direction="0" />
+	</action>
 </object>

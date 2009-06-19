@@ -16,6 +16,7 @@
 #   along with PARPG.  If not, see <http://www.gnu.org/licenses/>.
 
 import fife, pychan
+from pychan.tools import callbackWithArguments
 
 class ContextMenu():
     def __init__(self, engine, menu_items, pos):
@@ -34,7 +35,10 @@ class ContextMenu():
         for item in menu_items:
             p = pychan.widgets.Button(name=item[0], text=unicode(item[1]))
             self.vbox.addChild(p)
-            events_to_map[item[0]] = item[2]
+            if item[3]:
+                events_to_map[item[0]] = callbackWithArguments(item[2], item[3])
+            else:
+                events_to_map[item[0]] = item[2]
         self.vbox.mapEvents(events_to_map)
         self.vbox.show()
 

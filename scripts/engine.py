@@ -22,6 +22,8 @@ from objects import GameObject
 from objLoader import LocalXMLParser
 from saver import Saver
 import pickle
+from gamestate import GameState
+from gamedata import *
 
 # design note:
 # there is a map file that FIFE reads. We use that file for half the map
@@ -46,7 +48,7 @@ class MapDoor:
            @param location: where to put the PC when map is loaded
            @return: None"""
         self.id = name
-        self.map = "maps/"+new_map+".xml"
+        self.map = new_map
         # location is an (int, int) which stores the intended location 
         # of the PC on the new map
         self.targ_coords = location
@@ -57,6 +59,7 @@ class Engine:
        fife, and would be pointless to replicate, we hold a instance of
        the fife view here. This also prevents us from just having a
        function heavy controller."""
+    
     def __init__(self, view):
         """Initialise the instance.
            @type view: world
@@ -64,12 +67,12 @@ class Engine:
            @return: None"""
         # a World object
         self.view = view
-        self.PC = None
-        self.npcs = []
+        self.gameState = GameState()
+        self.doors = {}
         self.objects = []
-        self.doors = []
-        self.PC_targLoc = None
-        self.saver = Saver()
+        self.npcs = []
+        self.PC = None
+        self.mapchange = False
 
     def reset(self):
         """Clears the data on a map reload so we don't have objects/npcs from
@@ -78,37 +81,39 @@ class Engine:
         self.PC = None
         self.npcs = []
         self.objects = []
-        self.doors = []
+        self.doors = {}
 
     def save(self, filename):
-        """ Writes the saver to a file.
-            @type filename: string
-            @param filename: the name of the file to write to
-            @return: None"""
-        self.updateSaver()
+        """Writes the saver to a file.
+           @type filename: string
+           @param filename: the name of the file to write to
+           @return: None"""
+        self.updateGameState()
         f = open(filename, 'w')
-        pickle.dump(self.saver, f)
+        pickle.dump(self.gameState, f)
         f.close()
 
     def load(self, filename):
-        """ Loads a saver from a file.
-            @type filename: string
-            @param filename: the name of the file to load from
-            @return: None"""
+        """Loads a saver from a file.
+           @type filename: string
+           @param filename: the name of the file to load from
+           @return: None"""
         f = open(filename, 'r')
-        self.saver = pickle.load(f)
+        self.gameState = pickle.load(f)
         f.close()
-        self.loadMap(self.saver.curMap+'.xml', False)
-
-    def updateSaver(self):
-        """ Saves existing object/npc/door/pc data to the saver by calling
-            the saver's update functions.
-            @return: None"""
-        # TODO: add calls to other functions and write those functions for 
-        # other bits of state that change. For now, the only one we can do is
-        # NPC info
-        self.saver.updatePC(self.PC)
-        self.saver.updateNPCs(self.npcs)
+        if self.gameState.currentMap:
+            self.loadMap(self.gameState.currentMap)
+            
+    def updateGameState(self):
+        """Stores the current npcs positons in the game state."""
+        #save the PC position
+        self.gameState.PC.posx = self.PC.getX()
+        self.gameState.PC.posy = self.PC.getY()
+        #save npc positions
+        for i in self.npcs:
+            if str(i.id) in self.gameState.objects:
+                self.gameState.getObjectById(str(i.id)).posx = i.getX()
+                self.gameState.getObjectById(str(i.id)).posy = i.getY()
 
     def loadObjects(self, filename):
         """Load objects from the XML file
@@ -137,34 +142,28 @@ class Engine:
         self.addNPCs(cur_handler.npcs)
         self.addObjects(cur_handler.objects)
         self.addDoors(cur_handler.doors)
-        # Save the initial map state
-        self.saver.addData(cur_handler.pc, cur_handler.npcs, \
-                cur_handler.objects, cur_handler.doors)
         return True
-   
-    def loadFromSaved(self, data):
-        """ Loads objects from a previously stored SavedData object.
-            @type data: saver.SavedData
-            @param data: The stored entry from which to get information
-            @return: None"""
-        self.addPC(data.PC)
-        self.addNPCs(data.getList("npcs"))
-        self.addObjects(data.getList("objects"))
-        self.addDoors(data.getList("doors"))
 
     def addPC(self,pc):
         """Add the PC to the world
            @type pc: list
            @param pc: List of data for PC attributes
            @return: None"""
-        if self.PC_targLoc:
-            self.view.addObject(float(self.PC_targLoc[0]), \
-                    float(self.PC_targLoc[1]), "PC", "PC")
-            self.PC_targLoc = None
+        # sync with game data
+        posx, posy = 0, 0
+        if self.gameState.PC:
+            # use existing position
+            posx = self.gameState.PC.posx
+            posy = self.gameState.PC.posy
         else:
-            self.view.addObject(float(pc[0]), float(pc[1]),"PC","PC")
-        self.PC = Hero("PC", self.view.agent_layer)
-        # ensure the PC starts on a default action
+            posx = pc[0]
+            posy = pc[1]
+            # save the new PC to the game data
+            self.gameState.PC = HeroData("PC", posx, posy, "PC", self.gameState.currentMap)
+            
+        self.view.addObject(float(posx), float(posy),"PC","PC")
+         # create the PC agent
+        self.PC = Hero("PC", self.view.agent_layer, self)
         self.PC.start()
         self.view.addPC(self.PC.agent)
 
@@ -175,11 +174,19 @@ class Engine:
            @param objects: List of objects to add
            @return: None"""
         for i in objects:
+            # add it to the game state
+            ref = self.gameState.getObjectById(i.id) 
+            if ref is None:
+                i.map = self.gameState.currentMap
+                self.gameState.objects[str(i.id)] = i
+            else:
+                # use the current game state data
+                i.posx = ref.posx
+                i.posy = ref.posy
+                i.gfx = ref.gfx        
             # is it visible?
-            if(i[0] == True):
-                self.view.addObject(float(i[1]), float(i[2]), i[3], i[4])
-            # now add it as an engine object
-            self.objects.append(GameObject(i))
+            if(i.display):
+                self.view.addObject(i.posx, i.posy, i.gfx, i.id)
 
     def addNPCs(self,npcs):
         """Add all of the NPCs we found into the fife map to FIFE.
@@ -187,9 +194,20 @@ class Engine:
            @param npcs: List of NPC's to add
            @return: None"""
         for i in npcs:
-            self.view.addObject(float(i[0]), float(i[1]), i[2], i[3])
-            # now add as engine data
-            self.npcs.append(NPC(i[4], str(i[3]), self.view.agent_layer))
+            # add it to the game state
+            ref = self.gameState.getObjectById(i.id) 
+            if ref is None:
+                i.map = self.gameState.currentMap
+                self.gameState.objects[i.id] = i
+            else:
+                # use the current game state data
+                i.posx = ref.posx
+                i.posy = ref.posy
+                i.gfx = ref.gfx              
+            # add it to the view
+            self.view.addObject(i.posx, i.posy, i.gfx, i.id)          
+            # create the agent
+            self.npcs.append(NPC(i.text, str(i.id), self.view.agent_layer))
             self.npcs[-1].start()
 
     def addDoors(self, doors):
@@ -199,7 +217,7 @@ class Engine:
            @param doors: List of doors
            @return: None"""
         for i in doors:
-            self.doors.append(MapDoor(i[0], i[1], i[2]))
+            self.doors[str(i.id)] = MapDoor(i.id, i.destmap, (i.destx, i.desty))
 
     def objectActive(self, ident):
         """Given the objects ID, pass back the object if it is active,
@@ -208,15 +226,10 @@ class Engine:
            @param ident: ID of object
            @rtype: boolean
            @return: Status of result (True/False)"""
-        for i in self.objects:
-            if((i.display == True)and(i.id == ident)):
+        for i in self.gameState.getObjectsFromMap(self.gameState.currentMap):
+            if i.display and (i.id == ident):
                 # we found a match
-                return i
-        # now try NPC's
-        for i in self.npcs:
-            # all NPC's are deemed active
-            if(i.id == ident):
-                return i
+                return i         
         # no match
         return False
 
@@ -229,54 +242,39 @@ class Engine:
         actions=[]
         # note: ALWAYS check NPC's first!
         # is it an NPC?
-        for i in self.npcs:
+        for i in self.gameState.getObjectsFromMap(self.gameState.currentMap):
             if(obj_id == i.id):
-                # keep it simple for now
-                actions.append(("Talk",None))
-                actions.append(("Attack",None))     
-        # is it a door?
-        for i in self.doors:
-            if(obj_id == i.id):
-                # load the new map
-                self.PC_targLoc = i.targ_coords
-                self.loadMap(str(i.map), True)
-                return None
-        # is it in our objects?
-        for i in self.objects:
-            if(obj_id == i.id):
-                actions.append(("Examine",None))
-                # is it a container?
-                if(i.container == True):
-                    actions.append(("Open",None))
-                # can you pick it up?
-                if(i.carry == True):
-                    actions.append(("Pick Up",None))
-                #return actions
-        #return actions
+                if isinstance(i, NpcData):
+                    # keep it simple for now, None to be replaced by callbacks
+                    actions.append(["Talk", "Talk", self.nullFunc, i])
+                    actions.append(["Attack", "Attack", self.nullFunc, i]) 
+                elif isinstance(i, DoorData):
+                    return self.doors[str(i.id)]
+                elif isinstance(i, NonLivingObjectData):
+                    actions.append(["Examine", "Examine", self.nullFunc, i])
+                    # is it a container?
+                    if(i.container == True):
+                        actions.append(["Open", "Open", self.nullFunc, i])
+                    # can you pick it up?
+                    if(i.carryable == True):
+                        actions.append(["Pick Up", "Pick Up", self.nullFunc, i])       
+        return actions
+    
+    def nullFunc(self, userdata):
+        """Sample callback for the context menus."""
+        print userdata
 
-    def loadMap(self, map_file, update):
+    def loadMap(self, map_file):
         """Load a new map. TODO: needs some error checking
            @type map_file: string
            @param map_file: Name of map file to load
-           @type update: bool
-           @param update: whether or not to update the saver
            @return: None"""
-        # first we update anything that has to be updated (npcs, objects, etc)
-        if update:
-            self.updateSaver()
         # then we let FIFE load the rest of the map
-        self.view.load(map_file)
+        self.view.load(str(map_file))
         # then we update FIFE with the PC, NPC and object details
         self.reset()
-        # we set the current map in the saver
-        self.saver.setCurMap(map_file[:-4])
-        # we have to check if we have saved a previous version of this filename
-        savedData = self.saver.getData(map_file[:-4])
-        # then we update FIFE with the PC, NPC and object details
-        if savedData:
-            self.loadFromSaved(savedData)
-        else:
-            self.loadObjects(map_file[:-4]+"_objects.xml")
+        self.gameState.currentMap = map_file
+        self.loadObjects(map_file[:-4] + "_objects.xml")
 
     def handleMouseClick(self,position):
         """Code called when user left clicks the screen.
@@ -284,3 +282,30 @@ class Engine:
            @param position: Screen position of click
            @return: None"""
         self.PC.run(position)
+        
+    def changeMap(self, map, targetPosition):
+        """Registers for a mapchange on the next pump().
+           @type map: ???
+           @param map: Name of the target map.
+           @type targetPosition: ???
+           @param targetPosition: Position of PC on target map.
+           @return: None"""
+        # save the postions
+        self.updateGameState()
+        # set the PC position
+        self.gameState.PC.posx = targetPosition[0]
+        self.gameState.PC.posy = targetPosition[1]
+        # set the parameters for the mapchange
+        self.targetMap = map
+        # issue the mapchange
+        self.mapchange = True
+
+    def handleCommands(self):
+        if self.mapchange:
+            self.loadMap(self.targetMap)
+            self.mapchange = False
+
+    def pump(self):
+        """Main loop in the engine."""
+        self.handleCommands()
+

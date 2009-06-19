@@ -8,6 +8,6 @@
     
     <!-- There can be a number of doors, which serve as transition triggers -->
     <door display="True" gfx="fdoor" xpos="-1.0" ypos="2.0"
-        id="sh-door" text="Exit building" map="map" txpos="-2" typos="7"></door>
+        id="sh-door2" text="Exit building" map="maps/map.xml" txpos="-2" typos="7"></door>
 </objects>
 

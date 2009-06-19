@@ -26,6 +26,7 @@ from settings import Setting
 from scripts import inventory, hud
 from scripts.context_menu import ContextMenu
 from pychan.tools import callbackWithArguments as cbwa
+from engine import MapDoor
 
 TDS = Setting()
 SAVE_FILE = 'my-save.pic'
@@ -60,6 +61,8 @@ class World(EventListenerBase):
         self.view = self.engine.getView()
         self.quitFunction = None
         self.inventoryShown = False
+        self.agent_layer = None
+        self.cameras = {}
         # self.data is an engine.Engine object, but is set in run.py
         self.data = None
         self.mouseCallback = None
@@ -88,7 +91,7 @@ class World(EventListenerBase):
         """Reset the data to default settings.
            @return: None"""
         # We have to delete the map in Fife.
-        # TODO: I'm killing the PC now, but later we will have to save the PC
+        # TODO: We're killing the PC now, but later we will have to save the PC
         if self.map:
             self.model.deleteObjects()
             self.model.deleteMap(self.map)
@@ -166,7 +169,7 @@ class World(EventListenerBase):
            @return: None"""
         obj = self.agent_layer.createInstance(
                 self.model.getObject(str(gfx), "PARPG"),
-                fife.ExactModelCoordinate(xpos,ypos,0.0), str(name))
+                fife.ExactModelCoordinate(float(xpos), float(ypos), 0.0), str(name))
         obj.setRotation(0)
         fife.InstanceVisual.create(obj)
         # save it for later use
@@ -284,26 +287,42 @@ class World(EventListenerBase):
         elif(evt.getButton() == fife.MouseEvent.RIGHT):
             # is there an object here?
             i=self.cameras['main'].getMatchingInstances(click, self.agent_layer)
+            info = None
             if(i != ()):
                 for obj in i:
                     # check to see if this is an active item
-                    if(self.data.objectActive(obj.getId()) != False):            
+                    if(self.data.objectActive(obj.getId())):            
                         # yes, get the data
                         info = self.data.getItemActions(obj.getId())
-                        if(info == None):
-                            # there was a map change, don't screw with the GUI
+                        if(isinstance(info, MapDoor)):
+                            # approach the door
+                            self.data.PC.approachDoor(self.getCoords(click),
+                                                      info.map,
+                                                      info.targ_coords)
                             return
+                        else:
+                            # show the context menu
+                            break
+                        
+            # delete the old context menu
             if(hasattr(self, "context_menu")):
                 self.context_menu.vbox.hide()
-                delattr(self, "context_menu")
-                data = [["Placeholder", "Placeholder Button", self.placeHolderFunction, click]]
-                pos = (evt.getX(), evt.getY())
-                self.context_menu = ContextMenu(self.engine, data, pos)
-
+                delattr(self, "context_menu")       
+            if info:
+                # take the menu items returned by the engine
+                data = info
             else:
-                data = [["Placeholder", "Placeholder Button", self.placeHolderFunction, click]]
-                pos = (evt.getX(), evt.getY())
-                self.context_menu = ContextMenu(self.engine, data, pos)
+                # default menu, could be walk etc.
+                data = [["Walk", "Walk here", self.onWalk, self.getCoords(click)]]
+            pos = (evt.getX(), evt.getY())
+            self.context_menu = ContextMenu(self.engine, data, pos)
+            
+    def onWalk(self, click):
+        """Callback sample for the context menu.
+        """
+        self.data.PC.run(click)
+        self.context_menu.vbox.hide()
+        delattr(self, "context_menu")
 
     def mouseMoved(self, evt):
         """Called when the mouse is moved
@@ -316,24 +335,16 @@ class World(EventListenerBase):
         if(i != ()):
             for obj in i:
                 # check to see if this in our list at all
-                item = self.data.objectActive(obj.getId())
-                if(item!=False):
+                if(self.data.objectActive(obj.getId())):
                     # yes, so outline    
                     self.outline_render.addOutlined(obj, 0, 137, 255, 2)
                     # get the text
-                    self.displayObjectText(obj, item.text)
+                    item = self.data.objectActive(obj.getId())
+                    if(item):
+                        self.displayObjectText(obj, item.text)
         else:
             # erase the outline
             self.outline_render.removeAllOutlines()
-
-    def placeHolderFunction(self):
-        """Just a simple function to make the PC say "Place Holder Function!"
-           It's in here because we needed some sort of function to test the
-           context menu with.
-           @return: None"""
-        self.agent_layer.getInstance("PC").say("Place Holder Function!", 1000)
-        self.context_menu.vbox.hide()
-        delattr(self, "context_menu")
 
     def getCoords(self, click):
         """Get the map location x, y cords from the screen co-ords
@@ -376,4 +387,3 @@ class World(EventListenerBase):
         """Routine called during each frame. Our main loop is in ./run.py
            We ignore this main loop (but FIFE complains if it is missing)."""
         pass
-

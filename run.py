@@ -83,7 +83,7 @@ class PARPG(ApplicationBase):
         self.world.data = self.model
         self.listener = ApplicationListener(self.engine,self.world)
         self.world.quitFunction = self.listener.quitGame
-        self.model.loadMap(str(TDS.readSetting("MapFile")), False)   
+        self.model.loadMap(str(TDS.readSetting("MapFile")))   
 
     def loadSettings(self):
         """Load the settings from a python file and load them into the engine.
@@ -135,6 +135,7 @@ class PARPG(ApplicationBase):
         if self.listener.quit:
             self.breakRequested = True
         else:
+            self.model.pump()
             self.world.pump()
 
 def main():

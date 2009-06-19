@@ -20,12 +20,14 @@ TDS = Setting()
 _STATE_NONE, _STATE_IDLE, _STATE_RUN = xrange(3)
 
 class Hero(fife.InstanceActionListener):
-    def __init__(self, agentName, layer):
+    def __init__(self, agentName, layer, engine):
         """This is the class we use for the PC character.
            @type agentName: string
            @param agentName: name of the agent
            @type layer: string
-           @param layer: Layer to place agent on
+           @param layer: Layer to place agent on.
+           @type engine: scripts.engine.Engine
+           @param engine: Reference to the engine that owns this PC.
            @return: None"""
         # add this class for callbacks from fife itself
         fife.InstanceActionListener.__init__(self)
@@ -35,6 +37,15 @@ class Hero(fife.InstanceActionListener):
         self.state = _STATE_NONE
         self.idlecounter = 1
         self.speed = float(TDS.readSetting("PCSpeed"))
+        self.engine = engine
+        
+    def onNewMap(self, layer):
+        """Sets the agent onto the new layer.
+        """
+        self.agent = layer.getInstance(self.agentName)
+        self.agent.addActionListener(self)
+        self.state = _STATE_NONE
+        self.idlecounter = 1
 
     def getX(self):
         """ Get the Hero's position on the map.
@@ -54,6 +65,10 @@ class Hero(fife.InstanceActionListener):
            @type action: ???
            @param action: ???
            @return: None"""
+        if action.getId() == 'approachDoor':
+            # issue map change
+            self.engine.changeMap(self.targetMap, self.targetLocation)
+        
         self.idle()
         if(action.getId() != 'stand'):
             self.idlecounter = 1
@@ -76,3 +91,16 @@ class Hero(fife.InstanceActionListener):
         self.state = _STATE_RUN
         self.agent.move('run', location, self.speed)
 
+    def approachDoor(self, doorLocation, map, targetLocation):
+        """Approach a door and then teleport to the new map.
+           @type doorLocation: fife.ScreenPoint
+           @param doorLocation: ???
+           @type map: ???
+           @param map: ???
+           @type targetLocation: ???
+           @param targetLocation: ???
+           @return: None"""
+        self.state = _STATE_RUN
+        self.targetMap = map
+        self.targetLocation = targetLocation
+        self.agent.move('approachDoor', doorLocation, self.speed)

@@ -18,6 +18,7 @@
 from xml.sax import make_parser
 from xml.sax.handler import ContentHandler
 import sys
+from gamedata import *
 
 class LocalXMLParser(ContentHandler):
     """Class inherits from ContantHandler, and is used to parse the
@@ -44,6 +45,8 @@ class LocalXMLParser(ContentHandler):
            @return: None"""
         try:
             display = attrs.getValue("display")
+            xpos, ypos = 0, 0
+            owner = None
             if(display == "True"):
                 xpos = attrs.getValue("xpos")
                 ypos = attrs.getValue("ypos")
@@ -58,12 +61,10 @@ class LocalXMLParser(ContentHandler):
             sys.stderr.write("Error: Data missing in object definition\n")
             sys.exit(False)
         # now we have the data, save it for later
-        if(display == "True"):
-            self.objects.append([True, xpos, ypos, gfx, ident,
-                                 text, contain, carry])
-        else:
-            self.objects.append([False, gfx, ident, text,
-                                 owner, contain, carry])
+        self.objects.append(NonLivingObjectData(str(ident), float(xpos),
+                            float(ypos), str(text), None, str(gfx),
+                            str(display) == "True", str(owner),
+                            str(contain) == "1", str(carry) == "1"))
 
     def getDoor(self, attrs):
         """Grab the door data.
@@ -72,24 +73,27 @@ class LocalXMLParser(ContentHandler):
            @return: None"""
         try:
             display = attrs.getValue("display")
+            xpos, ypos, xdest, ydest = 0, 0, 0, 0
+            owner = None
             if(display == "True"):
                 xpos = attrs.getValue("xpos")
                 ypos = attrs.getValue("ypos")
             else:
                 owner = attrs.getValue("owner")
+            xdest = attrs.getValue("txpos")
+            ydest = attrs.getValue("typos")
             gfx = attrs.getValue("gfx")
             ident = attrs.getValue("id")
             text = attrs.getValue("text")
+            map = attrs.getValue("map")
         except(KeyError):
             sys.stderr.write("Error: Data missing in door definition\n")
             sys.exit(False)
         # now we have the data, save it for later
-        if(display == "True"):
-            self.objects.append([True, xpos, ypos, gfx, ident,
-                                 text, "0", "0"])
-        else:
-            self.objects.append([False, gfx, ident, text,
-                                 owner, "0", "0"])
+        door = DoorData(ident, xpos, ypos, text, None, gfx, display == "True",
+                        owner, xdest, ydest, map)
+        self.objects.append(door)
+        self.doors.append(door)
 
     def startElement(self, name, attrs):
         """Called every time we meet a new element in the XML file
@@ -125,22 +129,11 @@ class LocalXMLParser(ContentHandler):
                 sys.stderr.write("Error: Data missing in NPC definition\n")
                 sys.exit(False)
             # now we have the data, save it for later
-            self.npcs.append([xpos, ypos, gfx, ident, text])
+            self.npcs.append(NpcData(ident, xpos, ypos, text, None, gfx, True))
         elif(name == "object"):
             # same old same old
             self.getObject(attrs)
         elif(name == "door"):
             # firstly, add the object
             self.getDoor(attrs)
-            # then save the other data
-            try:
-                new_map = attrs.getValue("map")
-                txpos = attrs.getValue("txpos")
-                typos = attrs.getValue("typos")
-            except(KeyError):
-                sys.stderr.write("Error: Door has no map or no target!\n")
-                sys.exit(False)
-            # format is [id,map_name,target coords on new map]
-            self.doors.append([self.objects[-1][4],new_map, \
-                    tuple([txpos, typos])])
 
