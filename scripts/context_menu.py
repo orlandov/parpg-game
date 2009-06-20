@@ -35,6 +35,7 @@ class ContextMenu():
         for item in menu_items:
             p = pychan.widgets.Button(name=item[0], text=unicode(item[1]))
             self.vbox.addChild(p)
-            events_to_map[item[0]] = cbwa(*item[2:])
+            events_to_map[item[0]+"/mousePressed"] = cbwa(*item[2:])
+            events_to_map[item[0]+"/mouseReleased"] = self.vbox.hide
         self.vbox.mapEvents(events_to_map)
         self.vbox.show()

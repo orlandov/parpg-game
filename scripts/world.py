@@ -274,8 +274,10 @@ class World(EventListenerBase):
         if(keyval == key.M):
             self.sounds.toggleMusic()
 
-    def mousePressed(self, evt):
-        """If a mouse button is pressed down, fife calls this routine.
+    def mouseReleased(self, evt):
+        """If a mouse button is released, fife calls this routine.
+           We want to wait until the button is released, because otherwise
+           pychan captures the release if a menu is opened.
            @type evt: fife.event
            @param evt: The event that fife caught
            @return: None"""
@@ -304,7 +306,7 @@ class World(EventListenerBase):
                 data = [["Walk", "Walk here", self.onWalk, self.getCoords(click)]]
             pos = (evt.getX(), evt.getY())
             self.context_menu = ContextMenu(self.engine, data, pos)
-            
+
     def onWalk(self, click):
         """Callback sample for the context menu.
         """
