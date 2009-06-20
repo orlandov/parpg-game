@@ -202,7 +202,7 @@ class World(EventListenerBase):
         """Set the up, down, and hover images of an Imagebutton.
            @type widget: pychan.widget
            @param widget: widget to set
-           @type image: ???
+           @type image: string
            @param image: image to use
            @return: None"""
         widget.up_image = image
@@ -362,10 +362,10 @@ class World(EventListenerBase):
         """Called when user requests to quit game.
            @return: None"""
         if(self.quitFunction != None):
-            window = pychan.widgets.Window(title="Quit?")
+            window = pychan.widgets.Window(title=unicode("Quit?"))
 
             hbox = pychan.widgets.HBox()
-            label = pychan.widgets.Label(text="Are you sure you want to quit?")
+            label = pychan.widgets.Label(text=unicode("Are you sure you want to quit?"))
             yes_button = pychan.widgets.Button(name="yes_button", 
                                                text=unicode("Yes"))
             no_button = pychan.widgets.Button(name="no_button",
