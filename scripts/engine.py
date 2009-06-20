@@ -241,7 +241,7 @@ class Engine:
             if(obj_id == i.id):
                 if isinstance(i, NpcData):
                     # keep it simple for now, None to be replaced by callbacks
-                    actions.append(["Talk", "Talk", self.nullFunc, i])
+                    actions.append(["Talk", "Talk", self.initTalk, i])
                     actions.append(["Attack", "Attack", self.nullFunc, i]) 
                 elif isinstance(i, DoorData):
                     actions.append(["Change Map", "Change Map", \
@@ -261,11 +261,14 @@ class Engine:
         """Sample callback for the context menus."""
         print userdata
     
-    def initTalk(self, npc):
+    def initTalk(self, npcInfo):
         """ Starts the PC talking to an NPC. """
         # TODO: work more on this when we get NPCData and HeroData straightened
         # out
-        npc.talk()
+        for npc in self.npcs:
+            if str(npcInfo.id) == npc.id:
+                npc.talk()
+                break
         self.PC.approachNPC(npc.getLocation())
 
     def loadMap(self, map_file):
@@ -273,8 +276,6 @@ class Engine:
            @type map_file: string
            @param map_file: Name of map file to load
            @return: None"""
-        # try to clear the menu
-        self.view.clearMenu()
         # then we let FIFE load the rest of the map
         self.view.load(str(map_file))
         # then we update FIFE with the PC, NPC and object details
