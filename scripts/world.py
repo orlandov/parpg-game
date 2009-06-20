@@ -16,6 +16,7 @@
 #   along with PARPG.  If not, see <http://www.gnu.org/licenses/>.
 
 import fife, time
+import pychan
 from datetime import date
 from scripts.common.eventlistenerbase import EventListenerBase
 from loaders import loadMapFile
@@ -219,8 +220,9 @@ class World(EventListenerBase):
         """Pause the game and enter the inventory screen, or close the
            inventory screen and resume the game. callFromHud should be true
            (must be True?) if you call this function from the HUD script
-           @type callFromHud: ???
-           @param callFromHud: ???
+           @type callFromHud: boolean
+           @param callFromHud: Whether this function is being called 
+                               from the HUD script
            @return: None"""
         if (self.inventoryShown == False):
             self.inventory.showInventory()
@@ -358,10 +360,27 @@ class World(EventListenerBase):
 
     def quitGame(self):
         """Called when user requests to quit game.
-           TODO: Should give an 'Are you sure?' message
            @return: None"""
         if(self.quitFunction != None):
-            self.quitFunction()
+            window = pychan.widgets.Window(title="Quit?")
+
+            hbox = pychan.widgets.HBox()
+            label = pychan.widgets.Label(text="Are you sure you want to quit?")
+            yes_button = pychan.widgets.Button(name="yes_button", 
+                                               text=unicode("Yes"))
+            no_button = pychan.widgets.Button(name="no_button",
+                                              text=unicode("No"))
+
+            window.addChild(label)
+            hbox.addChild(yes_button)
+            hbox.addChild(no_button)
+            window.addChild(hbox)
+
+            events_to_map = {"yes_button":self.quitFunction,
+                             "no_button":window.hide}
+            
+            window.mapEvents(events_to_map)
+            window.show()
 
     def saveGame(self):
         """ Called when the user wants to save the game.
