@@ -23,6 +23,7 @@ if not os.path.exists('settings.xml'):
     shutil.copyfile('settings-dist.xml', 'settings.xml')
 
 import fife_compat, fife, fifelog
+import pychan
 from scripts import world
 from scripts import engine
 from scripts.common import eventlistenerbase
@@ -84,6 +85,7 @@ class PARPG(ApplicationBase):
         self.listener = ApplicationListener(self.engine,self.world)
         self.world.quitFunction = self.listener.quitGame
         self.model.loadMap(str(TDS.readSetting("MapFile")))   
+        pychan.init(self.engine, debug = True)
 
     def loadSettings(self):
         """Load the settings from a python file and load them into the engine.
