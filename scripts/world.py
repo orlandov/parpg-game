@@ -87,6 +87,9 @@ class World(EventListenerBase):
         self.refreshReadyImages()
         # init the sound (don't start playing yet)
         self.sounds = SoundEngine(self.engine)
+        
+        self.context_menu = ContextMenu (self.engine, [], (0,0))
+        self.context_menu.hide()
 
     def reset(self):
         """Reset the data to default settings.
@@ -281,37 +284,31 @@ class World(EventListenerBase):
            @type evt: fife.event
            @param evt: The event that fife caught
            @return: None"""
-        click = fife.ScreenPoint(evt.getX(), evt.getY())
+        self.context_menu.hide() # hide the context menu in case it is displayed
+        scr_point = fife.ScreenPoint(evt.getX(), evt.getY())
         if(evt.getButton() == fife.MouseEvent.LEFT):
-            self.data.handleMouseClick(self.getCoords(click))
-            self.clearMenu() 
+            self.data.handleMouseClick(self.getCoords(scr_point))      
         elif(evt.getButton() == fife.MouseEvent.RIGHT):
             # is there an object here?
-            i=self.cameras['main'].getMatchingInstances(click, self.agent_layer)
+            instances = self.cameras['main'].getMatchingInstances(scr_point, self.agent_layer)
             info = None
-            if(i != ()):
-                for obj in i:
-                    # check to see if this is an active item
-                    if(self.data.objectActive(obj.getId())):            
-                        # yes, get the data
-                        info = self.data.getItemActions(obj.getId())
-                        break
-            # delete the old context menu
-            self.clearMenu()
-            if info:
-                # take the menu items returned by the engine
-                data = info
-            else:
-                # default menu, could be walk etc.
-                data = [["Walk", "Walk here", self.onWalk, self.getCoords(click)]]
-            pos = (evt.getX(), evt.getY())
-            self.context_menu = ContextMenu(self.engine, data, pos)
+            for inst in instances:
+                # check to see if this is an active item
+                if(self.data.objectActive(inst.getId())):            
+                    # yes, get the data
+                    info = self.data.getItemActions(inst.getId())
+                    break
+                
+            # take the menu items returned by the engine or show a default menu if no items    
+            data = info or [["Walk", "Walk here", self.onWalk, self.getCoords(scr_point)]]
+            # show the menu
+            self.context_menu = ContextMenu(self.engine, data, (scr_point.x,scr_point.y))
 
     def onWalk(self, click):
         """Callback sample for the context menu.
         """
+        self.context_menu.hide()
         self.data.PC.run(click)
-        self.clearMenu()
 
     def mouseMoved(self, evt):
         """Called when the mouse is moved
