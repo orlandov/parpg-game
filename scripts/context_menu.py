@@ -19,13 +19,13 @@ import fife, pychan
 
 class ContextMenu(object):
     def __init__(self, engine, menu_items, pos):
-        """@type engine: ???
-           @param engine: ??? 
+        """@type engine: engine.Engine
+           @param engine: An instance of the class Engine from engine.py 
            @type menu_items: list
            @param menu_items: A list of items containing the name and 
                               text for the menu item and callback
                               i.e. [["menu", "Some text",  Callback]
-           @type pos: ???
+           @type pos: (int, int)
            @param pos: Screen position to use 
            @return: None"""
 
