@@ -177,6 +177,7 @@ class Hud():
                                "closeButton":self.options_menu.hide,
                                "defaultsButton":self.setToDefaults,
                                "InitialVolumeSlider":self.updateVolumeText}
+
         self.Resolutions = ['640x480', '800x600',
                             '1024x768', '1280x1024', '1440x900']
         self.RenderBackends = ['OpenGL', 'SDL']
@@ -191,14 +192,33 @@ class Hud():
                 'RenderBox': self.RenderBackends,
                 'InitialVolumeLabel' : initialVolumeText
                 })
-        # TODO: fix bad line length here
-        self.options_menu.distributeData({
-                'FullscreenBox':int(self.settings.readSetting(name="FullScreen")), 
-                'SoundsBox':int(self.settings.readSetting(name="PlaySounds")),
-                'ResolutionBox':self.Resolutions.index(str(self.settings.readSetting("ScreenWidth")) + 'x' + str(self.settings.readSetting("ScreenHeight"))),
-                'RenderBox': self.renderNumber,
-                'InitialVolumeSlider':initialVolume
-                })
+
+        sFullscreen = self.settings.readSetting(name="FullScreen")
+        sSounds = self.settings.readSetting(name="PlaySounds")
+        sRender = self.renderNumber
+        sVolume = initialVolume
+
+        screen_width = self.settings.readSetting(name="ScreenWidth")
+        screen_height = self.settings.readSetting(name="ScreenHeight")
+        indexRes = str(screen_width + 'x' + screen_height)
+        try:
+            sResolution = self.Resolutions.index(indexRes)
+            resolutionInList = True
+        except:
+            resolutionInList = False
+
+        dataToDistribute = {
+                'FullscreenBox':int(sFullscreen), 
+                'SoundsBox':int(sSounds),
+                'RenderBox': sRender,
+                'InitialVolumeSlider':sVolume
+                }
+
+        if (resolutionInList == True):
+            dataToDistribute['ResolutionBox'] = sResolution
+
+        self.options_menu.distributeData(dataToDistribute)
+
         self.options_menu.mapEvents(self.options_events)
 
     def updateVolumeText(self):
@@ -221,49 +241,81 @@ class Hud():
     def applyOptions(self):
         """Apply the current options.
            @return: None"""
-        # TODO: line lengths here are horrible
-        # TODO: add comments
+        # At first no restart is required
         self.requireRestart = False
-        enable_fullscreen, enable_sound, screen_resolution, render_backend, initial_volume = self.options_menu.collectData('FullscreenBox', 'SoundsBox', 'ResolutionBox', 'RenderBox', 'InitialVolumeSlider')
+
+        # get the current values of each setting from the options menu
+        enable_fullscreen = self.options_menu.collectData('FullscreenBox')
+        enable_sound = self.options_menu.collectData('SoundsBox')
+        screen_resolution = self.options_menu.collectData('ResolutionBox')
+        partition = self.Resolutions[screen_resolution].partition('x')
+        screen_width = partition[0]
+        screen_height = partition[2]
+        render_backend = self.options_menu.collectData('RenderBox')
+        initial_volume = self.options_menu.collectData('InitialVolumeSlider')
         initial_volume = "%.1f" % initial_volume
 
-        if (int(enable_fullscreen) != int(self.settings.readSetting('FullScreen'))):
+        # get the options that are being used right now from settings.xml
+        sFullscreen = self.settings.readSetting('FullScreen')
+        sSound = self.settings.readSetting('PlaySounds')
+        sRender = self.settings.readSetting('RenderBackend')
+        sVolume = self.settings.readSetting('InitialVolume')
+
+        sScreenHeight = self.settings.readSetting('ScreenHeight')
+        sScreenWidth = self.settings.readSetting('ScreenWidth')
+        sResolution = sScreenWidth + 'x' + sScreenHeight
+
+        # On each:
+        # - Check to see whether the option within the xml matches the
+        #   option within the options menu
+        # - If they do not match, set the option within the xml to
+        #   to be what is within the options menu
+        # - Require a restart
+
+        if (int(enable_fullscreen) != int(sFullscreen)):
             self.setOption('FullScreen', int(enable_fullscreen))
             self.requireRestart = True
             
-        if (int(enable_sound) != int(self.settings.readSetting('PlaySounds'))):
+        if (int(enable_sound) != int(sSound)):
             self.setOption('PlaySounds', int(enable_sound))
             self.requireRestart = True
 
-        if (screen_resolution != self.Resolutions.index(str(self.settings.readSetting("ScreenWidth")) + 'x' + str(self.settings.readSetting("ScreenHeight")))):
-            self.setOption('ScreenWidth', int(self.Resolutions[screen_resolution].partition('x')[0]))
-            self.setOption('ScreenHeight', int(self.Resolutions[screen_resolution].partition('x')[2]))
+        if (screen_resolution != sResolution):
+            self.setOption('ScreenWidth', int(screen_width))
+            self.setOption('ScreenHeight', int(screen_height))
             self.requireRestart = True
-        
+
+        # Convert the number from the list of render backends to
+        # the string that FIFE wants for its settings.xml
         if (render_backend == 0):
             render_backend = 'OpenGL'
         else:
             render_backend = 'SDL'
 
-        if (render_backend != str(self.settings.readSetting("RenderBackend"))):
+        if (render_backend != str(sRender)):
             self.setOption('RenderBackend', render_backend)
             self.requireRestart = True
 
-        if (initial_volume != float(self.settings.readSetting("InitialVolume"))):
+        if (initial_volume != float(sVolume)):
             self.setOption('InitialVolume', initial_volume)
             self.requireRestart = True
-
+        
+        # Write all the settings to settings.xml
         self.settings.tree.write('settings.xml')
+        
+        # If the changes require a restart, popup the dialog telling
+        # the user to do so
         if (self.requireRestart):
             self.requireRestartDialog()
+        # Once we are done, we close the options menu
         self.options_menu.hide()
 
     def setOption(self, name, value):
         """Set an option within the xml.
-           @type name: ???
-           @param name: The name?
-           @type value: ???
-           @param value: The value?
+           @type name: string
+           @param name: The name of the option within the xml
+           @type value: any
+           @param value: The value that the option 'name' should be set to
            @return: None"""
         element = self.settings.root_element.find(name)
         if(element != None):
