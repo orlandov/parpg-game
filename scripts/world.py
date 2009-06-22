@@ -145,10 +145,11 @@ class World(EventListenerBase):
         # start playing the music
         # TODO: remove hard coding by putting this in the level data
         # don't force restart if skipping to new section
-        if(self.sounds.music_init == False):
-            self.sounds.playMusic("/music/preciouswasteland.ogg")
-        elif(unpause == True):
-            self.sounds.playMusic()
+        if (TDS.readSetting("PlaySounds") == "1"):
+            if(self.sounds.music_init == False):
+                self.sounds.playMusic("/music/preciouswasteland.ogg")
+            elif(unpause == True):
+                self.sounds.playMusic()
 
     def addPC(self, agent):
         """Add the player character to the map
