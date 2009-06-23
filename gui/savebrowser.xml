@@ -1,0 +1,21 @@
+<Window title="Save">
+	<HBox hexpand="1" vexpand="1">
+		<VBox hexpand="1">
+			<Label name="dirLabel" text="Directories:"/>
+			<ScrollArea min_size="200,300">
+				<ListBox name="dirList"/>
+			</ScrollArea>
+		</VBox>
+		<VBox name="fileColumn" hexpand="1">
+			<Label name="fileLabel" text="Files:"/>
+			<ScrollArea min_size="200,300">
+				<ListBox name="fileList"/>
+			</ScrollArea>
+		</VBox>
+		<VBox hexpand="1">
+		  <Spacer />
+		  <Button name="selectButton" text="Save"/>
+		  <Button name="closeButton" text="Cancel"/>
+		</VBox>
+	</HBox>
+</Window>
