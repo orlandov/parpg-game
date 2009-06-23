@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#/usr/bin/python
 
 #   This file is part of PARPG.
 
@@ -25,7 +25,9 @@ class Inventory():
            @type engine: fife.Engine
            @param engine: An instance of the fife engine
            @type readyCallback: function
-           @param readyCallback: ???
+           @param readyCallback: The function that will make the
+                                 ready slots on the HUD reflect those
+                                 within the inventory
            @return: None"""
         pychan.init(engine, debug = True)
         self.engine = engine
@@ -111,9 +113,9 @@ class Inventory():
 
     def setMouseCursor(self, image, dummy_image, type = "native"): 
         """Set the mouse cursor to an image.
-           @type image: ???
-           @param image: ???
-           @type dummy_image: ???
+           @type image: string
+           @param image: The image you want to set the cursor to
+           @type dummy_image: string
            @param dummy_image: ???
            @type type: string
            @param type: ???
@@ -145,8 +147,9 @@ class Inventory():
         
     def dragDrop(self, obj):
         """Decide whether to drag or drop the image.
-           @type obj: ???
-           @param obj: ???
+           @type obj: string
+           @param obj: The name of the object within 
+                       the dictionary 'self.buttons'
            @return: None"""
         if(self.dragging == True):
             self.dropObject(obj)
@@ -155,29 +158,40 @@ class Inventory():
                 
     def dragObject(self, obj):
         """Drag the selected object.
-           @type obj: ???
-           @param obj: ???
+           @type obj: string
+           @param obj: The name of the object within
+                       the dictionary 'self.buttons'
            @return: None"""
-        # TODO: add some comments - what's the logic?
+        # get the widget from the inventory with the name obj
         drag_widget = self.inventory.findChild(name = obj)
+        # get it's type (e.g. main_inv)
         self.dragged_type = self.buttons[obj]
+        # get the item that the widget is 'storing'
         self.dragged_item = drag_widget.item
+        # get the up and down images of the widget
         up_image = drag_widget._getUpImage()
         down_image = drag_widget._getDownImage()
+        # set the mouse cursor to be the widget's image
         self.setMouseCursor(up_image,down_image)
         self.dragged_image = up_image
         self.dragging = True
+        # after dragging the 'item', set the widgets' images
+        # so that it has it's default 'empty' images
         drag_widget._setUpImage(self.empty_images[obj])
         drag_widget._setDownImage(self.empty_images[obj])
         drag_widget._setHoverImage(self.empty_images[obj])
         
     def dropObject(self, obj):
         """Drops the object being dropped
-           @type obj: ???
-           @param obj: ???
+           @type obj: string
+           @param obj: The name of the object within
+                       the dictionary 'self.buttons' 
            @return: None"""
-        # TODO: add some comments
+        # find the type of the place that the object
+        # is being dropped onto
         self.dropped_type  =  self.buttons[obj]
+        # if the dragged obj or the place it is being dropped is
+        # in the main inventory, drop the object
         if((self.dragged_type == 'main_inv') or
            (self.dropped_type == 'main_inv')):
             drag_widget = self.inventory.findChild(name = obj)
@@ -186,9 +200,16 @@ class Inventory():
             drag_widget._setDownImage(self.dragged_image)
             drag_widget.item = self.dragged_item
             self.dragging = False
+            #reset the mouse cursor to the normal cursor
             self.resetMouseCursor()
+            # if the object was dropped onto a ready slot, then
+            # update the hud
             if (self.dropped_type == 'ready'):
                 self.readyCallback()
+        
+        # if the dragged object's type is the same as the location to
+        # to drop it at's, and the dragged object's type is in
+        # self.locations, then drop the object
         elif((self.dragged_type == self.dropped_type) and
              (self.dragged_type in self.locations)):
             drag_widget = self.inventory.findChild(name = obj)
@@ -197,10 +218,16 @@ class Inventory():
             drag_widget._setDownImage(self.dragged_image)
             drag_widget.item = self.dragged_item
             self.dragging = False
+            # reset the mouse cursor
             self.resetMouseCursor()
+            # if the object was dropped onto a ready slot, then
+            # update the hud
             if(self.dropped_type == 'ready'):
                 self.readyCallback()
+        # otherwise, we assume that the player is trying to
+        # drop an object onto an incompatible slot
         else:
+            # reset the mouse cursor
             self.resetMouseCursor()
             self.dragging = False
 
