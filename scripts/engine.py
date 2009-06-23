@@ -16,7 +16,7 @@
 #   along with PARPG.  If not, see <http://www.gnu.org/licenses/>.
 
 # there should be NO references to FIFE here!
-import pickle
+import pickle, sys
 from agents.hero import Hero
 from agents.npc import NPC
 from objLoader import LocalXMLParser
@@ -66,14 +66,15 @@ class Engine:
         self.npcs = []
         self.doors = {}
 
-    def save(self, filename):
+    def save(self, path, filename):
         """Writes the saver to a file.
            @type filename: string
            @param filename: the name of the file to write to
            @return: None"""
         self.updateGameState()
+        fname = '/'.join([path,filename])
         try:
-            f = open(filename, 'r')
+            f = open(fname, 'w')
         except(IOError):
             sys.stderr.write("Error: Can't find save game\n")
             return
@@ -82,13 +83,14 @@ class Engine:
         pickle.dump(self.currentMap, f)
         f.close()
 
-    def load(self, filename):
+    def load(self, path, filename):
         """Loads a saver from a file.
            @type filename: string
            @param filename: the name of the file to load from
            @return: None"""
+        fname = '/'.join([path, filename])
         try:
-            f = open(filename, 'r')
+            f = open(fname, 'r')
         except(IOError):
             sys.stderr.write("Error: Can't find save game file\n")
             return
@@ -96,8 +98,8 @@ class Engine:
         self.objects = pickle.load(f)
         self.currentMap = pickle.load(f)
         f.close()
-        if self.gameState.currentMap:
-            self.loadMap(self.gameState.currentMap)
+        if self.currentMap:
+            self.loadMap(self.currentMap)
             
     def updateGameState(self):
         """Stores the current pc and npcs positons in the game state."""

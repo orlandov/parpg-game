@@ -17,6 +17,7 @@
 
 import fife, time
 import pychan
+from scripts.filebrowser import FileBrowser
 from datetime import date
 from scripts.common.eventlistenerbase import EventListenerBase
 from loaders import loadMapFile
@@ -30,7 +31,6 @@ from pychan.tools import callbackWithArguments as cbwa
 from engine import MapDoor
 
 TDS = Setting()
-SAVE_FILE = 'my-save.pic'
 
 # this file should be the meta-file for all FIFE-related code
 # engine.py handles is our data model, whilst this is our view
@@ -365,7 +365,8 @@ class World(EventListenerBase):
             window = pychan.widgets.Window(title=unicode("Quit?"))
 
             hbox = pychan.widgets.HBox()
-            label = pychan.widgets.Label(text=unicode("Are you sure you want to quit?"))
+            are_you_sure = "Are you sure you want to quit?"
+            label = pychan.widgets.Label(text=unicode(are_you_sure))
             yes_button = pychan.widgets.Button(name="yes_button", 
                                                text=unicode("Yes"))
             no_button = pychan.widgets.Button(name="no_button",
@@ -386,13 +387,23 @@ class World(EventListenerBase):
         """ Called when the user wants to save the game.
             TODO: allow the user to select a file
             @return: None"""
-        self.data.save(SAVE_FILE)
+        self.save_browser = FileBrowser(self.engine,
+                                        self.data.save,
+                                        savefile=True,
+                                        guixmlpath="gui/savebrowser.xml",
+                                        extensions = ('.dat'))
+        self.save_browser.showBrowser()
+            
 
     def loadGame(self):
         """ Called when the user wants to load a game.
-            TODO: allow the user to select a file
             @return: None"""
-        self.data.load(SAVE_FILE)
+        self.load_browser = FileBrowser(self.engine,
+                                        self.data.load,
+                                        savefile=True,
+                                        guixmlpath='gui/loadbrowser.xml',
+                                        extensions=('.dat'))
+        self.load_browser.showBrowser()
 
     def pump(self):
         """Routine called during each frame. Our main loop is in ./run.py
