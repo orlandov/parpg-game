@@ -17,7 +17,7 @@
 
 import fife, time
 import pychan
-from scripts.filebrowser import FileBrowser
+from scripts.parpgfilebrowser import PARPGFileBrowser
 from datetime import date
 from scripts.common.eventlistenerbase import EventListenerBase
 from loaders import loadMapFile
@@ -387,7 +387,7 @@ class World(EventListenerBase):
         """ Called when the user wants to save the game.
             TODO: allow the user to select a file
             @return: None"""
-        self.save_browser = FileBrowser(self.engine,
+        self.save_browser = PARPGFileBrowser(self.engine,
                                         self.data.save,
                                         savefile=True,
                                         guixmlpath="gui/savebrowser.xml",
@@ -398,9 +398,9 @@ class World(EventListenerBase):
     def loadGame(self):
         """ Called when the user wants to load a game.
             @return: None"""
-        self.load_browser = FileBrowser(self.engine,
+        self.load_browser = PARPGFileBrowser(self.engine,
                                         self.data.load,
-                                        savefile=True,
+                                        savefile=False,
                                         guixmlpath='gui/loadbrowser.xml',
                                         extensions=('.dat'))
         self.load_browser.showBrowser()
