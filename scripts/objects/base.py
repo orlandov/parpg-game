@@ -15,11 +15,46 @@
 #   You should have received a copy of the GNU General Public License
 #   along with PARPG.  If not, see <http://www.gnu.org/licenses/>.
 
+"""Containes classes defining the base properties of all interactable in-game 
+objects (such as Carryable, Openable, etc. These are generally independent 
+classes, which can be combined in almost any way and order. 
+
+Some rules that should be followed when CREATING base property classes:
+1. If you want to support some custom initialization arguments, always define 
+them as keyword ones. Only GameObject would use positional arguments.
+2. In __init__() **ALWAYS** call the parent's __init__(**kwargs), preferably *at the
+end* of your __init__() (makes is easier to follow)
+3. There should always be an is_x class member set to True on __init__ (where X is 
+the name of the class)
+
+EXAMPLE:
+class Openable(object):
+    def __init__ (self, is_open = True, **kwargs):
+        self.is_openable = True
+        self.is_open = is_open
+        super(Openable,self).__init__ (**kwargs)
+        
+====
+
+Some rules are to be followed when USING the base classes to make composed ones:
+1. The first parent (left to right) should always be the base GameObject class
+2. Base classes other than GameObject can be inherited in any order
+3. The __init__ functoin of the composed class should always invoke the parent's
+__init__() *before* it starts customizing any variables.
+
+EXAMPLE:
+class TinCan (GameObject, Container, Scriptable, Destructable, Carryable):
+    def __init__ (self, *args, **kwargs):
+        super(TinCan,self).__init__ (*args, **kwargs)
+        self.name = 'Tin Can'
+"""
 
 class GameObject (object):
-    """A base class that should be inherited by all interactable game objects"""
+    """A base class that should be inherited by all interactable game objects.
+    This must be the first class (left to right) inherited by any game object.
+    """
     def __init__ (self, ID, gfx = {}, coords = (0.0,0.0), mapref = None, 
-                  name="Generic object", text="Item description", *args, **kwargs):
+                  name="Generic object", text="Item description", **kwargs):
         """Set the basic values that are shared by all game objects.
         @type ID: String
         @param ID: Unique object identifier. Must be present.
@@ -63,32 +98,52 @@ class GameObject (object):
         return "<%s:%s>" % (self.name, self.ID)
 
 class Openable(object):
+    """Adds open() and .close() capabilities to game objects
+    The current state is tracked by the .is_open variable"""
     def __init__ (self, is_open = True, **kwargs):
+        """Init operation for openable objects
+        @type is_open: Boolean
+        @param is_open: Keyword boolen argument to set the initial open state.
+        """
         self.is_openable = True
         self.is_open = is_open
         super(Openable,self).__init__ (**kwargs)
     
     def open(self):
+        """Opens the object, and runs an 'onOpen' script, if present"""
         self.is_open = True
-    
+        if self.trueAttr ('scriptable'):
+            self.runScript('onOpen')
+            
     def close(self):
-        self.is_closed = True
+        """Opens the object, and runs an 'onClose' script, if present"""
+        self.is_open = False
+        if self.trueAttr ('scriptable'):
+            self.runScript('onClose')             
         
 class Lockable (Openable):
+    """Allows objects to be locked"""
     def __init__ (self, locked = True, **kwargs):
+        """Init operation for lockable objects
+        @type locked: Boolean
+        @param locked: Keyword boolen argument to set the initial locked state.
+        """
         self.is_lockable = True
         self.locked = locked
         super(Lockable,self).__init__ (**kwargs)
         
     def unlock (self):
+        """Handles unlocking functionality"""
         self.locked = False
-        self.close()        
+        self.open()        
         
     def lock (self):
+        """Handles  locking functionality"""
+        self.close()
         self.locked = True
-        self.is_open = False
         
 class Carryable (object):
+    """Allows objects to be stored in containers"""
     def __init__ (self, **kwargs):
         self.is_carryable = True
         self.in_container = None
@@ -96,22 +151,33 @@ class Carryable (object):
         super(Carryable,self).__init__ (**kwargs)
     
 class Container (object):
+    """Gives objects the capability to hold other objects"""
     def __init__ (self, **kwargs):
         self.is_container = True
         self.items = []
         super(Container,self).__init__ (**kwargs)
         
     def storeItem (self, item):
+        """Adds the provided carriable item to the inventory. 
+        Runs an 'onStoreItem' script, if present"""    
         if not item.trueAttr ('carryable'):
             raise ValueError ('% is not carriable!' % item)
         item.in_container = self
         self.items.append (item)
+        # Run any scripts associated with storing an item in the container
+        if self.trueAttr ('scriptable'):
+            self.runScript('onStoreItem')
         
     def popItem (self, item, newcontainer):
+        """Takes the listed item out of the inventory, and adds it to
+        `newcontainer`. Runs an 'onPopItem' script"""        
         if not item in self.items:
             raise ValueError ('I do not contain this item: %s' % item)
         self.items.remove (item)
-        newcontainer.putItem (item)
+        newcontainer.storeItem (item)
+        # Run any scripts associated with popping an item out of the container
+        if self.trueAttr ('scriptable'):
+            self.runScript('onPopItem')
         
 class Inventory (object):
     """Aggregate class for things that have multiple Containers"""
@@ -128,42 +194,61 @@ class Living (object):
         self.is_living = False
         
 class Scriptable (object):
+    """Allows objects to have predefined scripts executed on certain events"""
     def __init__ (self, scripts = {}, **kwargs):
+        """Init operation for scriptable objects
+        @type scripts: Dictionary
+        @param scripts: Dictionary where the event strings are keys. The values 
+        are 3-item tuples (function, positional_args, keyword_args)
+        """ 
         self.is_scriptable = True
         self.scripts = scripts 
         super(Scriptable,self).__init__ (**kwargs)
         
-    def runScript (self, script_name):
-        if script_name in self.scripts and self.scrpits[script_name]:
-            func, args, kwargs = self.scrpits[script_name]
+    def runScript (self, event):
+        """Runs the script for the given event"""
+        if event in self.scripts and self.scrpits[event]:
+            func, args, kwargs = self.scrpits[event]
             func (*args, **kwargs)
+            
+    def setScript (self, event, func, args = [] , kwargs={}):
+        """Sets a script to be executed for the given event."""
+        self.scripts[event] = (func, args, kwargs)
 
 class CharStats (object):
+    """Provides the object with character statistics"""
     def __init__ (self, **kwargs):
         self.is_charstats = True
         super(CharStats,self).__init__ (**kwargs)
         
 class Wearable (object):
     def __init__ (self, **kwargs):
+        """Allows the object to be weared somewhere on the body (e.g. pants)"""
         self.is_wearable = True
         super(Wearable,self).__init__ (**kwargs)
     
 class Usable (object):
+    """Allows the object to be used in some way (e.g. a Zippo lighter to make a 
+    fire)
+    """
     def __init__ (self, **kwargs):
         self.is_usable = True
         super(Usable,self).__init__ (**kwargs)
         
 class Weapon (object):
+    """Allows the object to be used as a weapon"""
     def __init__ (self, **kwargs):
         self.is_weapon = True
         super(Weapon,self).__init__ (**kwargs)
         
 class Destructable (object):
+    """Allows the object to be destroyed"""
     def __init__ (self, **kwargs):
         self.is_destructable = True
         super(Destructable,self).__init__ (**kwargs)
         
 class Trappable (object):
+    """Provides trap slots to the object"""
     def __init__ (self, **kwargs):
         self.is_trappable = True
         super(Trappable,self).__init__ (**kwargs)
