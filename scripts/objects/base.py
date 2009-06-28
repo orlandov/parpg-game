@@ -54,7 +54,8 @@ class GameObject (object):
     This must be the first class (left to right) inherited by any game object.
     """
     def __init__ (self, ID, gfx = {}, coords = (0.0,0.0), mapref = None, 
-                  name="Generic object", text="Item description", **kwargs):
+                  blocking=True, name="Generic object", text="Item description",
+                  **kwargs):
         """Set the basic values that are shared by all game objects.
         @type ID: String
         @param ID: Unique object identifier. Must be present.
@@ -64,6 +65,8 @@ class GameObject (object):
         @param coords: Initial coordinates of the object.
         @type mapref: ???
         @param mapref: Reference to the map where the object is located
+        @type blocking: Boolean
+        @param blocking: Whether the object blocks character movement
         @type name: String
         @param name: The display name of this object (e.g. 'Dirty crate')
         @type text: String
@@ -73,6 +76,7 @@ class GameObject (object):
         self.gfx = gfx
         self.X, self.Y = float(coords[0]), float (coords[1])
         self.mapref = mapref
+        self.blocking = True
         self.name = name
         self.text = text
         super(GameObject,self).__init__ (**kwargs)
