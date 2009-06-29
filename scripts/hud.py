@@ -106,8 +106,8 @@ class Hud():
 
     def addAction(self, action):
         """Add an action to the actions box.
-           @type action: ???
-           @param action: ???
+           @type action: string
+           @param action: The text that you want to display in the actions box
            @return: None"""
         self.actionsText.insert(0, action)
         self.refreshActionsBox()
@@ -345,3 +345,8 @@ class Hud():
         else:
             button.toggled = 0
 
+    def readyAction(self, ready_button):
+        """ Called when the user selects a ready button from the HUD """
+        text = "Used the item from %s" % ready_button
+        self.addAction(text)
+        

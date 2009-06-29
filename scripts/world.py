@@ -74,6 +74,9 @@ class World(EventListenerBase):
         self.hud.events_to_map["inventoryButton"] = cbwa(self.displayInventory, True)
         self.hud.events_to_map["saveButton"] = self.saveGame
         self.hud.events_to_map["loadButton"] = self.loadGame
+        hud_ready_buttons = ["hudReady1", "hudReady2", "hudReady3", "hudReady4"]
+        for item in hud_ready_buttons:
+            self.hud.events_to_map[item] = cbwa(self.hud.readyAction, item)
         self.hud.hud.mapEvents(self.hud.events_to_map)
         self.hud.menu_events["quitButton"] = self.quitGame
         self.hud.menu_events["saveButton"] = self.saveGame
