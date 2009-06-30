@@ -253,7 +253,7 @@ class Engine:
                     actions.append(["Examine", "Examine", self.nullFunc, i])
                     # is it a container?
                     if(i.container == True):
-                        actions.append(["Open", "Open", self.nullFunc, i])
+                        actions.append(["Open", "Open", self.view.createBoxGUI, i])
                     # can you pick it up?
                     if(i.carryable == True):
                         actions.append(["Pick Up", "Pick Up", self.nullFunc, i])       

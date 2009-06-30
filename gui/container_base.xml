@@ -1,0 +1,22 @@
+<Window name="topWindow" position_technique="center:center">
+  <HBox>
+    <ImageButton name="Slot1" />
+    <ImageButton name="Slot2" />
+    <ImageButton name="Slot3" />
+  </HBox>
+  <HBox>
+    <ImageButton name="Slot4" />
+    <ImageButton name="Slot5" />
+    <ImageButton name="Slot6" />
+  </HBox>
+  <HBox>
+    <ImageButton name="Slot7" />
+    <ImageButton name="Slot8" />
+    <ImageButton name="Slot9" />
+  </HBox>
+  <HBox>
+    <Button name="takeAllButton" text="Take All" />
+    <Spacer />
+    <Button name="closeButton" text="Close" />
+  </HBox>
+</Window>
