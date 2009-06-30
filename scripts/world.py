@@ -26,6 +26,7 @@ from agents.npc import NPC
 from sounds import SoundEngine
 from settings import Setting
 from scripts import inventory, hud
+from scripts.gui_container import ContainerGUI
 from scripts.context_menu import ContextMenu
 from pychan.tools import callbackWithArguments as cbwa
 from engine import MapDoor
@@ -407,6 +408,16 @@ class World(EventListenerBase):
                                         guixmlpath='gui/loadbrowser.xml',
                                         extensions=('.dat'))
         self.load_browser.showBrowser()
+
+    def createBoxGUI(self, obj):
+        """
+        Creates a window to display the contents of a box
+        
+        @type obj: ???
+        @param obj: ???
+        """
+        c = ContainerGUI(self.engine, unicode("Box"), "gui/inv_images/inv_backpack.png")
+        c.showContainer()
 
     def pump(self):
         """Routine called during each frame. Our main loop is in ./run.py
