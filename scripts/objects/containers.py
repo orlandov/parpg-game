@@ -18,6 +18,8 @@
 """Containes classes defining concrete container game objects like crates,
 barrels, chests, etc."""
 
+__all__ = ["WoodenCrate",]
+
 import composed
 
 class WoodenCrate (composed.ImmovableContainer):
