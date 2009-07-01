@@ -53,7 +53,7 @@ class GameObject (object):
     """A base class that should be inherited by all interactable game objects.
     This must be the first class (left to right) inherited by any game object.
     """
-    def __init__ (self, ID, gfx = {}, coords = (0.0,0.0), mapref = None, 
+    def __init__ (self, ID, gfx = {}, coords = (0.0,0.0), map_id = None, 
                   blocking=True, name="Generic object", text="Item description",
                   **kwargs):
         """Set the basic values that are shared by all game objects.
@@ -63,8 +63,8 @@ class GameObject (object):
         @param gfx: Dictionary with graphics for the different contexts       
         @type coords 2-item tuple
         @param coords: Initial coordinates of the object.
-        @type mapref: ???
-        @param mapref: Reference to the map where the object is located
+        @type map_id: ???
+        @param map_id: Identifier of the map where the object is located
         @type blocking: Boolean
         @param blocking: Whether the object blocks character movement
         @type name: String
@@ -75,13 +75,13 @@ class GameObject (object):
         self.ID = ID
         self.gfx = gfx
         self.X, self.Y = float(coords[0]), float (coords[1])
-        self.mapref = mapref
+        self.map_id = map_id
         self.blocking = True
         self.name = name
         self.text = text
         super(GameObject,self).__init__ (**kwargs)
         
-    def trueAtrr (self, attr):
+    def trueAttr (self, attr):
         """Shortcut function to check if the current object has a member named
         is_%attr and if that attribute evaluates to True"""
         return hasattr(self,'is_%s' % attr) and getattr(self, 'is_%s' % attr)
@@ -138,13 +138,19 @@ class Lockable (Openable):
         
     def unlock (self):
         """Handles unlocking functionality"""
-        self.locked = False
-        self.open()        
+        self.locked = False      
         
     def lock (self):
         """Handles  locking functionality"""
         self.close()
         self.locked = True
+        
+    def open (self, *args, **kwargs):
+        """Adds a check to see if the object is unlocked before running the
+        .open() function of the parent class"""
+        if self.locked:
+            raise ValueError ("Open failed: object locked")
+        super (Lockable,self).open(*args,**kwargs)
         
 class Carryable (object):
     """Allows objects to be stored in containers"""
@@ -161,7 +167,7 @@ class Container (object):
         self.items = []
         super(Container,self).__init__ (**kwargs)
         
-    def storeItem (self, item):
+    def placeItem (self, item):
         """Adds the provided carriable item to the inventory. 
         Runs an 'onStoreItem' script, if present"""    
         if not item.trueAttr ('carryable'):
@@ -172,16 +178,15 @@ class Container (object):
         if self.trueAttr ('scriptable'):
             self.runScript('onStoreItem')
         
-    def popItem (self, item, newcontainer):
-        """Takes the listed item out of the inventory, and adds it to
-        `newcontainer`. Runs an 'onPopItem' script"""        
+    def takeItem (self, item):
+        """Takes the listed item out of the inventory. 
+        Runs an 'ontakeItem' script"""        
         if not item in self.items:
             raise ValueError ('I do not contain this item: %s' % item)
         self.items.remove (item)
-        newcontainer.storeItem (item)
         # Run any scripts associated with popping an item out of the container
         if self.trueAttr ('scriptable'):
-            self.runScript('onPopItem')
+            self.runScript('ontakeItem')
         
 class Inventory (object):
     """Aggregate class for things that have multiple Containers"""

@@ -13,7 +13,7 @@ class WoodenCrateTest(unittest.TestCase):
         self.assertEqual(self.crate.gfx, \
                 {'map': 'objects/objects/crate/image.png'})
         self.assertEqual(self.crate.coords, (0.0, 0.0))
-        self.assertEqual(self.crate.mapref, None)
+        self.assertEqual(self.crate.map_id, None)
         self.assertEqual(self.crate.blocking, True)
         self.assertEqual(self.crate.is_open, True)
         self.assertEqual(self.crate.locked, True)
