@@ -176,7 +176,7 @@ class Container (object):
         self.items.append (item)
         # Run any scripts associated with storing an item in the container
         if self.trueAttr ('scriptable'):
-            self.runScript('onStoreItem')
+            self.runScript('onPlaceItem')
         
     def takeItem (self, item):
         """Takes the listed item out of the inventory. 
