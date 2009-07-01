@@ -23,6 +23,7 @@ __all__ = ["WoodenCrate",]
 import composed
 
 class WoodenCrate (composed.ImmovableContainer):
-    def __init__ (self, ID, name = 'Wooden Crate', text = 'A battered down crate',
-                  gfx = {'map': 'objects/objects/crate/image.png'}, **kwargs):
-        super(WoodenCrate,self).__init__ (ID, name = name, gfx = gfx, text = text, **kwargs)
+    def __init__ (self, ID, name = 'Wooden Crate', \
+            text = 'A battered down crate', gfx = {'map': 'crate'}, **kwargs):
+        super(WoodenCrate,self).__init__ (ID, name = name, gfx = gfx, \
+                text = text, **kwargs)

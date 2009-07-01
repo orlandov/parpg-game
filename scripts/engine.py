@@ -23,6 +23,7 @@ from objLoader import LocalXMLParser
 from saver import Saver
 from gamestate import GameState
 from gamedata import *
+from objectLoader import ObjectXMLParser
 
 # design note:
 # there is a map file that FIFE reads. We use that file for half the map
@@ -119,9 +120,12 @@ class Engine:
             return False
         # now open and read the XML file
         cur_handler = LocalXMLParser()
+        other_handler = ObjectXMLParser()
         parser = cur_handler.getParser()
         parser.setContentHandler(cur_handler)
         parser.parse(objects_file)
+        objects_file.seek(0)
+        other_handler.getObjects(objects_file)
         objects_file.close()
         # must have at least 1 PC
         if(cur_handler.pc == None):
@@ -132,7 +136,17 @@ class Engine:
         self.addNPCs(cur_handler.npcs)
         self.addObjects(cur_handler.objects)
         self.addDoors(cur_handler.doors)
+        self.addGameObjs(other_handler.local_info)
         return True
+
+    def addGameObjs(self, objList):
+        """Add all found game objects to the world
+           @type objList: list
+           @param objList: a list of the objects found in the xml file
+           @return: None"""
+        for obj in objList:
+            print obj.X, obj.Y, obj.gfx['map'], obj.ID
+            self.view.addObject(obj.X, obj.Y, obj.gfx['map'], obj.ID)
 
     def addPC(self,pc):
         """Add the PC to the world
