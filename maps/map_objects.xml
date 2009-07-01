@@ -12,8 +12,6 @@
 
     <!-- There can be any number of objects -->
     <!-- Object blocking is set in the objects own xml file -->
-    <object display="True" gfx="crate" xpos="-3.0" ypos="-4.0" id="crate01"
-            carry="0" contain="1" text="Just a crate"></object>
     <object display="True" gfx="crate" xpos="-4.0" ypos="-6.0" id="crate02"
             carry="0" contain="1" text="A dirty old crate"></object>
 
@@ -29,6 +27,10 @@
         txpos="-1" typos="1"></door>
     <door display="True" gfx="snow02" xpos="-14" ypos="10"
         id="tt01" text="New Map" map="maps/map2.xml"
-        txpos="-14" typos="-16"></door>
+		txpos="-14" typos="-16"></door>
+
+	<!-- New way of making objects -->
+	<game_obj type="WoodenCrate" ID="crate01" xpos="-3.0" ypos="-4.0" 
+		is_open="False" locked="False"></game_obj>
 </objects>
 
