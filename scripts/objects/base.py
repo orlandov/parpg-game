@@ -53,7 +53,7 @@ class GameObject (object):
     """A base class that should be inherited by all interactable game objects.
     This must be the first class (left to right) inherited by any game object.
     """
-    def __init__ (self, ID, gfx = {}, coords = (0.0,0.0), map_id = None, 
+    def __init__ (self, ID, gfx = {}, xpos = 0.0, ypos = 0.0, map_id = None, 
                   blocking=True, name="Generic object", text="Item description",
                   **kwargs):
         """Set the basic values that are shared by all game objects.
@@ -74,7 +74,8 @@ class GameObject (object):
         """
         self.ID = ID
         self.gfx = gfx
-        self.X, self.Y = float(coords[0]), float (coords[1])
+        self.X = xpos
+        self.Y = ypos
         self.map_id = map_id
         self.blocking = True
         self.name = name
