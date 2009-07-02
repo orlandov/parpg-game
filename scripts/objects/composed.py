@@ -19,8 +19,10 @@
 
 from base import *
 
-class ImmovableContainer (GameObject, Container, Lockable, Scriptable, Trappable, Destructable):
+class ImmovableContainer(GameObject, Container, Lockable, Scriptable, 
+                         Trappable, Destructable):
     """Composite class that can be used for crates, chests, etc."""
     def __init__ (self, *args, **kwargs):
         super(ImmovableContainer,self).__init__ (*args, **kwargs)
         self.blocking = True
+

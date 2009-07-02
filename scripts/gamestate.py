@@ -18,7 +18,7 @@
 from objects import base
 
 class GameState(object):
-    """This class hold the current state of the game."""
+    """This class holds the current state of the game."""
     def __init__(self):
         """initialize attributes"""
         self.PC = None
