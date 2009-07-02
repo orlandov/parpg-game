@@ -122,3 +122,4 @@ class Hero(fife.InstanceActionListener):
         l = fife.Location(self.agent.getLocation())
         l.setLayerCoordinates(fife.ModelCoordinate(*doorLocation))
         self.agent.move('approachDoor', l, self.speed)
+
