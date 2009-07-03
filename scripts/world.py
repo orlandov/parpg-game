@@ -94,6 +94,8 @@ class World(EventListenerBase):
         
         self.context_menu = ContextMenu (self.engine, [], (0,0))
         self.context_menu.hide()
+        self.boxOpen = False
+        self.boxCreated = False
 
     def reset(self):
         """Reset the data to default settings.
@@ -409,15 +411,26 @@ class World(EventListenerBase):
                                         extensions=('.dat'))
         self.load_browser.showBrowser()
 
-    def createBoxGUI(self, obj):
+    def createBoxGUI(self):
         """
         Creates a window to display the contents of a box
-        
-        @type obj: ???
-        @param obj: ???
         """
-        c = ContainerGUI(self.engine, unicode("Box"), "gui/inv_images/inv_backpack.png")
-        c.showContainer()
+        if ((self.boxCreated == True) and (self.boxOpen == False)):
+            # if it has already been created, just show it
+            self.box_container.showContainer()
+            self.boxOpen = True
+        else:
+            # otherwise create it then show it
+            self.box_container = ContainerGUI(self.engine, unicode("Box"), "gui/inv_images/inv_backpack.png")
+            def close_and_delete():
+                self.box_container.hideContainer()
+                self.boxOpen = False
+            events = {'takeAllButton':close_and_delete,
+                      'closeButton':close_and_delete}
+            self.box_container.container_gui.mapEvents(events)
+            self.box_container.showContainer()
+            self.boxOpen = True
+            self.boxCreated = True
 
     def pump(self):
         """Routine called during each frame. Our main loop is in ./run.py
