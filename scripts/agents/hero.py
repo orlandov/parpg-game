@@ -38,6 +38,7 @@ class Hero(fife.InstanceActionListener):
         self.idlecounter = 1
         self.speed = float(TDS.readSetting("PCSpeed"))
         self.engine = engine
+        self.atBox = False
         
     def onNewMap(self, layer):
         """Sets the agent onto the new layer.
@@ -71,6 +72,9 @@ class Hero(fife.InstanceActionListener):
         if self.state == _STATE_TALK:
             # TODO: do something
             pass
+        if self.atBox == True:
+            self.engine.view.createBoxGUI()
+            self.atBox = False
         self.idle()
         if(action.getId() != 'stand'):
             self.idlecounter = 1
@@ -122,4 +126,18 @@ class Hero(fife.InstanceActionListener):
         l = fife.Location(self.agent.getLocation())
         l.setLayerCoordinates(fife.ModelCoordinate(*doorLocation))
         self.agent.move('approachDoor', l, self.speed)
+
+    def approachBox(self, location):
+        """
+        Approach a box and then open it
+        @type location: list
+        @param locatation: list that is converted to a fife.Location
+        @return: None
+        """
+        self.state = _STATE_RUN
+        boxLocation = tuple([int(float(i)) for i in location])
+        l = fife.Location(self.agent.getLocation())
+        l.setLayerCoordinates(fife.ModelCoordinate(*boxLocation))
+        self.agent.move('run', l, self.speed)
+        self.atBox = True
 
