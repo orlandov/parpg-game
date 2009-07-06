@@ -30,7 +30,9 @@ class ContainerGUI():
         @type title: string
         @param title: The title of the window
         @type data: list or string
-        @param data: A list of 9 images to use for the slots 1 - 9 OR a string for one image that will be used on all the slots
+        @param data: A list of 9 images to use for the slots 1 - 9 
+                     OR
+                     A string for one image that will be used on all the slots
         @return: None
         """
         self.engine = engine
