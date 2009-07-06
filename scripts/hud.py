@@ -152,12 +152,20 @@ class Hud():
         self.help_dialog = pychan.loadXML("gui/help.xml")
         help_events = {"closeButton":self.help_dialog.hide}
         self.help_dialog.mapEvents(help_events)
-        main_help_text = "Put help text here"
-        k_text = " A : Add a test action to the actions display"
+        main_help_text = "Welcome to Post-Apocalyptic RPG or PARPG![br][br]"\
+        "This game is still in development, so please expect for there to be bugs"\
+        " and[br]feel free to tell us about them at http://www.forums.parpg.net.[br]"\
+        "This game uses a \"Point 'N' Click\" interface, which means that to move around,[br]"\
+        "just click where you would like to go and your character will move there.[br]"\
+        "PARPG also utilizes a context menu. To access this, just right click "\
+        "anywhere[br]on the screen and a menu will come up. This menu will change"\
+        " depending on[br]what you have clicked on, hence it's name \"context menu\".[br][br]"
+        
+        k_text =" Keybindings" 
+        k_text+="[br] A : Add a test action to the actions display"
         k_text+="[br] I : Toggle the inventory screen"
-        k_text+="[br]F5 : Take a screenshot"
-        k_text+="[br]     (saves to <parpg>/screenshots/)"
-        k_text+="[br] M : Toggle music on/off"
+        k_text+="[br] F5 : Take a screenshot"
+        k_text+="[br]      (saves to <parpg>/screenshots/)"
         k_text+="[br] Q : Quit the game"
         self.help_dialog.distributeInitialData({
                 "MainHelpText":main_help_text,
