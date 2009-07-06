@@ -391,7 +391,6 @@ class World(EventListenerBase):
 
     def saveGame(self):
         """ Called when the user wants to save the game.
-            TODO: allow the user to select a file
             @return: None"""
         self.save_browser = PARPGFileBrowser(self.engine,
                                         self.data.save,
