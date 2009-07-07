@@ -25,25 +25,33 @@ class ObjectXMLParser(ContentHandler):
     """ObjectXMLParser call constructors to make GameObjects using information
        provided in _objects.xml files."""
     def __init__(self):
+        """Initializes the ObjectXMLParser."""
+        # local_info is a list of dictionaries. When startElement is called 
+        # (through code in the scripts.Engine), this list is populated.
         self.local_info = []
-
-    def getParser(self):
-        """Simple one liner to remove XML dependencies in engine.py.
-           @rtype: parser
-           @return: A parser to work with"""
-        return make_parser()
+        # parser is created when getObjects is called.
+        self.parser = None
+        # an agent layer, which is set to something in getObjects and is set
+        # to None at the end of getObjects to ensure that it is always current.
+        self.agent_layer = None
     
-    def getObjects(self, file_desc):
-        """Gets the objects from the file. Populates the dictionary.
+    def getObjects(self, file_desc, a_layer):
+        """Gets the objects from the file. Populates local_info. This function
+           is how the scripts.Engine object interacts with the objectLoader.
+           So, this function takes the current agent_layer from the engine and
+           sets self.agent_layer so that it can be used in startElement.
            @type file_desc: File
            @param file_desc: an open file from which we read
            @return: None"""
-        parser = self.getParser()
+        parser = make_parser()
         parser.setContentHandler(self)
+        self.agent_layer = a_layer
         parser.parse(file_desc)
+        self.agent_layer = None
 
     def startElement(self, name, attrs):
-        """Called every time we meet a new element in the XML file
+        """Called every time we meet a new element in the XML file. This
+           function is specified in ContentHandler, and is called by the parser.
            @type name: string
            @param name: XML element?
            @type attrs: ???
@@ -59,8 +67,7 @@ class ObjectXMLParser(ContentHandler):
             self.local_info.append(self.createObject(obj_info))
  
     def createObject(self, info):
-        """Called when we need to get an actual object. Nasty if statement.
-           (Don't see why this should have its own class though...)
+        """Called when we need to get an actual object. 
            @type info: dict
            @param info: stores information about the object we want to create
            @return: the object"""
@@ -71,6 +78,11 @@ class ObjectXMLParser(ContentHandler):
         except KeyError:
             sys.stderr.write("Error: Game object missing type or id.")
             sys.exit(False)
+        
+        # add the agent_layer to the object dictionary in case it is needed by
+        # the object we are constructing. If it is not needed, it will be 
+        # ignored
+        info['agent_layer'] = str(self.agent_layer)
 
         all_types = getAllObjects()
         return all_types[obj_type](ID, **info)

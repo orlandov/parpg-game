@@ -125,7 +125,7 @@ class Engine:
         parser.setContentHandler(cur_handler)
         parser.parse(objects_file)
         objects_file.seek(0)
-        other_handler.getObjects(objects_file)
+        other_handler.getObjects(objects_file, self.view.agent_layer)
         objects_file.close()
         # must have at least 1 PC
         if(cur_handler.pc == None):
@@ -145,7 +145,6 @@ class Engine:
            @param objList: a list of the objects found in the xml file
            @return: None"""
         for obj in objList:
-            print obj.X, obj.Y, obj.gfx['map'], obj.ID
             self.view.addObject(obj.X, obj.Y, obj.gfx['map'], obj.ID)
 
     def addPC(self,pc):
