@@ -58,7 +58,7 @@ class ObjectXMLParser(ContentHandler):
            @param attrs: XML attributes
            @return: None"""
         # For now, only looking for game_obj things
-        if name == "game_obj":
+        if str(name) == "object":
             obj_info = dict(attrs.items())
             # we need to convert all the unicode strings to ascii strings
             for key, val in attrs.items():
@@ -74,7 +74,7 @@ class ObjectXMLParser(ContentHandler):
         # First, we try to get the type and ID, which every game_obj needs.
         try:
             obj_type = info.pop('type')
-            ID = info.pop('ID')
+            ID = info.pop('id')
         except KeyError:
             sys.stderr.write("Error: Game object missing type or id.")
             sys.exit(False)
@@ -82,7 +82,7 @@ class ObjectXMLParser(ContentHandler):
         # add the agent_layer to the object dictionary in case it is needed by
         # the object we are constructing. If it is not needed, it will be 
         # ignored
-        info['agent_layer'] = str(self.agent_layer)
+        info['agent_layer'] = self.agent_layer
 
         all_types = getAllObjects()
         return all_types[obj_type](ID, **info)

@@ -4,33 +4,26 @@
      should be stored in this file -->
 <objects format="1.0">
     <!-- There must be one and one only PC character -->
-    <PC xpos="0.0" ypos="0.0"></PC>
+    <object id="PC" gfx="PC" type="PlayerCharacter" xpos="0.0" ypos="0.0"></object>
 
     <!-- There can be any number of NPC characters -->
-    <NPC gfx="npc-woman" xpos="-4.0" ypos="-7.0" id="women01"
-         text="A friendly woman"></NPC>
+    <object type="NonPlayerCharacter" gfx="npc-woman" xpos="-4.0" ypos="-7.0" id="woman01"
+         text="A friendly woman"></object>
 
     <!-- There can be any number of objects -->
     <!-- Object blocking is set in the objects own xml file -->
-    <object display="True" gfx="crate" xpos="-4.0" ypos="-6.0" id="crate02"
-            carry="0" contain="1" text="A dirty old crate"></object>
-
-    <!-- These next things are inside other objects -->
-    <object display="False" gfx="NONE" owner="crate02" id="letter"
-            carry="1" contain="0" text="A newly thrown-away letter"></object>
-    <object display="False" gfx="NONE" owner="crate02" id="battery"
-            carry="1" contain="0" text="An old battery"></object>
+    <object type="WoodenCrate" xpos="-4.0" ypos="-6.0" id="crate02"
+            is_open="False" locked="False" text="A dirty old crate"></object>
+			
+	<object type="WoodenCrate" id="crate01" xpos="-3.0" ypos="-4.0" 
+		is_open="False" locked="False" text="asdf"></object>
 
     <!-- There can be a number of doors, which serve as transition triggers -->
-    <door display="True" gfx="shanty-door" xpos="-2.0" ypos="6.0"
+    <!--door display="True" gfx="shanty-door" xpos="-2.0" ypos="6.0"
         id="sh-door" text="Enter building" map="maps/shanty.xml"
         txpos="-1" typos="1"></door>
     <door display="True" gfx="snow02" xpos="-14" ypos="10"
         id="tt01" text="New Map" map="maps/map2.xml"
-		txpos="-14" typos="-16"></door>
-
-	<!-- New way of making objects -->
-	<game_obj type="WoodenCrate" ID="crate01" xpos="-3.0" ypos="-4.0" 
-		is_open="False" locked="False"></game_obj>
+		txpos="-14" typos="-16"></door-->
 </objects>
 

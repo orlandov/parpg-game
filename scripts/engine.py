@@ -22,7 +22,7 @@ from agents.npc import NPC
 from objLoader import LocalXMLParser
 from saver import Saver
 from gamestate import GameState
-from gamedata import *
+from objects import *
 from objectLoader import ObjectXMLParser
 
 # design note:
@@ -119,23 +119,11 @@ class Engine:
             sys.stderr.write("Error: Can't find objects file\n")
             return False
         # now open and read the XML file
-        cur_handler = LocalXMLParser()
         other_handler = ObjectXMLParser()
-        parser = cur_handler.getParser()
-        parser.setContentHandler(cur_handler)
-        parser.parse(objects_file)
-        objects_file.seek(0)
         other_handler.getObjects(objects_file, self.view.agent_layer)
         objects_file.close()
-        # must have at least 1 PC
-        if(cur_handler.pc == None):
-            sys.stderr.write("Error: No PC defined\n")
-            sys.exit(False)
+            
         # now add to the map and the engine
-        self.addPC(cur_handler.pc)
-        self.addNPCs(cur_handler.npcs)
-        self.addObjects(cur_handler.objects)
-        self.addDoors(cur_handler.doors)
         self.addGameObjs(other_handler.local_info)
         return True
 
@@ -144,30 +132,28 @@ class Engine:
            @type objList: list
            @param objList: a list of the objects found in the xml file
            @return: None"""
-        for obj in objList:
-            self.view.addObject(obj.X, obj.Y, obj.gfx['map'], obj.ID)
+
+        self.addPC(*[obj for obj in objList if obj.trueAttr("PC")])
+        self.addNPCs([obj for obj in objList if obj.trueAttr("NPC")])
+        self.addObjects([obj for obj in objList if (not obj.trueAttr("PC") and not obj.trueAttr("NPC"))])
 
     def addPC(self,pc):
         """Add the PC to the world
            @type pc: list
            @param pc: List of data for PC attributes
            @return: None"""
+        # add to view data    
+        self.view.addObject(pc.X, pc.X, pc.gfx, pc.ID)
+        
         # sync with game data
-        if self.gameState.PC:
-            # use existing position
-            posx = self.gameState.PC.posx
-            posy = self.gameState.PC.posy
-        else:
-            posx = pc[0]
-            posy = pc[1]
-            # save the new PC to the game data
-            self.gameState.PC = HeroData("PC", posx, posy, "PC", self.gameState.currentMap)
-        # add to game data    
-        self.view.addObject(float(posx), float(posy),"PC","PC")
-         # create the PC agent
-        self.PC = Hero("PC", self.view.agent_layer, self)
-        self.PC.start()
-        self.view.addPC(self.PC.agent)
+        if not self.gameState.PC:
+            self.gameState.PC = pc
+            
+        self.gameState.PC.setup()
+        self.view.addPC(self.gameState.PC.behaviour.agent)
+            
+        # create the PC agent
+        self.gameState.PC.start()
 
     def addObjects(self,objects):
         """Add all of the objects we found into the fife map
@@ -177,19 +163,18 @@ class Engine:
            @return: None"""
         for i in objects:
             # already in game data?
-            ref = self.gameState.getObjectById(i.id)
+            ref = self.gameState.getObjectById(i.ID)
             if ref is None:
                 # no, add it to the game state
                 i.map_id = self.gameState.currentMap
-                self.gameState.objects[i.id] = i
+                self.gameState.objects[i.ID] = i
             else:
                 # yes, use the current game state data
-                i.posx = ref.posx
-                i.posy = ref.posy
+                i.X = ref.X
+                i.Y = ref.Y
                 i.gfx = ref.gfx        
-            # is it visible?
-            if i.display:
-                self.view.addObject(i.posx, i.posy, i.gfx, i.id)
+            
+            self.view.addObject(i.X, i.Y, i.gfx, i.ID)
 
     def addNPCs(self,npcs):
         """Add all of the NPCs we found into the fife map to FIFE.
@@ -198,21 +183,25 @@ class Engine:
            @return: None"""
         for i in npcs:
             # already in the game data?
-            ref = self.gameState.getObjectById(i.id) 
+            ref = self.gameState.getObjectById(i.ID) 
             if ref is None:
                 # no, add it to the game state
                 i.map_id = self.gameState.currentMap
-                self.gameState.objects[i.id] = i
+                self.gameState.objects[i.ID] = i
             else:
                 # yes, use the current game state data
-                i.posx = ref.posx
-                i.posy = ref.posy
-                i.gfx = ref.gfx              
+                i.X = ref.X
+                i.Y = ref.Y
+                i.gfx = ref.gfx  
+                
             # add it to the view
-            self.view.addObject(i.posx, i.posy, i.gfx, i.id)          
+            self.view.addObject(i.X, i.Y, i.gfx, i.ID)          
+            
             # create the agent
-            self.npcs.append(NPC(i.text, str(i.id), self.view.agent_layer))
-            self.npcs[-1].start()
+            i.setup()
+            
+            # create the PC agent
+            i.start()
 
     def addDoors(self, doors):
         """Add all the doors to the map as well.
@@ -231,7 +220,7 @@ class Engine:
            @rtype: boolean
            @return: Status of result (True/False)"""
         for i in self.gameState.getObjectsFromMap(self.gameState.currentMap):
-            if i.display and (i.id == ident):
+            if (i.ID == ident):
                 # we found a match
                 return i         
         # no match
@@ -245,24 +234,27 @@ class Engine:
            @return: List of text and callbacks"""
         actions=[]
         # note: ALWAYS check NPC's first!
-        for i in self.gameState.getObjectsFromMap(self.gameState.currentMap):
-            if(obj_id == i.id):
-                if isinstance(i, NpcData):
-                    # keep it simple for now, None to be replaced by callbacks
-                    actions.append(["Talk", "Talk", self.initTalk, i])
-                    actions.append(["Attack", "Attack", self.nullFunc, i]) 
-                elif isinstance(i, DoorData):
-                    actions.append(["Change Map", "Change Map", \
-                            self.PC.approachDoor, [i.posx, i.posy], \
-                            self.doors[str(i.id)].map, [i.destx, i.desty]])
-                elif isinstance(i, NonLivingObjectData):
-                    actions.append(["Examine", "Examine", self.nullFunc, i])
-                    # is it a container?
-                    if(i.container == True):
-                        actions.append(["Open", "Open", self.PC.approachBox, [i.posx, i.posy]])
-                    # can you pick it up?
-                    if(i.carryable == True):
-                        actions.append(["Pick Up", "Pick Up", self.nullFunc, i])       
+        obj = self.gameState.getObjectById(obj_id)
+        
+        if obj:
+            if obj.trueAttr("NPC"):
+                # keep it simple for now, None to be replaced by callbacks
+                actions.append(["Talk", "Talk", self.initTalk, obj])
+                actions.append(["Attack", "Attack", self.nullFunc, obj]) 
+            elif obj.trueAttr("Door"):
+                #actions.append(["Change Map", "Change Map", \
+                #       self.gameState.PC.approachDoor, [obj.X, obj.Y], \
+                #        self.doors[str(i.ID)].map, [i.destx, i.desty]])
+                pass
+            else:
+                actions.append(["Examine", "Examine", self.nullFunc, obj])
+                # is it a container?
+                if obj.trueAttr("container"):
+                    actions.append(["Open", "Open", self.gameState.PC.approachBox, [obj.X, obj.Y]])
+                # can you pick it up?
+                if obj.trueAttr("carryable"):
+                    actions.append(["Pick Up", "Pick Up", self.nullFunc, obj])       
+                    
         return actions
     
     def nullFunc(self, userdata):
@@ -273,11 +265,10 @@ class Engine:
         """ Starts the PC talking to an NPC. """
         # TODO: work more on this when we get NPCData and HeroData straightened
         # out
-        for npc in self.gameState.npcs:
-            if str(npcInfo.id) == npc.id:
-                npc.talk()
-                break
-        self.PC.approachNPC(npc.getLocation())
+        npc = self.gameState.getObjectById(npcInfo.ID)
+        if npc:
+            npc.talk()
+        self.gameState.PC.approachNPC(npc.getLocation())
 
     def loadMap(self, map_file):
         """Load a new map. TODO: needs some error checking
@@ -296,7 +287,7 @@ class Engine:
            @type position: fife.ScreenPoint
            @param position: Screen position of click
            @return: None"""
-        self.PC.run(position)
+        self.gameState.PC.run(position)
         
     def changeMap(self, map, targetPosition):
         """Registers for a mapchange on the next pump().

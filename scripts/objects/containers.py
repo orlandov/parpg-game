@@ -24,6 +24,6 @@ import composed
 
 class WoodenCrate (composed.ImmovableContainer):
     def __init__ (self, ID, name = 'Wooden Crate', \
-            text = 'A battered crate', gfx = {'map': 'crate'}, **kwargs):
+            text = 'A battered crate', gfx = 'crate', **kwargs):
         super(WoodenCrate,self).__init__ (ID, name = name, gfx = gfx, \
                 text = text, **kwargs)

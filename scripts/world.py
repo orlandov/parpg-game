@@ -29,7 +29,7 @@ from scripts import inventory, hud
 from scripts.gui_container import ContainerGUI
 from scripts.context_menu import ContextMenu
 from pychan.tools import callbackWithArguments as cbwa
-from engine import MapDoor
+from gamedata import MapDoor
 
 TDS = Setting()
 
@@ -315,7 +315,7 @@ class World(EventListenerBase):
         """Callback sample for the context menu.
         """
         self.context_menu.hide()
-        self.data.PC.run(click)
+        self.data.gameState.PC.run(click)
 
     def mouseMoved(self, evt):
         """Called when the mouse is moved
