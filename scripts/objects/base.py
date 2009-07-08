@@ -59,7 +59,7 @@ class GameObject (object):
        first class (left to right) inherited by any game object."""
     def __init__ (self, ID, gfx = {}, xpos = 0.0, ypos = 0.0, map_id = None, 
                   blocking=True, name="Generic object", text="Item description",
-                  **kwargs):
+                  desc="Detailed description", **kwargs):
         """Set the basic values that are shared by all game objects.
            @type ID: String
            @param ID: Unique object identifier. Must be present.
@@ -74,7 +74,11 @@ class GameObject (object):
            @type name: String
            @param name: The display name of this object (e.g. 'Dirty crate')
            @type text: String
-           @param text: A longer description of the item"""
+           @param text: A longer description of the item
+           @type desc: String
+           @param desc: A long description of the item that is displayed when it is examined
+           """
+        
         self.ID = ID
         self.gfx = gfx
         self.X = xpos
@@ -83,6 +87,7 @@ class GameObject (object):
         self.blocking = True
         self.name = name
         self.text = text
+        self.desc = desc
         super(GameObject,self).__init__ (**kwargs)
         
     def trueAttr(self, attr):
