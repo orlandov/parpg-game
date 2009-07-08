@@ -19,7 +19,6 @@
 import pickle, sys
 from agents.hero import Hero
 from agents.npc import NPC
-from objLoader import LocalXMLParser
 from saver import Saver
 from gamestate import GameState
 from objects import *
@@ -247,7 +246,7 @@ class Engine:
                 #        self.doors[str(i.ID)].map, [i.destx, i.desty]])
                 pass
             else:
-                actions.append(["Examine", "Examine", self.nullFunc, obj])
+                actions.append(["Examine", "Examine", self.view.createExamineBox, obj.name, obj.desc])
                 # is it a container?
                 if obj.trueAttr("container"):
                     actions.append(["Open", "Open", self.gameState.PC.approachBox, [obj.X, obj.Y]])

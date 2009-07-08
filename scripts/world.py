@@ -26,10 +26,9 @@ from agents.npc import NPC
 from sounds import SoundEngine
 from settings import Setting
 from scripts import inventory, hud
-from scripts.gui_container import ContainerGUI
+from scripts.popups import *
 from scripts.context_menu import ContextMenu
 from pychan.tools import callbackWithArguments as cbwa
-from gamedata import MapDoor
 
 TDS = Setting()
 
@@ -430,6 +429,10 @@ class World(EventListenerBase):
             self.box_container.showContainer()
             self.boxOpen = True
             self.boxCreated = True
+
+    def createExamineBox(self, title, desc):
+        self.examineBox = ExaminePopup(self.engine, title, desc)
+        self.examineBox.showPopUp()
 
     def pump(self):
         """Routine called during each frame. Our main loop is in ./run.py
