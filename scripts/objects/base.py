@@ -50,6 +50,9 @@
        def __init__ (self, *args, **kwargs):
            super(TinCan,self).__init__ (*args, **kwargs)
            self.name = 'Tin Can'"""
+import fife
+from settings import Setting
+from random import randrange
 
 class GameObject (object):
     """A base class to be inherited by all game objects. This must be the

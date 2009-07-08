@@ -15,8 +15,9 @@
 #   You should have received a copy of the GNU General Public License
 #   along with PARPG.  If not, see <http://www.gnu.org/licenses/>.
 import containers
+import actors
 
-object_modules = [containers,]
+object_modules = [containers, actors,]
 
 def getAllObjects ():
     """Returns a dictionary with the names of the concrete game object classes

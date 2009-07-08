@@ -25,4 +25,3 @@ class ImmovableContainer(GameObject, Container, Lockable, Scriptable,
     def __init__ (self, *args, **kwargs):
         super(ImmovableContainer,self).__init__ (*args, **kwargs)
         self.blocking = True
-
