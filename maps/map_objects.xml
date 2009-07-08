@@ -13,10 +13,12 @@
     <!-- There can be any number of objects -->
     <!-- Object blocking is set in the objects own xml file -->
     <object type="WoodenCrate" xpos="-4.0" ypos="-6.0" id="crate02"
-            is_open="False" locked="False" text="A dirty old crate"></object>
+            is_open="False" locked="False" text="A dirty old crate"
+	    desc="A crate that is covered in grime and dirt. There doesn't seem to be anything remarkable about it"></object>
 			
 	<object type="WoodenCrate" id="crate01" xpos="-3.0" ypos="-4.0" 
-		is_open="False" locked="False" text="asdf"></object>
+		is_open="False" locked="False" text="asdf"
+		desc="A crate that is covered in grime and dirt. There doesn't seem to be anything remarkable about it"></object>
 
     <!-- There can be a number of doors, which serve as transition triggers -->
     <!--door display="True" gfx="shanty-door" xpos="-2.0" ypos="6.0"
