@@ -15,6 +15,7 @@
 #   You should have received a copy of the GNU General Public License
 #   along with PARPG.  If not, see <http://www.gnu.org/licenses/>.
 import fife
+from scripts import world
 from base import *
 
 """All actors go here. Concrete classes only."""
@@ -45,7 +46,7 @@ class ActorBehaviour (fife.InstanceActionListener):
 
     def getY(self):
         """Get the NPC's y position on the map.
-           @rtype: integer
+s           @rtype: integer
            @return: the y coordinate of the NPC's location"""
         return self.agent.getLocation().getLayerCoordinates().y
         
@@ -61,6 +62,9 @@ class PCBehaviour (ActorBehaviour):
         self.engine = Engine
         self.idlecounter = 1
         self.speed = float(TDS.readSetting("PCSpeed")) # TODO: rework/improve
+        self.nextAction = None
+        self.examineName = None
+        self.examineDesc = None
         
     def onInstanceActionFinished(self, instance, action):
         """@type instance: ???
@@ -70,10 +74,17 @@ class PCBehaviour (ActorBehaviour):
            @return: None"""
         if action.getId() == 'approachDoor':
             # issue map change
-            self.parent.engine.changeMap(self.targetMap, self.targetLocation)
+            self.engine.changeMap(self.targetMap, self.targetLocation)
         if self.state == _AGENT_STATE_TALK:
             # TODO: do something
             pass
+        if self.nextAction == "open_box":
+            self.engine.view.createBoxGUI()
+            self.nextAction = None
+        elif self.nextAction == "examine_obj":
+            self.engine.view.createExamineBox(self.examineName, self.examineDesc)
+            self.nextAction = None
+
         self.idle()
         if(action.getId() != 'stand'):
             self.idlecounter = 1
@@ -123,7 +134,7 @@ class PlayerCharacter (GameObject, Living, CharStats):
            @return: None"""
         self.state = _AGENT_STATE_RUN
         self.behaviour.agent.move('run', location, self.behaviour.speed)
-
+        
     def approachNPC(self, npcLoc):
         """Approaches an npc and then ???.
            @type npcLoc: fife.Location
@@ -166,7 +177,27 @@ class PlayerCharacter (GameObject, Living, CharStats):
         l = fife.Location(self.behaviour.agent.getLocation())
         l.setLayerCoordinates(fife.ModelCoordinate(*boxLocation))
         self.behaviour.agent.move('run', l, self.behaviour.speed)
-        self.atBox = True
+        self.behaviour.nextAction = "open_box"
+
+    def approachAndExamine(self, location, name, description):
+        """
+        Approach something and then examine it
+        @type location: list
+        @param location: list that is converted to fife.Location
+        @type name: string
+        @param name: The name of the object
+        @type description: string
+        @param description: a detailed description of the object
+        @return: None
+        """
+        self.state = _STATE_RUN
+        objLocation = tuple([int(float(i)) for i in location])
+        l = fife.Location(self.agent.getLocation())
+        l.setLayerCoordinates(fife.ModelCoordinate(*objLocation))
+        self.behaviour.nextAction = "examine_obj"
+        self.behaviour.examineName = name
+        self.behaviour.examineDesc = description
+        self.behaviour.agent.move('run', l, self.speed)
 
 class NPCBehaviour(ActorBehaviour):
     def __init__(self, Parent = None):

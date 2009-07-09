@@ -415,11 +415,13 @@ class World(EventListenerBase):
         """
         if ((self.boxCreated == True) and (self.boxOpen == False)):
             # if it has already been created, just show it
+            print 'show'
             self.box_container.showContainer()
             self.boxOpen = True
         else:
+            print 'create'
             # otherwise create it then show it
-            self.box_container = ContainerGUI(self.engine, unicode("Box"), "gui/inv_images/inv_backpack.png")
+            self.box_container = ContainerGUI(self.engine, unicode("Box"), "dagger01")
             def close_and_delete():
                 self.box_container.hideContainer()
                 self.boxOpen = False
