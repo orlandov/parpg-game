@@ -16,6 +16,7 @@
 #   along with PARPG.  If not, see <http://www.gnu.org/licenses/>.
 import containers
 import actors
+import sys
 
 object_modules = [containers, actors,]
 
@@ -28,3 +29,24 @@ def getAllObjects ():
             result[class_name] = getattr (module,class_name)
             
     return result
+
+def createObject(info, extra = {}):
+        """Called when we need to get an actual object. 
+           @type info: dict
+           @param info: stores information about the object we want to create
+           @type extra: dict
+           @param extra: stores additionally required attributes, like agent layer, engine etc.
+           @return: the object"""
+        # First, we try to get the type and ID, which every game_obj needs.
+        try:
+            obj_type = info.pop('type')
+            ID = info.pop('id')
+        except KeyError:
+            sys.stderr.write("Error: Game object missing type or id.")
+            sys.exit(False)
+        
+        # add the extra info
+        for key, val in extra.items():
+            info[key] = val
+
+        return getAllObjects()[obj_type](ID, **info)

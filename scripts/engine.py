@@ -17,9 +17,6 @@
 
 # there should be NO references to FIFE here!
 import pickle, sys
-from agents.hero import Hero
-from agents.npc import NPC
-from saver import Saver
 from gamestate import GameState
 from objects import *
 from objectLoader import ObjectXMLParser
@@ -49,9 +46,6 @@ class Engine:
            @return: None"""
         # a World object (the fife stuff, essentially)
         self.view = view
-        self.doors = {}
-        self.npcs = []
-        self.PC = None
         self.mapchange = False
         self.gameState = GameState()
 
@@ -59,24 +53,36 @@ class Engine:
         """Clears the data on a map reload so we don't have objects/npcs from
            other maps hanging around.
            @return: None"""
-        self.PC = None
-        self.npcs = []
-        self.doors = {}
 
     def save(self, path, filename):
         """Writes the saver to a file.
            @type filename: string
            @param filename: the name of the file to write to
            @return: None"""
-        self.updateGameState()
         fname = '/'.join([path,filename])
         try:
             f = open(fname, 'w')
         except(IOError):
             sys.stderr.write("Error: Can't find save game: " + fname + "\n")
             return
+        
+        # can't pickle SwigPyObjects
+        behaviours = {}
+        behaviours[self.gameState.PC.ID] = self.gameState.PC.behaviour;
+        self.gameState.PC.behaviour = None;
+        
+        npcs = [npc for npc in self.gameState.objects.values() if npc.trueAttr("NPC")]
+        for npc in npcs:
+            behaviours[npc.ID] = npc.behaviour;
+            npc.behaviour = None;
+        
         pickle.dump(self.gameState, f)
         f.close()
+        
+        # restore behaviours
+        for npc in npcs:
+            npc.behaviour = behaviours[npc.ID];
+        self.gameState.PC.behaviour = behaviours[self.gameState.PC.ID]
 
     def load(self, path, filename):
         """Loads a saver from a file.
@@ -93,17 +99,6 @@ class Engine:
         f.close()
         if self.gameState.currentMap:
             self.loadMap(self.gameState.currentMap)
-            
-    def updateGameState(self):
-        """Stores the current pc and npcs positons in the game state."""
-        # save the PC position
-        self.gameState.PC.posx = self.PC.getX()
-        self.gameState.PC.posy = self.PC.getY()
-        #save npc positions
-        for i in self.npcs:
-            if str(i.id) in self.gameState.objects:
-                self.gameState.getObjectById(str(i.id)).posx = i.getX()
-                self.gameState.getObjectById(str(i.id)).posy = i.getY()
 
     def loadObjects(self, filename):
         """Load objects from the XML file
@@ -119,22 +114,31 @@ class Engine:
             return False
         # now open and read the XML file
         other_handler = ObjectXMLParser()
-        other_handler.getObjects(objects_file, self.view.agent_layer)
+        other_handler.getObjects(objects_file)
         objects_file.close()
             
         # now add to the map and the engine
-        self.addGameObjs(other_handler.local_info)
+        self.createGameObjects(other_handler.local_info)
         return True
 
-    def addGameObjs(self, objList):
+    def createGameObjects(self, objList):
         """Add all found game objects to the world
            @type objList: list
            @param objList: a list of the objects found in the xml file
            @return: None"""
-
-        self.addPC(*[obj for obj in objList if obj.trueAttr("PC")])
-        self.addNPCs([obj for obj in objList if obj.trueAttr("NPC")])
-        self.addObjects([obj for obj in objList if (not obj.trueAttr("PC") and not obj.trueAttr("NPC"))])
+        
+        # create the extra data
+        extra = {}
+        extra['agent_layer'] = self.view.agent_layer
+        extra['engine'] = self
+        
+        # create the objects
+        for info in objList:
+            obj = createObject(info, extra)
+            if obj.trueAttr("PC"):
+                self.addPC(obj)
+            else:
+                self.addObject(obj)
 
     def addPC(self,pc):
         """Add the PC to the world
@@ -154,53 +158,32 @@ class Engine:
         # create the PC agent
         self.gameState.PC.start()
 
-    def addObjects(self,objects):
-        """Add all of the objects we found into the fife map
-           and into our class. An NPC is just an object to FIFE
-           @type objects: list
-           @param objects: List of objects to add
-           @return: None"""
-        for i in objects:
-            # already in game data?
-            ref = self.gameState.getObjectById(i.ID)
-            if ref is None:
-                # no, add it to the game state
-                i.map_id = self.gameState.currentMap
-                self.gameState.objects[i.ID] = i
-            else:
-                # yes, use the current game state data
-                i.X = ref.X
-                i.Y = ref.Y
-                i.gfx = ref.gfx        
-            
-            self.view.addObject(i.X, i.Y, i.gfx, i.ID)
-
-    def addNPCs(self,npcs):
-        """Add all of the NPCs we found into the fife map to FIFE.
+    def addObject(self,obj):
+        """Adds an object to the game state.
            @type npcs: list
            @param npcs: List of NPC's to add
            @return: None"""
-        for i in npcs:
-            # already in the game data?
-            ref = self.gameState.getObjectById(i.ID) 
-            if ref is None:
-                # no, add it to the game state
-                i.map_id = self.gameState.currentMap
-                self.gameState.objects[i.ID] = i
-            else:
-                # yes, use the current game state data
-                i.X = ref.X
-                i.Y = ref.Y
-                i.gfx = ref.gfx  
-                
-            # add it to the view
-            self.view.addObject(i.X, i.Y, i.gfx, i.ID)          
+        
+        ref = self.gameState.getObjectById(obj.ID) 
+        if ref is None:
+            # no, add it to the game state
+            obj.map_id = self.gameState.currentMap
+            self.gameState.objects[obj.ID] = obj
+        else:
+            # yes, use the current game state data
+            obj.X = ref.X
+            obj.Y = ref.Y
+            obj.gfx = ref.gfx  
             
+        # add it to the view
+        self.view.addObject(obj.X, obj.Y, obj.gfx, obj.ID)          
+        
+        if obj.trueAttr("NPC"):
             # create the agent
-            i.setup()
+            obj.setup()
             
             # create the PC agent
-            i.start()
+            obj.start()
 
     def addDoors(self, doors):
         """Add all the doors to the map as well.

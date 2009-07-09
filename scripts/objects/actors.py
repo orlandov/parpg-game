@@ -28,12 +28,13 @@ _AGENT_STATE_NONE, _AGENT_STATE_IDLE, _AGENT_STATE_RUN, _AGENT_STATE_WANDER, _AG
 class ActorBehaviour (fife.InstanceActionListener):
     """Fife agent listener
     """
-    def __init__(self):
+    def __init__(self, Layer):
         fife.InstanceActionListener.__init__(self)
+        self.layer = Layer
     
-    def attachToLayer(self, fifeLayer, agentID):
+    def attachToLayer(self, agentID):
         # init listener
-        self.agent = fifeLayer.getInstance(agentID)
+        self.agent = self.layer.getInstance(agentID)
         self.agent.addActionListener(self)
         self.state = _AGENT_STATE_NONE
         self.speed = float(TDS.readSetting("PCSpeed"))-1 # TODO: rework/improve
@@ -46,7 +47,7 @@ class ActorBehaviour (fife.InstanceActionListener):
 
     def getY(self):
         """Get the NPC's y position on the map.
-s           @rtype: integer
+           @rtype: integer
            @return: the y coordinate of the NPC's location"""
         return self.agent.getLocation().getLayerCoordinates().y
         
@@ -55,8 +56,8 @@ s           @rtype: integer
 
     
 class PCBehaviour (ActorBehaviour):
-    def __init__(self, Parent = None, Engine = None):
-        super(PCBehaviour, self).__init__()
+    def __init__(self, Parent = None, Layer = None, Engine = None):
+        super(PCBehaviour, self).__init__(Layer)
         
         self.parent = Parent
         self.engine = Engine
@@ -111,18 +112,16 @@ class PlayerCharacter (GameObject, Living, CharStats):
     def __init__ (self, ID, agent_layer = None, engine = None, **kwargs):
         super(PlayerCharacter, self).__init__(ID, **kwargs)
         self.is_PC = True
-        self.agent_layer = agent_layer
         
         # PC _has_ an inventory, he _is not_ one
         self.inventory = None
-        self.engine = engine
         
         self.state = _AGENT_STATE_NONE
-        self.behaviour = PCBehaviour(self, engine)
+        self.behaviour = PCBehaviour(self, agent_layer, engine)
     
     def setup(self):
         """@return: None"""
-        self.behaviour.attachToLayer(self.agent_layer, self.ID)
+        self.behaviour.attachToLayer(self.ID)
 
     def start(self):
         """@return: None"""
@@ -200,8 +199,8 @@ class PlayerCharacter (GameObject, Living, CharStats):
         self.behaviour.agent.move('run', l, self.speed)
 
 class NPCBehaviour(ActorBehaviour):
-    def __init__(self, Parent = None):
-        super(NPCBehaviour, self).__init__()
+    def __init__(self, Parent = None, Layer = None):
+        super(NPCBehaviour, self).__init__(Layer)
         
         self.parent = Parent
         self.state = _AGENT_STATE_NONE
@@ -272,9 +271,8 @@ class NonPlayerCharacter(GameObject, Living, Scriptable, CharStats):
         super(NonPlayerCharacter, self).__init__(ID, **kwargs)
         self.is_NPC = True
         self.inventory = None
-        self.agent_layer = agent_layer
         
-        self.behaviour = NPCBehaviour(self)
+        self.behaviour = NPCBehaviour(self, agent_layer)
 
     def getLocation(self):
         """ Get the NPC's position as a fife.Location object. Basically a
@@ -304,7 +302,7 @@ class NonPlayerCharacter(GameObject, Living, Scriptable, CharStats):
     
     def setup(self):
         """@return: None"""
-        self.behaviour.attachToLayer(self.agent_layer, self.ID)
+        self.behaviour.attachToLayer(self.ID)
 
     def start(self):
         """@return: None"""
