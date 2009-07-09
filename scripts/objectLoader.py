@@ -17,8 +17,6 @@
 
 from xml.sax import make_parser
 from xml.sax.handler import ContentHandler
-from objects import getAllObjects
-from objects.containers import *
 import sys
 
 class ObjectXMLParser(ContentHandler):
@@ -31,21 +29,15 @@ class ObjectXMLParser(ContentHandler):
         self.local_info = []
         # parser is created when getObjects is called.
         self.parser = None
-        # an agent layer, which is set to something in getObjects and is set
-        # to None at the end of getObjects to ensure that it is always current.
-        self.agent_layer = None
     
-    def getObjects(self, file_desc, a_layer):
-        """Gets the objects from the file. Populates local_info. This function
-           is how the scripts.Engine object interacts with the objectLoader.
-           So, this function takes the current agent_layer from the engine and
-           sets self.agent_layer so that it can be used in startElement.
+    def getObjects(self, file_desc):
+        """Reads the object data into dictionaries out of which
+        the game objects can be constructed.
            @type file_desc: File
            @param file_desc: an open file from which we read
            @return: None"""
         parser = make_parser()
         parser.setContentHandler(self)
-        self.agent_layer = a_layer
         parser.parse(file_desc)
         self.agent_layer = None
 
@@ -59,30 +51,8 @@ class ObjectXMLParser(ContentHandler):
            @return: None"""
         # For now, only looking for game_obj things
         if str(name) == "object":
-            obj_info = dict(attrs.items())
+            obj_info = {}
             # we need to convert all the unicode strings to ascii strings
             for key, val in attrs.items():
-                obj_info.pop(key)
                 obj_info[str(key)] = str(val)
-            self.local_info.append(self.createObject(obj_info))
- 
-    def createObject(self, info):
-        """Called when we need to get an actual object. 
-           @type info: dict
-           @param info: stores information about the object we want to create
-           @return: the object"""
-        # First, we try to get the type and ID, which every game_obj needs.
-        try:
-            obj_type = info.pop('type')
-            ID = info.pop('id')
-        except KeyError:
-            sys.stderr.write("Error: Game object missing type or id.")
-            sys.exit(False)
-        
-        # add the agent_layer to the object dictionary in case it is needed by
-        # the object we are constructing. If it is not needed, it will be 
-        # ignored
-        info['agent_layer'] = self.agent_layer
-
-        all_types = getAllObjects()
-        return all_types[obj_type](ID, **info)
+            self.local_info.append(obj_info)

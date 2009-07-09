@@ -21,8 +21,6 @@ from scripts.parpgfilebrowser import PARPGFileBrowser
 from datetime import date
 from scripts.common.eventlistenerbase import EventListenerBase
 from loaders import loadMapFile
-from agents.hero import Hero
-from agents.npc import NPC
 from sounds import SoundEngine
 from settings import Setting
 from scripts import inventory, hud
