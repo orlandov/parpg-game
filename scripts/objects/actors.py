@@ -189,14 +189,14 @@ class PlayerCharacter (GameObject, Living, CharStats):
         @param description: a detailed description of the object
         @return: None
         """
-        self.state = _STATE_RUN
+        self.state = _AGENT_STATE_RUN
         objLocation = tuple([int(float(i)) for i in location])
-        l = fife.Location(self.agent.getLocation())
+        l = fife.Location(self.behaviour.agent.getLocation())
         l.setLayerCoordinates(fife.ModelCoordinate(*objLocation))
         self.behaviour.nextAction = "examine_obj"
         self.behaviour.examineName = name
         self.behaviour.examineDesc = description
-        self.behaviour.agent.move('run', l, self.speed)
+        self.behaviour.agent.move('run', l, self.behaviour.speed)
 
 class NPCBehaviour(ActorBehaviour):
     def __init__(self, Parent = None, Layer = None):
