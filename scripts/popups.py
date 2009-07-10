@@ -48,55 +48,35 @@ class ContainerGUI():
 
 
         if type(data) == list:
-            self.setContainerImage("Slot1", item_image_dict[data[1]])
-            self.setContainerImage("Slot2", item_image_dict[data[2]])
-            self.setContainerImage("Slot3", item_image_dict[data[3]])
-            self.setContainerImage("Slot4", item_image_dict[data[4]])
-            self.setContainerImage("Slot5", item_image_dict[data[5]])
-            self.setContainerImage("Slot6", item_image_dict[data[6]])
-            self.setContainerImage("Slot7", item_image_dict[data[7]])
-            self.setContainerImage("Slot8", item_image_dict[data[8]])
-            self.setContainerImage("Slot9", item_image_dict[data[9]])
+            self.setContainerImage("Slot1", item_image_dict[data[0]])
+            self.setContainerImage("Slot2", item_image_dict[data[1]])
+            self.setContainerImage("Slot3", item_image_dict[data[2]])
+            self.setContainerImage("Slot4", item_image_dict[data[3]])
+            self.setContainerImage("Slot5", item_image_dict[data[4]])
+            self.setContainerImage("Slot6", item_image_dict[data[5]])
+            self.setContainerImage("Slot7", item_image_dict[data[6]])
+            self.setContainerImage("Slot8", item_image_dict[data[7]])
+            self.setContainerImage("Slot9", item_image_dict[data[8]])
             
-            self.container_gui.findChild(name="Slot1").item = data[1]
-            self.container_gui.findChild(name="Slot2").item = data[2]
-            self.container_gui.findChild(name="Slot3").item = data[3]
-            self.container_gui.findChild(name="Slot4").item = data[4]
-            self.container_gui.findChild(name="Slot5").item = data[5]
-            self.container_gui.findChild(name="Slot6").item = data[6]
-            self.container_gui.findChild(name="Slot7").item = data[7]
-            self.container_gui.findChild(name="Slot8").item = data[8]
-            self.container_gui.findChild(name="Slot9").item = data[9]
+            self.container_gui.findChild(name="Slot1").item = data[0]
+            self.container_gui.findChild(name="Slot2").item = data[1]
+            self.container_gui.findChild(name="Slot3").item = data[2]
+            self.container_gui.findChild(name="Slot4").item = data[3]
+            self.container_gui.findChild(name="Slot5").item = data[4]
+            self.container_gui.findChild(name="Slot6").item = data[5]
+            self.container_gui.findChild(name="Slot7").item = data[6]
+            self.container_gui.findChild(name="Slot8").item = data[7]
+            self.container_gui.findChild(name="Slot9").item = data[8]
 
-            self.empty_images = {"Slot1":item_image_dict[data[1]],
-                                 "Slot2":item_image_dict[data[2]],
-                                 "Slot3":item_image_dict[data[3]],
-                                 "Slot4":item_image_dict[data[4]],
-                                 "Slot5":item_image_dict[data[5]],
-                                 "Slot6":item_image_dict[data[6]],
-                                 "Slot7":item_image_dict[data[7]],
-                                 "Slot8":item_image_dict[data[8]],
-                                 "Slot9":item_image_dict[data[9]]}
-            
-            self.buttons = {}
-            for key in self.empty_images:
-                self.buttons[key] = "main_inv"
-
-            self.events_to_map = {}
-            for button in self.buttons:
-                # make every button's callback be self.dragDrop
-                self.events_to_map[button] = cbwa(self.dragDrop, button)
-                ch = self.container_gui.findChild(name = button)
-
-            self.container_gui.findChild(name="Slot1").item = data[1]
-            self.container_gui.findChild(name="Slot2").item = data[2]
-            self.container_gui.findChild(name="Slot3").item = data[3]
-            self.container_gui.findChild(name="Slot4").item = data[4]
-            self.container_gui.findChild(name="Slot5").item = data[5]
-            self.container_gui.findChild(name="Slot6").item = data[6]
-            self.container_gui.findChild(name="Slot7").item = data[7]
-            self.container_gui.findChild(name="Slot8").item = data[8]
-            self.container_gui.findChild(name="Slot9").item = data[9]
+            self.container_gui.findChild(name="Slot1").item = data[0]
+            self.container_gui.findChild(name="Slot2").item = data[1]
+            self.container_gui.findChild(name="Slot3").item = data[2]
+            self.container_gui.findChild(name="Slot4").item = data[3]
+            self.container_gui.findChild(name="Slot5").item = data[4]
+            self.container_gui.findChild(name="Slot6").item = data[5]
+            self.container_gui.findChild(name="Slot7").item = data[6]
+            self.container_gui.findChild(name="Slot8").item = data[7]
+            self.container_gui.findChild(name="Slot9").item = data[8]
                 
                 
 
@@ -121,26 +101,26 @@ class ContainerGUI():
             self.container_gui.findChild(name="Slot8").item = data
             self.container_gui.findChild(name="Slot9").item = data
 
-            self.empty_images = {"Slot1":item_image_dict[data],
-                                 "Slot2":item_image_dict[data],
-                                 "Slot3":item_image_dict[data],
-                                 "Slot4":item_image_dict[data],
-                                 "Slot5":item_image_dict[data],
-                                 "Slot6":item_image_dict[data],
-                                 "Slot7":item_image_dict[data],
-                                 "Slot8":item_image_dict[data],
-                                 "Slot9":item_image_dict[data]}
 
-            self.buttons = {}
-            for key in self.empty_images:
-                self.buttons[key] = "main_inv"
+        self.empty_images = {"Slot1":"gui/inv_images/inv_backpack.png",
+                             "Slot2":"gui/inv_images/inv_backpack.png",
+                             "Slot3":"gui/inv_images/inv_backpack.png",
+                             "Slot4":"gui/inv_images/inv_backpack.png",
+                             "Slot5":"gui/inv_images/inv_backpack.png",
+                             "Slot6":"gui/inv_images/inv_backpack.png",
+                             "Slot7":"gui/inv_images/inv_backpack.png",
+                             "Slot8":"gui/inv_images/inv_backpack.png",
+                             "Slot9":"gui/inv_images/inv_backpack.png"}
 
-            self.events_to_map = {}
-            for button in self.buttons:
-                # make every button's callback be self.dragDrop
-                self.events_to_map[button] = cbwa(self.dragDrop, button)
-                ch = self.container_gui.findChild(name = button)
-                ch.item = data
+        self.events_to_map = {}
+        self.buttons = {}
+
+        for key in self.empty_images:
+            self.buttons[key] = "main_inv"
+
+        for button in self.buttons:
+            # make every button's callback be self.dragDrop
+            self.events_to_map[button] = cbwa(self.dragDrop, button)
 
         self.locations = ["main_inv"]
 
@@ -247,6 +227,8 @@ class ContainerGUI():
         drag_widget._setUpImage(self.empty_images[obj])
         drag_widget._setDownImage(self.empty_images[obj])
         drag_widget._setHoverImage(self.empty_images[obj])
+        # then set it's item to nothing
+        drag_widget.item = ""
         
     def dropObject(self, obj):
         """Drops the object being dropped
@@ -323,7 +305,7 @@ class ExaminePopup():
                                                    position_technique="center:center",
                                                    min_size=(175,175))
             
-        new_desc = textwrap.fill(desc, 34)
+        new_desc = textwrap.fill(desc, 35)
 
         self.scroll = pychan.widgets.ScrollArea(name='scroll', size=(150,150))
         self.description = pychan.widgets.Label(name='descText', text=unicode(new_desc))
