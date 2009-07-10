@@ -211,25 +211,27 @@ class ContainerGUI():
            @return: None"""
         # get the widget from the container_gui with the name obj
         drag_widget = self.container_gui.findChild(name = obj)
-        # get it's type (e.g. main_inv)
-        data_drag.dragged_type = self.buttons[obj]
-        # get the item that the widget is 'storing'
-        data_drag.dragged_item = drag_widget.item
-        # get the up and down images of the widget
-        up_image = drag_widget._getUpImage()
-        down_image = drag_widget._getDownImage()
-        # set the mouse cursor to be the widget's image
-        self.setMouseCursor(up_image,down_image)
-        data_drag.dragged_image = up_image
-        data_drag.dragging = True
-        # after dragging the 'item', set the widgets' images
-        # so that it has it's default 'empty' images
-        drag_widget._setUpImage(self.empty_images[obj])
-        drag_widget._setDownImage(self.empty_images[obj])
-        drag_widget._setHoverImage(self.empty_images[obj])
-        # then set it's item to nothing
-        drag_widget.item = ""
-        
+        # only drag if the widget is not empty
+        if (drag_widget.up_image != self.empty_images[obj]):
+            # get it's type (e.g. main_inv)
+            data_drag.dragged_type = self.buttons[obj]
+            # get the item that the widget is 'storing'
+            data_drag.dragged_item = drag_widget.item
+            # get the up and down images of the widget
+            up_image = drag_widget._getUpImage()
+            down_image = drag_widget._getDownImage()
+            # set the mouse cursor to be the widget's image
+            self.setMouseCursor(up_image,down_image)
+            data_drag.dragged_image = up_image
+            data_drag.dragging = True
+            # after dragging the 'item', set the widgets' images
+            # so that it has it's default 'empty' images
+            drag_widget._setUpImage(self.empty_images[obj])
+            drag_widget._setDownImage(self.empty_images[obj])
+            drag_widget._setHoverImage(self.empty_images[obj])
+            # then set it's item to nothing
+            drag_widget.item = ""
+            
     def dropObject(self, obj):
         """Drops the object being dropped
            @type obj: string
