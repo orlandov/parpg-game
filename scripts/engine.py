@@ -229,7 +229,8 @@ class Engine:
                 #        self.doors[str(i.ID)].map, [i.destx, i.desty]])
                 pass
             else:
-                actions.append(["Examine", "Examine", self.view.createExamineBox, obj.name, obj.desc])
+                actions.append(["Examine", "Examine", self.gameState.PC.approachAndExamine, 
+                                [obj.X, obj.Y], obj.name, obj.desc])
                 # is it a container?
                 if obj.trueAttr("container"):
                     actions.append(["Open", "Open", self.gameState.PC.approachBox, [obj.X, obj.Y]])
