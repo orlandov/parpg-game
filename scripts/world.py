@@ -82,7 +82,9 @@ class World(EventListenerBase):
         self.hud.main_menu.mapEvents(self.hud.menu_events)
         self.action_number = 1
         # setup the inventory
-        self.inventory = inventory.Inventory(self.engine, self.refreshReadyImages)
+        # make slot 'A1' and 'A3' container daggers
+        inv_data = {'A1':'dagger01', 'A3':'dagger01'}
+        self.inventory = inventory.Inventory(self.engine, inv_data, self.refreshReadyImages)
         self.inventory.events_to_map['close_button'] = self.closeInventoryAndToggle
         self.inventory.inventory.mapEvents(self.inventory.events_to_map)
         self.refreshReadyImages()
