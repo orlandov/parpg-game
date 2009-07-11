@@ -18,13 +18,17 @@
 import sys, os, fife, fifelog, pychan
 from scripts import drag_drop_data as data_drag
 from pychan.tools import callbackWithArguments as cbwa
+from scripts.items import item_image_dict
 
 class Inventory():
     """Main inventory class"""
-    def __init__(self, engine, readyCallback):
+    def __init__(self, engine, items, readyCallback):
         """Initialise the instance.
            @type engine: fife.Engine
            @param engine: An instance of the fife engine
+           @type items: dict
+           @param items: A dictionary for every slot that goes '{slot:item, slot:item}'
+                         if a slot is not included in the dict, it is assumed to be empty
            @type readyCallback: function
            @param readyCallback: The function that will make the
                                  ready slots on the HUD reflect those
@@ -88,12 +92,25 @@ class Inventory():
         # all possible categories
         self.locations = ['ready', 'head', 'foot', 'hand',
                           'belt', 'held', 'body']
+
+        for key in items:
+            widget = self.inventory.findChild(name=key)
+            item = items[key]
+            image = item_image_dict[item]
+
+            widget.item = item
+            widget.up_image = image
+            widget.down_image = image
+            widget.hover_image = image            
+
         for button in self.buttons:
             # make every button's callback be self.dragDrop
             self.events_to_map[button] = cbwa(self.dragDrop, button)
             ch = self.inventory.findChild(name = button)
-            # make every slot's item be empty
-            ch.item = ""
+            # make every slot's item be none if it has not already been set
+            if button not in items:
+                ch.item = ""
+
         self.inventory.mapEvents(self.events_to_map)   
         self.resetMouseCursor()
 
