@@ -250,3 +250,20 @@ class Inventory():
             self.resetMouseCursor()
             data_drag.dragging = False
 
+    def getItems(self):
+        """
+        Get the items in the inventory slots. If there is no item in the slot, it is skipped
+        
+        @rtype: dict
+        @return: The items in the inventory
+        """
+        items = {}
+
+        for button in self.buttons:
+            widget = self.inventory.findChild(name=button)
+            if (widget.item != ""):
+                items[button] = widget.item
+
+        return items
+                
+
