@@ -76,6 +76,7 @@ class World(EventListenerBase):
         for item in hud_ready_buttons:
             self.hud.events_to_map[item] = cbwa(self.hud.readyAction, item)
         self.hud.hud.mapEvents(self.hud.events_to_map)
+        self.hud.menu_events["newButton"] = self.newGame
         self.hud.menu_events["quitButton"] = self.quitGame
         self.hud.menu_events["saveButton"] = self.saveGame
         self.hud.menu_events["loadButton"] = self.loadGame
@@ -362,6 +363,11 @@ class World(EventListenerBase):
         if hasattr(self, "context_menu"):
             self.context_menu.vbox.hide()
             delattr(self, "context_menu")
+
+    def newGame(self):
+        """Called when user request to start a new game.
+           @return: None"""
+        print "new game"
 
     def quitGame(self):
         """Called when user requests to quit game.
