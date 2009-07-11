@@ -367,7 +367,7 @@ class World(EventListenerBase):
     def newGame(self):
         """Called when user request to start a new game.
            @return: None"""
-        print "new game"
+        print 'new game'
 
     def quitGame(self):
         """Called when user requests to quit game.
@@ -415,9 +415,13 @@ class World(EventListenerBase):
                                         extensions=('.dat'))
         self.load_browser.showBrowser()
 
-    def createBoxGUI(self):
+    def createBoxGUI(self, title):
         """
         Creates a window to display the contents of a box
+
+        @type title: string
+        @param title: The title for the window
+        @return: None
         """
         if ((self.boxCreated == True) and (self.boxOpen == False)):
             # if it has already been created, just show it
@@ -427,7 +431,7 @@ class World(EventListenerBase):
             # otherwise create it then show it
             data = ["dagger01", "empty", "empty", "empty", "empty",
                     "empty", "empty", "empty", "empty"]
-            self.box_container = ContainerGUI(self.engine, unicode("Box"), data)
+            self.box_container = ContainerGUI(self.engine, unicode(title), data)
             def close_and_delete():
                 self.box_container.hideContainer()
                 self.boxOpen = False
