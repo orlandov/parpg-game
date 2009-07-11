@@ -6,9 +6,9 @@
 	<import file="../objects/ground/grass/grass-a.xml"></import>
 	<import file="../objects/ground/grass/grass-b.xml"></import>
 	<import file="../objects/ground/gravel/gravel.xml"></import>
-	<import file="../objects/ground/snow/snow01.xml"></import>
-	<import file="../objects/ground/snow/snow02.xml"></import>
-	<import file="../objects/ground/snow/snow03.xml"></import>
+	<import file="../objects/ground/snow/snow0/snow01.xml"></import>
+	<import file="../objects/ground/snow/snow0/snow02.xml"></import>
+	<import file="../objects/ground/snow/snow0/snow03.xml"></import>
 	<import file="../objects/ground/snowhill/snow_e.xml"></import>
 	<import file="../objects/ground/snowhill/snow_n.xml"></import>
 	<import file="../objects/ground/snowhill/snow_s.xml"></import>
