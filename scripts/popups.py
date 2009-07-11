@@ -15,7 +15,6 @@
 #   You should have received a copy of the GNU General Public License
 #   along with PARPG.  If not, see <http://www.gnu.org/licenses/>.
 
-import textwrap
 import fife
 import pychan
 from scripts import drag_drop_data as data_drag
@@ -306,11 +305,10 @@ class ExaminePopup():
         self.examineWindow = pychan.widgets.Window(title=unicode(object_title),
                                                    position_technique="center:center",
                                                    min_size=(175,175))
-            
-        new_desc = textwrap.fill(desc, 35)
 
         self.scroll = pychan.widgets.ScrollArea(name='scroll', size=(150,150))
-        self.description = pychan.widgets.Label(name='descText', text=unicode(new_desc))
+        self.description = pychan.widgets.Label(name='descText', text=unicode(desc), wrap_text=True)
+        self.description.max_width = 170
         self.scroll.addChild(self.description)
         self.examineWindow.addChild(self.scroll)
         
