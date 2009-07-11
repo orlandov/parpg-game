@@ -1,8 +1,9 @@
-<Container position_technique="center:center" size="145,153">
-  <Button name="resumeButton" text="Resume Game" position="42,10" max_size="65,20"/>
-  <Button name="saveButton" text="Save Game" position="46,33" max_size="60,20"/>
-  <Button name="loadButton" text="Load Game" position="46,56" max_size="60,20"/>
-  <Button name="optionsButton" text="Options" position="53,79" max_size="45,20"/>
-  <Button name="helpButton" text="Help" position="60,102" max_size="40,20" />
-  <Button name="quitButton" text="Quit" position="60,125" max_size="40,20" />
+<Container position_technique="center:center" size="145,173">
+  <Button name="newButton" text="New Game" position="47,7" max_size="65,20" />
+  <Button name="resumeButton" text="Resume Game" position="42,30" max_size="65,20"/>
+  <Button name="saveButton" text="Save Game" position="46,53" max_size="60,20"/>
+  <Button name="loadButton" text="Load Game" position="46,76" max_size="60,20"/>
+  <Button name="optionsButton" text="Options" position="53,99" max_size="45,20"/>
+  <Button name="helpButton" text="Help" position="60,122" max_size="40,20" />
+  <Button name="quitButton" text="Quit" position="60,145" max_size="40,20" />
 </Container>
