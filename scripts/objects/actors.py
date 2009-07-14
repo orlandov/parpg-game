@@ -64,6 +64,7 @@ class PCBehaviour (ActorBehaviour):
         self.idlecounter = 1
         self.speed = float(TDS.readSetting("PCSpeed")) # TODO: rework/improve
         self.nextAction = None
+        self.boxTitle = None
         self.examineName = None
         self.examineDesc = None
         
@@ -80,7 +81,7 @@ class PCBehaviour (ActorBehaviour):
             # TODO: do something
             pass
         if self.nextAction == "open_box":
-            self.engine.view.createBoxGUI()
+            self.engine.view.createBoxGUI(self.boxTitle)
             self.nextAction = None
         elif self.nextAction == "examine_obj":
             self.engine.view.createExamineBox(self.examineName, self.examineDesc)
@@ -164,11 +165,13 @@ class PlayerCharacter (GameObject, Living, CharStats):
         l.setLayerCoordinates(fife.ModelCoordinate(*doorLocation))
         self.behaviour.agent.move('approachDoor', l, self.behaviour.speed)
         
-    def approachBox(self, location):
+    def approachBox(self, location, title):
         """
         Approach a box and then open it
         @type location: list
         @param locatation: list that is converted to a fife.Location
+        @type title: string
+        @param title: The title for the window
         @return: None
         """
         self.state = _AGENT_STATE_RUN
@@ -177,6 +180,7 @@ class PlayerCharacter (GameObject, Living, CharStats):
         l.setLayerCoordinates(fife.ModelCoordinate(*boxLocation))
         self.behaviour.agent.move('run', l, self.behaviour.speed)
         self.behaviour.nextAction = "open_box"
+        self.behaviour.boxTitle = title
 
     def approachAndExamine(self, location, name, description):
         """
