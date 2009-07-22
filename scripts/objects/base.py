@@ -88,7 +88,6 @@ class GameObject (object):
         self.name = name
         self.text = text
         self.desc = desc
-        super(GameObject,self).__init__ (**kwargs)
         
     def trueAttr(self, attr):
         """Shortcut function to check if the current object has a member named
@@ -119,7 +118,6 @@ class Openable(object):
         @param is_open: Keyword boolean argument sets the initial state."""
         self.is_openable = True
         self.is_open = is_open
-        super(Openable,self).__init__ (**kwargs)
     
     def open(self):
         """Opens the object, and runs an 'onOpen' script, if present"""
@@ -142,7 +140,7 @@ class Lockable (Openable):
         """
         self.is_lockable = True
         self.locked = locked
-        super(Lockable,self).__init__ (**kwargs)
+        Openable.__init__( self, **kwargs )
         
     def unlock (self):
         """Handles unlocking functionality"""
@@ -166,14 +164,12 @@ class Carryable (object):
         self.is_carryable = True
         self.in_container = None
         self.weight = 1.0
-        super(Carryable,self).__init__ (**kwargs)
     
 class Container (object):
     """Gives objects the capability to hold other objects"""
     def __init__ (self, **kwargs):
         self.is_container = True
         self.items = []
-        super(Container,self).__init__ (**kwargs)
         
     def placeItem (self, item):
         """Adds the provided carriable item to the inventory. 
@@ -201,12 +197,10 @@ class Inventory (object):
     def __init__ (self, **kwargs):
         self.is_inventory = True
         self.containers = []
-        super(Inventory,self).__init__ (**kwargs)
     
 class Living (object):
     def __init__ (self, **kwargs):
         self.is_living = True
-        super(Living,self).__init__ (**kwargs)
     def die(self):
         self.is_living = False
         
@@ -219,12 +213,11 @@ class Scriptable (object):
            values are 3-item tuples (function, positional_args, keyword_args)"""
         self.is_scriptable = True
         self.scripts = scripts 
-        super(Scriptable,self).__init__ (**kwargs)
         
     def runScript (self, event):
         """Runs the script for the given event"""
-        if event in self.scripts and self.scrpits[event]:
-            func, args, kwargs = self.scrpits[event]
+        if event in self.scripts and self.scripts[event]:
+            func, args, kwargs = self.scripts[event]
             func (*args, **kwargs)
             
     def setScript (self, event, func, args = [] , kwargs={}):
@@ -235,38 +228,32 @@ class CharStats (object):
     """Provides the object with character statistics"""
     def __init__ (self, **kwargs):
         self.is_charstats = True
-        super(CharStats,self).__init__ (**kwargs)
         
 class Wearable (object):
     def __init__ (self, **kwargs):
         """Allows the object to be weared somewhere on the body (e.g. pants)"""
         self.is_wearable = True
-        super(Wearable,self).__init__ (**kwargs)
     
 class Usable (object):
     """Allows the object to be used in some way (e.g. a Zippo lighter 
        to make a fire)"""
     def __init__ (self, **kwargs):
         self.is_usable = True
-        super(Usable,self).__init__ (**kwargs)
         
 class Weapon (object):
     """Allows the object to be used as a weapon"""
     def __init__ (self, **kwargs):
         self.is_weapon = True
-        super(Weapon,self).__init__ (**kwargs)
         
 class Destructable (object):
     """Allows the object to be destroyed"""
     def __init__ (self, **kwargs):
         self.is_destructable = True
-        super(Destructable,self).__init__ (**kwargs)
         
 class Trappable (object):
     """Provides trap slots to the object"""
     def __init__ (self, **kwargs):
         self.is_trappable = True
-        super(Trappable,self).__init__ (**kwargs)
         
 if __name__=="__main__":
     """This will be turned into a test suite"""
@@ -274,9 +261,20 @@ if __name__=="__main__":
                     CharStats, Wearable, Usable, Weapon, Destructable,
                     Trappable, Carryable, ):
         def __init__ (self, ID, *args, **kwargs):
-            super(Wildcard,self).__init__ (ID, *args, **kwargs)
             self.name = 'All-purpose carry-all'
             self.text = 'What is this? I dont know'    
+            GameObject.  __init__( self, ID, **kwargs )
+            Lockable.    __init__( self, **kwargs )
+            Container.   __init__( self, **kwargs )
+            Living.      __init__( self, **kwargs )
+            Scriptable.  __init__( self, **kwargs )
+            CharStats.   __init__( self, **kwargs )
+            Wearable.    __init__( self, **kwargs )
+            Usable.      __init__( self, **kwargs )
+            Weapon.      __init__( self, **kwargs )
+            Destructable.__init__( self, **kwargs )
+            Trappable.   __init__( self, **kwargs )
+            Carryable.   __init__( self, **kwargs )
     
     test = GameObject (1, {'map':'img/test.png'}, (1,1), None, 'Test object','Description')
     print test

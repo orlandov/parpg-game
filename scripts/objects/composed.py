@@ -22,6 +22,11 @@ from base import *
 class ImmovableContainer(GameObject, Container, Lockable, Scriptable, 
                          Trappable, Destructable):
     """Composite class that can be used for crates, chests, etc."""
-    def __init__ (self, *args, **kwargs):
-        super(ImmovableContainer,self).__init__ (*args, **kwargs)
+    def __init__ (self, **kwargs):
+        GameObject   .__init__(self, **kwargs)
+        Container    .__init__(self, **kwargs)
+        Lockable     .__init__(self, **kwargs)
+        Scriptable   .__init__(self, **kwargs)
+        Trappable    .__init__(self, **kwargs)
+        Destructable .__init__(self, **kwargs)
         self.blocking = True
