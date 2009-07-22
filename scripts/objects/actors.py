@@ -23,7 +23,7 @@ from base import *
 __all__ = ["PlayerCharacter", "NonPlayerCharacter",]
 
 TDS = Setting()
-_AGENT_STATE_NONE, _AGENT_STATE_IDLE, _AGENT_STATE_RUN, _AGENT_STATE_WANDER, _AGENT_STATE_TALK = xrange(5)
+_AGENT_STATE_NONE, _AGENT_STATE_IDLE, _AGENT_STATE_APPROACH, _AGENT_STATE_RUN, _AGENT_STATE_WANDER, _AGENT_STATE_TALK = xrange(6)
 
 class ActorBehaviour (fife.InstanceActionListener):
     """Fife agent listener
@@ -56,17 +56,13 @@ class ActorBehaviour (fife.InstanceActionListener):
 
     
 class PCBehaviour (ActorBehaviour):
-    def __init__(self, Parent = None, Layer = None, Engine = None):
+    def __init__(self, Parent = None, Layer = None):
         super(PCBehaviour, self).__init__(Layer)
         
         self.parent = Parent
-        self.engine = Engine
         self.idlecounter = 1
         self.speed = float(TDS.readSetting("PCSpeed")) # TODO: rework/improve
         self.nextAction = None
-        self.boxTitle = None
-        self.examineName = None
-        self.examineDesc = None
         
     def onInstanceActionFinished(self, instance, action):
         """@type instance: ???
@@ -74,20 +70,12 @@ class PCBehaviour (ActorBehaviour):
            @type action: ???
            @param action: ???
            @return: None"""
-        if action.getId() == 'approachDoor':
-            # issue map change
-            self.engine.changeMap(self.targetMap, self.targetLocation)
-        if self.state == _AGENT_STATE_TALK:
-            # TODO: do something
-            pass
-        if self.nextAction == "open_box":
-            self.engine.view.createBoxGUI(self.boxTitle)
+        if self.nextAction:
+            self.nextAction.execute()
             self.nextAction = None
-        elif self.nextAction == "examine_obj":
-            self.engine.view.createExamineBox(self.examineName, self.examineDesc)
-            self.nextAction = None
-
-        self.idle()
+        else:
+            self.idle()
+            
         if(action.getId() != 'stand'):
             self.idlecounter = 1
         else:
@@ -110,7 +98,7 @@ class PlayerCharacter (GameObject, Living, CharStats):
     """
     PC class
     """
-    def __init__ (self, ID, agent_layer = None, engine = None, **kwargs):
+    def __init__ (self, ID, agent_layer = None, **kwargs):
         super(PlayerCharacter, self).__init__(ID, **kwargs)
         self.is_PC = True
         
@@ -118,7 +106,7 @@ class PlayerCharacter (GameObject, Living, CharStats):
         self.inventory = None
         
         self.state = _AGENT_STATE_NONE
-        self.behaviour = PCBehaviour(self, agent_layer, engine)
+        self.behaviour = PCBehaviour(self, agent_layer)
     
     def setup(self):
         """@return: None"""
@@ -135,71 +123,18 @@ class PlayerCharacter (GameObject, Living, CharStats):
         self.state = _AGENT_STATE_RUN
         self.behaviour.agent.move('run', location, self.behaviour.speed)
         
-    def approachNPC(self, npcLoc):
+    def approach(self, location, action = None):
         """Approaches an npc and then ???.
-           @type npcLoc: fife.Location
-           @param npcLoc: the location of the NPC to approach
+           @type loc: fife.Location
+           @param loc: the location to approach
+           @type action: Action
+           @param action: The action to schedule for execution after the approach.
            @return: None"""
-        self.state = _AGENT_STATE_TALK
-        self.behaviour.agent.move('run', npcLoc, self.behaviour.speed)
-
-    def approachDoor(self, doorLocation, map, targetLocation):
-        """Approach a door and then teleport to the new map.
-           @type doorLocation: list
-           @param doorLocation: list that is converted to a fife.Location
-            that tells the PC where the door is
-           @type map: ???
-           @param map: ???
-           @type targetLocation: list
-           @param targetLocation: list that is converted to a tuple
-            that tels the PC where it should appear on the target map
-           @return: None"""
-        # The casting here is HORRIBLE, but I think it is preferable to having
-        # doors behave differently than other objects, hence the change.
-        self.state = _AGENT_STATE_RUN
-        targetLocation = tuple([int(float(i)) for i in targetLocation])
-        doorLocation = tuple([int(float(i)) for i in doorLocation])
-        self.targetMap = map
-        self.targetLocation = targetLocation
-        l = fife.Location(self.agent.getLocation())
-        l.setLayerCoordinates(fife.ModelCoordinate(*doorLocation))
-        self.behaviour.agent.move('approachDoor', l, self.behaviour.speed)
-        
-    def approachBox(self, location, title):
-        """
-        Approach a box and then open it
-        @type location: list
-        @param locatation: list that is converted to a fife.Location
-        @type title: string
-        @param title: The title for the window
-        @return: None
-        """
-        self.state = _AGENT_STATE_RUN
+        self.state = _AGENT_STATE_APPROACH
+        self.behaviour.nextAction = action
         boxLocation = tuple([int(float(i)) for i in location])
         l = fife.Location(self.behaviour.agent.getLocation())
         l.setLayerCoordinates(fife.ModelCoordinate(*boxLocation))
-        self.behaviour.agent.move('run', l, self.behaviour.speed)
-        self.behaviour.nextAction = "open_box"
-        self.behaviour.boxTitle = title
-
-    def approachAndExamine(self, location, name, description):
-        """
-        Approach something and then examine it
-        @type location: list
-        @param location: list that is converted to fife.Location
-        @type name: string
-        @param name: The name of the object
-        @type description: string
-        @param description: a detailed description of the object
-        @return: None
-        """
-        self.state = _AGENT_STATE_RUN
-        objLocation = tuple([int(float(i)) for i in location])
-        l = fife.Location(self.behaviour.agent.getLocation())
-        l.setLayerCoordinates(fife.ModelCoordinate(*objLocation))
-        self.behaviour.nextAction = "examine_obj"
-        self.behaviour.examineName = name
-        self.behaviour.examineDesc = description
         self.behaviour.agent.move('run', l, self.behaviour.speed)
 
 class NPCBehaviour(ActorBehaviour):

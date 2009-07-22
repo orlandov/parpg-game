@@ -20,6 +20,7 @@ import pickle, sys
 from gamestate import GameState
 from objects import *
 from objectLoader import ObjectXMLParser
+from objects.action import *
 
 # design note:
 # there is a map file that FIFE reads. We use that file for half the map
@@ -224,16 +225,16 @@ class Engine:
                 actions.append(["Talk", "Talk", self.initTalk, obj])
                 actions.append(["Attack", "Attack", self.nullFunc, obj]) 
             elif obj.trueAttr("Door"):
-                #actions.append(["Change Map", "Change Map", \
-                #       self.gameState.PC.approachDoor, [obj.X, obj.Y], \
-                #        self.doors[str(i.ID)].map, [i.destx, i.desty]])
+                actions.append(["Change Map", "Change Map", \
+                       self.gameState.PC.approach, [obj.X, obj.Y], \
+                        ChangeMapAction(self, self.doors[str(i.ID)].map, [i.destx, i.desty])])
                 pass
             else:
-                actions.append(["Examine", "Examine", self.gameState.PC.approachAndExamine, 
-                                [obj.X, obj.Y], obj.name, obj.desc])
+                actions.append(["Examine", "Examine", self.gameState.PC.approach,  
+                                [obj.X, obj.Y], ExamineBoxAction(self, obj.name, obj.desc)])
                 # is it a container?
                 if obj.trueAttr("container"):
-                    actions.append(["Open", "Open", self.gameState.PC.approachBox, [obj.X, obj.Y]])
+                    actions.append(["Open", "Open", self.gameState.PC.approach, [obj.X, obj.Y], OpenBoxAction(self, "Box")])
                 # can you pick it up?
                 if obj.trueAttr("carryable"):
                     actions.append(["Pick Up", "Pick Up", self.nullFunc, obj])       
@@ -251,7 +252,7 @@ class Engine:
         npc = self.gameState.getObjectById(npcInfo.ID)
         if npc:
             npc.talk()
-        self.gameState.PC.approachNPC(npc.getLocation())
+        self.gameState.PC.approach([npc.getLocation().getLayerCoordinates().x, npc.getLocation().getLayerCoordinates().y])
 
     def loadMap(self, map_file):
         """Load a new map. TODO: needs some error checking
