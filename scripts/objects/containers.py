@@ -20,10 +20,10 @@ barrels, chests, etc."""
 
 __all__ = ["WoodenCrate",]
 
-import composed
+from composed import ImmovableContainer
 
-class WoodenCrate (composed.ImmovableContainer):
+class WoodenCrate (ImmovableContainer):
     def __init__ (self, ID, name = 'Wooden Crate', \
             text = 'A battered crate', gfx = 'crate', **kwargs):
-        super(WoodenCrate,self).__init__ (ID, name = name, gfx = gfx, \
+        ImmovableContainer.__init__(self, ID = ID, name = name, gfx = gfx, \
                 text = text, **kwargs)

@@ -99,7 +99,10 @@ class PlayerCharacter (GameObject, Living, CharStats):
     PC class
     """
     def __init__ (self, ID, agent_layer = None, **kwargs):
-        super(PlayerCharacter, self).__init__(ID, **kwargs)
+        GameObject.__init__( self, ID, **kwargs )
+        Living.__init__( self, **kwargs )
+        CharStats.__init__( self, **kwargs )
+
         self.is_PC = True
         
         # PC _has_ an inventory, he _is not_ one
@@ -207,7 +210,11 @@ class NonPlayerCharacter(GameObject, Living, Scriptable, CharStats):
     def __init__(self, ID, agent_layer = None, name = 'NPC', \
                  text = 'A nonplayer character', **kwargs):
         # init game object
-        super(NonPlayerCharacter, self).__init__(ID, **kwargs)
+        GameObject.__init__( self, ID, **kwargs )
+        Living.__init__( self, **kwargs )
+        Scriptable.__init__( self, **kwargs )
+        CharStats.__init__( self, **kwargs )
+
         self.is_NPC = True
         self.inventory = None
         
