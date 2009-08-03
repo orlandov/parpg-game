@@ -1,0 +1,33 @@
+This is the editor for writing storylines for PARPG.
+
+
+Installation
+__________________________________________
+
+The only installation necessary is to install the dependencies.
+On Linux:
+   Open up a console and type: sudo apt-get install python-qt4
+On Mac:
+   TODO
+On Windows:
+   TODO
+
+
+Running the Editor
+_________________________________________
+
+To run the editor, you can either double-click on run.py (if you have the file extension associated with python), or you can use the command "python run.py".
+
+
+
+Help
+_________________________________________
+
+Help with the editor and the scripting language can be found within the editor
+
+
+
+Credits
+_________________________________________
+
+Bretzel
