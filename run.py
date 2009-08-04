@@ -13,7 +13,7 @@
 #   You should have received a copy of the GNU General Public License
 #   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import sys, os, shutil
+import sys, os, shutil, re
 
 from scripts.common import utils
 # add paths to the swig extensions
@@ -26,6 +26,7 @@ import fife_compat, fife, fifelog
 import pychan
 from scripts import world
 from scripts import engine
+from scripts.engine import Engine
 from scripts.common import eventlistenerbase
 from basicapplication import ApplicationBase
 from settings import Setting
@@ -38,13 +39,14 @@ TDS = Setting()
    All fife stuff goes in /scripts/world.py"""
 
 class ApplicationListener(eventlistenerbase.EventListenerBase):
-    def __init__(self, engine, world):
+    def __init__(self, engine, world, model):
         """Initialise the instance.
            @type engine: ???
            @param engine: ???
            @type world: ???
            @param world: ???
-           @return: None"""
+           @type model: engine.Engine
+           @param model: an instance of PARPG's engine"""
         super(ApplicationListener, self).__init__(engine,
                                                   regKeys=True,regCmd=True,
                                                   regMouse=False, 
@@ -52,6 +54,7 @@ class ApplicationListener(eventlistenerbase.EventListenerBase):
                                                   regWidget=True)
         self.engine = engine
         self.world = world
+        self.model = model
         engine.getEventManager().setNonConsumableKeys([fife.Key.ESCAPE,])
         self.quit = False
         self.aboutWindow = None
@@ -68,8 +71,36 @@ class ApplicationListener(eventlistenerbase.EventListenerBase):
         @param command: the command to run
         @return: result
         """
+        result = None
+
         if (command.lower() in ('quit', 'exit')):
             self.quitGame()
+
+        load_regex = re.compile('^load')
+        l_matches = load_regex.match(command.lower())
+        if (l_matches != None):
+            end_load = l_matches.end()
+            try:
+                l_args = command.lower()[end_load+1:].strip()
+                l_path, l_filename = l_args.split(' ')
+                self.model.load(l_path, l_filename)
+                result = "Loaded file: " + l_path + l_filename
+
+            except Exception, l_error:
+                self.engine.getGuiManager().getConsole().println('Error: ' + str(l_error))
+
+        save_regex = re.compile('^save')
+        s_matches = save_regex.match(command.lower())
+        if (s_matches != None):
+            end_save = s_matches.end()
+            try:
+                s_args = command.lower()[end_save+1:].strip()
+                s_path, s_filename = s_args.split(' ')
+                self.model.save(s_path, s_filename)
+                result = "Saved to file: " + s_path + s_filename
+
+            except Exception, s_error:
+                self.engine.getGuiManager().getConsole().println('Error: ' + str(s_error))
                    
         else:
             try:
@@ -103,7 +134,7 @@ class PARPG(ApplicationBase):
         self.world = world.World(self.engine)
         self.model = engine.Engine(self.world)
         self.world.data = self.model
-        self.listener = ApplicationListener(self.engine,self.world)
+        self.listener = ApplicationListener(self.engine,self.world,self.model)
         self.world.quitFunction = self.listener.quitGame
         self.model.loadMap(str(TDS.readSetting("MapFile")))   
         pychan.init(self.engine, debug = True)
