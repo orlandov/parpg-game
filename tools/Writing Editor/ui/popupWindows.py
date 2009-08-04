@@ -28,13 +28,13 @@ class AboutWindow(QtGui.QMainWindow):
         QtGui.QWidget.__init__(self, parent)
         self.setObjectName("aboutWindow")
         self.setWindowTitle("About")
-        self.setWindowIcon(QtGui.QIcon("Data/Images/about.png"))
-        self.resize(225,220)
+        self.setWindowIcon(QtGui.QIcon("data/images/about.png"))
+        self.resize(225,245)
         self.central_widget = QtGui.QWidget(self)
-        self.central_widget.setGeometry(QtCore.QRect(0,0,225,220))
+        self.central_widget.setGeometry(QtCore.QRect(0,0,225,245))
 
         self.info_icon = QtGui.QLabel(self.central_widget)
-        self.info_icon.setPixmap(QtGui.QPixmap("Data/Images/about_large.png")) 
+        self.info_icon.setPixmap(QtGui.QPixmap("data/images/about_large.png")) 
         self.info_icon.setGeometry(QtCore.QRect(48,1,128,128))
 
         self.credits_text = QtGui.QLabel(self.central_widget)
@@ -44,6 +44,13 @@ class AboutWindow(QtGui.QMainWindow):
         self.credits_text.setText(QtCore.QString(ctext))
         self.credits_text.setWordWrap(True)
         self.credits_text.setGeometry(QtCore.QRect(3,65,225,220))
+
+        self.close_button = QtGui.QPushButton(self.central_widget)
+        self.close_button.setText("Close")
+        self.close_button.setGeometry(QtCore.QRect(75,215,65,25))
+
+        QtCore.QObject.connect(self.close_button, QtCore.SIGNAL("pressed()"),
+                               self.close)
 
 class ChangesWindow(QtGui.QMessageBox):
     """
