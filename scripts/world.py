@@ -270,6 +270,9 @@ class World(EventListenerBase):
                                                   time.strftime('%H-%M-%S'))
             print "PARPG: Saved:",t
             self.engine.getRenderBackend().captureScreen(t)
+        if(keyval == key.F10):
+            # F10 shows/hides the console
+            self.engine.getGuiManager().getConsole().toggleShowHide()
         if(keyval == key.I):
             # I opens and closes the inventory
             self.displayInventory(callFromHud=False)
@@ -414,6 +417,7 @@ class World(EventListenerBase):
                                         guixmlpath='gui/loadbrowser.xml',
                                         extensions=('.dat'))
         self.load_browser.showBrowser()
+
 
     def createBoxGUI(self, title):
         """
