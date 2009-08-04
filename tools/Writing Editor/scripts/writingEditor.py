@@ -16,12 +16,11 @@
 #   along with PARPG.  If not, see <http://www.gnu.org/licenses/>.
 
 import sys, os, codecs
-sys.path.append("ui")
 
 from PyQt4 import QtGui, QtCore
-from editor_ui import Ui_writingEditor
-from popupWindows import *
-from settings import Settings
+from ui.editor_ui import Ui_writingEditor
+from ui.popupWindows import *
+from scripts.settings import Settings
 
 class WritingEditor(QtGui.QMainWindow):
     """
