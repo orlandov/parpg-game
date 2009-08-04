@@ -16,13 +16,15 @@
 #   along with PARPG.  If not, see <http://www.gnu.org/licenses/>.
 
 import sys
-sys.path.append("scripts")
 
-from PyQt4 import QtGui
-from writingEditor import WritingEditor
+from PyQt4 import QtCore, QtGui
+from scripts.writingEditor import WritingEditor
 
-if __name__ == "__main__":
+def createApplication():
     app = QtGui.QApplication(sys.argv)
     editor = WritingEditor()
     editor.show()
     sys.exit(app.exec_())
+
+if __name__ == "__main__":
+    createApplication()
