@@ -61,6 +61,27 @@ class ApplicationListener(eventlistenerbase.EventListenerBase):
            @return: None"""
         self.quit = True
 
+    def onConsoleCommand(self, command):
+        """
+        Called on every console comand
+        @type command: string
+        @param command: the command to run
+        @return: result
+        """
+        if (command.lower() in ('quit', 'exit')):
+            self.quitGame()
+                   
+        else:
+            try:
+                result = str(eval(command))
+            except Exception, e:
+                result = str(e)
+
+        if not result:
+            result = 'no result'
+        
+        return result
+
     def onCommand(self, command):
         """Enables the game to be closed via the 'X' button on the window frame
            @type command: fife.Command
