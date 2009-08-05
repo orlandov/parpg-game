@@ -189,6 +189,25 @@ class PrefWindow(QtGui.QMainWindow):
         """
         self.applyOptions(options_file)
         self.close()
+
+class HelpWindow():
+    """
+    The help window
+    """
+    def __init__(self, help_type):
+        """
+        @type help_type: string
+        @param help_type: whether the window should be for help with the editor or scripting
+                          can be either "editor" or "scripting"
+        """
+        if (help_type == "editor"):
+            self.setWindowTitle("Help with the Editor")
+
+        elif (help_type == "scripting"):
+            self.setWindowTitle("Help with Scripting")
+
+        else:
+            print "Invalid argument for help_type. Should be either \"editor\" or \"scripting\""
         
 
 
