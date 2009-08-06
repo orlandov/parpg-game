@@ -190,16 +190,22 @@ class PrefWindow(QtGui.QMainWindow):
         self.applyOptions(options_file)
         self.close()
 
-class HelpWindow():
+class HelpWindow(QtGui.QMainWindow):
     """
     The help window
     """
-    def __init__(self, help_type):
+    def __init__(self, help_type, settings, parent=None):
         """
         @type help_type: string
         @param help_type: whether the window should be for help with the editor or scripting
                           can be either "editor" or "scripting"
+        @type settings: settings.Settings
+        @param settings: The editor's settings
+        @return: None
         """
+        QtGui.QWidget.__init__(self, parent)
+        self.settings = settings
+
         if (help_type == "editor"):
             self.setWindowTitle("Help with the Editor")
 
@@ -208,8 +214,62 @@ class HelpWindow():
 
         else:
             print "Invalid argument for help_type. Should be either \"editor\" or \"scripting\""
+
+        width = int(self.settings.res_width)
+        height = int(self.settings.res_height)
+        self.resize(width, height)
+        self.setWindowIcon(QtGui.QIcon("data/images/help.png"))
+
+        self.central_widget = QtGui.QWidget(self)
+        self.central_widget.setGeometry(QtCore.QRect(0,0,width-10,height-50))
+
+        self.main_layout = QtGui.QHBoxLayout()
+
+        self.search_pane = QtGui.QWidget()
+        self.search_pane.setMaximumWidth(175)    
+        self.search_layout = QtGui.QVBoxLayout()
+        self.search_label = QtGui.QLabel()
+        self.search_label.setText("Search:")
+        self.search_layout.addWidget(self.search_label)
+
+        self.search_bar_layout = QtGui.QHBoxLayout()
+        self.search_bar = QtGui.QLineEdit()
+        self.search_bar.setMaximumWidth(120)
+        self.search_bar_layout.addWidget(self.search_bar)
+        self.go_button = QtGui.QPushButton()
+        self.go_button.setText("Go")
+        self.go_button.setMaximumWidth(30)
+        self.search_bar_layout.addWidget(self.go_button)
+        self.search_layout.addLayout(self.search_bar_layout)
+        self.search_layout.insertStretch(2)
+
+        self.search_view = QtGui.QListView()
+        self.search_view.setMinimumHeight(height-150)
+        self.search_view.setMinimumWidth(self.search_pane.width())
+        self.search_layout.addWidget(self.search_view)
+        self.search_pane.setLayout(self.search_layout)
+        self.main_layout.addWidget(self.search_pane)
+
+        self.main_help_window = QtGui.QTextEdit()
+        self.main_layout.addWidget(self.main_help_window)
+
+        self.central_widget.setLayout(self.main_layout)        
         
+        self.connectSignals()
 
-
-
-
+    def connectSignals(self):
+        """
+        Connect all the widgets to their respective functions
+        @return: None
+        """
+        QtCore.QObject.connect(self.search_bar, QtCore.SIGNAL("returnPressed()"),
+                               self.search)
+        QtCore.QObject.connect(self.go_button, QtCore.SIGNAL("pressed()"),
+                               self.search)
+        
+    def search(self):
+        """
+        Search through the documentation for the contents of self.search_bar
+        @return: None
+        """
+        self.search_text = self.search_bar.text()
