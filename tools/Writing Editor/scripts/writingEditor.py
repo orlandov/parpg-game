@@ -125,8 +125,11 @@ class WritingEditor(QtGui.QMainWindow):
         Connect all the buttons, widgets, etc to their respective functions
         @return: None
         """
+        QtCore.QObject.connect(self.ui.menubar, QtCore.SIGNAL("currentChanged(int)"),
+                               self, QtCore.SIGNAL("enableFunctionsByTabs(int)"))
         QtCore.QObject.connect(self.ui.main_edit, QtCore.SIGNAL("textChanged()"),
                                self.onTextChanged)
+
         QtCore.QObject.connect(self.ui.actionNew_File, QtCore.SIGNAL("triggered()"),
                                self.newFile)
         QtCore.QObject.connect(self.ui.actionOpen_File, QtCore.SIGNAL("triggered()"),
@@ -137,22 +140,26 @@ class WritingEditor(QtGui.QMainWindow):
                                self.printFile)
         QtCore.QObject.connect(self.ui.actionExit, QtCore.SIGNAL("triggered()"),
                                lambda: self.quit('data/recent_files.txt'))
+
         QtCore.QObject.connect(self.ui.actionCopy, QtCore.SIGNAL("triggered()"),
                                self.ui.main_edit.copy)
         QtCore.QObject.connect(self.ui.actionCut, QtCore.SIGNAL("triggered()"),
                                self.ui.main_edit.cut)
         QtCore.QObject.connect(self.ui.actionPaste, QtCore.SIGNAL("triggered()"),
                                self.ui.main_edit.paste)
-        QtCore.QObject.connect(self.ui.actionPreferences, QtCore.SIGNAL("triggered()"),
-                               self.createPrefWindow)
-        QtCore.QObject.connect(self.ui.actionAbout, QtCore.SIGNAL("triggered()"),
-                               self.createAboutWindow)
-        QtCore.QObject.connect(self.ui.menubar, QtCore.SIGNAL("currentChanged(int)"),
-                               self, QtCore.SIGNAL("enableFunctionsByTabs(int)"))
         QtCore.QObject.connect(self.ui.actionRedo, QtCore.SIGNAL("triggered()"),
                                self.ui.main_edit.redo)
         QtCore.QObject.connect(self.ui.actionUndo, QtCore.SIGNAL("triggered()"),
                                self.ui.main_edit.undo)
+        QtCore.QObject.connect(self.ui.actionPreferences, QtCore.SIGNAL("triggered()"),
+                               self.createPrefWindow)
+
+        QtCore.QObject.connect(self.ui.actionAbout, QtCore.SIGNAL("triggered()"),
+                               self.createAboutWindow)
+        QtCore.QObject.connect(self.ui.actionHelp_with_Editor, QtCore.SIGNAL("triggered()"),
+                               self.createEditorHelpWindow)
+        QtCore.QObject.connect(self.ui.actionHelp_With_Scripting, QtCore.SIGNAL("triggered()"),
+                               self.createScriptingHelpWindow)
 
     def onTextChanged(self):
         """
@@ -335,6 +342,24 @@ class WritingEditor(QtGui.QMainWindow):
             self.pref_window = PrefWindow(self, self.settings)
         self.pref_window.show()
         self.pref_window.button_apply.setEnabled(True)
+
+    def createEditorHelpWindow(self):
+        """
+        Create the editor help window
+        @return: None
+        """
+        if (not hasattr(self, "help_editor_window")):
+            self.help_editor_window = HelpWindow("editor", self.settings)
+        self.help_editor_window.show()
+
+    def createScriptingHelpWindow(self):
+        """
+        Create the scripting help window
+        @return: None
+        """
+        if (not hasattr(self, "help_scripting_window")):
+            self.help_scripting_window = HelpWindow("scripting", self.settings)
+        self.help_scripting_window.show()
 
     def getRecentItems(self, filename):
         """
