@@ -99,7 +99,7 @@ class Engine:
         self.gameState = pickle.load(f)
         f.close()
         if self.gameState.currentMap:
-            self.loadMap(self.gameState.currentMap)
+            self.loadMap(self.gameState.currentMap) 
 
     def loadObjects(self, filename):
         """Load objects from the XML file
@@ -231,7 +231,7 @@ class Engine:
                 pass
             else:
                 actions.append(["Examine", "Examine", self.gameState.PC.approach,  
-                                [obj.X, obj.Y], ExamineBoxAction(self, obj.name, obj.desc)])
+                                [obj.X, obj.Y], ExamineBoxAction(self, obj.name, obj.text)])
                 # is it a container?
                 if obj.trueAttr("container"):
                     actions.append(["Open", "Open", self.gameState.PC.approach, [obj.X, obj.Y], OpenBoxAction(self, "Box")])

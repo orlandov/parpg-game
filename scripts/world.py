@@ -337,7 +337,7 @@ class World(EventListenerBase):
                     # get the text
                     item = self.data.objectActive(obj.getId())
                     if(item):
-                        self.displayObjectText(obj, item.text)
+                        self.displayObjectText(obj, item.name)
         else:
             # erase the outline
             self.outline_render.removeAllOutlines()
