@@ -229,6 +229,8 @@ class WritingEditor(QtGui.QMainWindow):
         # if no filename argument is specified and there is no open file, open the save dialog
         if (filename == None and self.open_file_name == None):
             file_dialog = QtGui.QFileDialog(self)
+            file_dialog.setDefaultSuffix("dialog")
+            file_dialog.setNameFilter("Dialog Files (*.dialog)")
             self.save_file_name = file_dialog.getSaveFileName()
             self.open_file_name = self.save_file_name
         # otherwise just save the file
@@ -508,6 +510,27 @@ class WritingEditor(QtGui.QMainWindow):
             else:
                 back_num += 1
         return last_slash
+
+    def closeEvent(self, event):
+        """
+        Overrides the normal close event so it will ask if you want to save changes etc
+        @type event: QCloseEvent
+        @param event: the event (its provided by the qt system)
+        @return: None
+        """
+        if (self.ui.actionSave.isEnabled()):
+            window = ChangesWindow()
+            ret = window.run()
+            if (ret == QtGui.QMessageBox.Save):
+                self.saveFile()
+                self.writeRecentItems("data/recent_files.txt")
+                event.accept()
+            elif (ret == QtGui.QMessageBox.Discard):
+                self.writeRecentItems("data/recent_files.txt")
+                event.accept()
+            elif (ret == QtGui.QMessageBox.Cancel):
+                event.ignore()
+                
                         
     def quit(self, filename):
         """
@@ -526,12 +549,11 @@ class WritingEditor(QtGui.QMainWindow):
                 return
             
             elif (ret == QtGui.QMessageBox.Discard):
-                self.ui.writingEditor.close()
                 return
             
             elif (ret == QtGui.QMessageBox.Cancel):
                 window.close()
                 return
-            
+
         self.writeRecentItems(filename)
         self.ui.writingEditor.close()
