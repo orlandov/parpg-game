@@ -225,32 +225,20 @@ class HelpWindow(QtGui.QMainWindow):
 
         self.main_layout = QtGui.QHBoxLayout()
 
-        self.search_pane = QtGui.QWidget()
-        self.search_pane.setMaximumWidth(175)    
-        self.search_layout = QtGui.QVBoxLayout()
-        self.search_label = QtGui.QLabel()
-        self.search_label.setText("Search:")
-        self.search_layout.addWidget(self.search_label)
+        self.list_pane = QtGui.QWidget()
+        self.list_pane.setMaximumWidth(175)    
+        self.list_layout = QtGui.QVBoxLayout()
 
-        self.search_bar_layout = QtGui.QHBoxLayout()
-        self.search_bar = QtGui.QLineEdit()
-        self.search_bar.setMaximumWidth(120)
-        self.search_bar_layout.addWidget(self.search_bar)
-        self.go_button = QtGui.QPushButton()
-        self.go_button.setText("Go")
-        self.go_button.setMaximumWidth(30)
-        self.search_bar_layout.addWidget(self.go_button)
-        self.search_layout.addLayout(self.search_bar_layout)
-        self.search_layout.insertStretch(2)
 
-        self.search_view = QtGui.QListView()
-        self.search_view.setMinimumHeight(height-150)
-        self.search_view.setMinimumWidth(self.search_pane.width())
-        self.search_layout.addWidget(self.search_view)
-        self.search_pane.setLayout(self.search_layout)
-        self.main_layout.addWidget(self.search_pane)
+        self.list_view = QtGui.QListView()
+        self.list_view.setMinimumHeight(height-150)
+        self.list_view.setMinimumWidth(self.list_pane.width())
+        self.list_layout.addWidget(self.list_view)
+        self.list_pane.setLayout(self.list_layout)
+        self.main_layout.addWidget(self.list_pane)
 
-        self.main_help_window = QtGui.QTextEdit()
+        self.main_help_window = QtGui.QTextBrowser()
+        self.main_help_window.setHtml(open("docs/html/index.html", 'r').read())
         self.main_layout.addWidget(self.main_help_window)
 
         self.central_widget.setLayout(self.main_layout)        
@@ -262,10 +250,7 @@ class HelpWindow(QtGui.QMainWindow):
         Connect all the widgets to their respective functions
         @return: None
         """
-        QtCore.QObject.connect(self.search_bar, QtCore.SIGNAL("returnPressed()"),
-                               self.search)
-        QtCore.QObject.connect(self.go_button, QtCore.SIGNAL("pressed()"),
-                               self.search)
+        pass
         
     def search(self):
         """
