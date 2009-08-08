@@ -20,6 +20,7 @@ import sys, os, codecs
 from PyQt4 import QtGui, QtCore
 from ui.editor_ui import Ui_writingEditor
 from ui.popupWindows import *
+from scripts.syntaxHighlight import SyntaxHighlighter
 from scripts.settings import Settings
 
 class WritingEditor(QtGui.QMainWindow):
@@ -33,6 +34,7 @@ class WritingEditor(QtGui.QMainWindow):
         QtGui.QWidget.__init__(self, parent)
         self.ui = Ui_writingEditor()
         self.ui.setupUi(self)
+        self.syntax = SyntaxHighlighter(self.ui.main_edit.document())
         self.connectSignals()
         self.setupMenus()
 
@@ -66,9 +68,8 @@ class WritingEditor(QtGui.QMainWindow):
         self.ui.actionCut.setText('C&ut\tCtrl+X')
         self.ui.actionPaste.setText('&Paste\tCtrl+V')
         self.ui.actionPreferences.setText('P&references\tCtrl+Shift+P')
-        self.ui.actionHelp_with_Editor.setText('Help With &Editor\tF10')
-        self.ui.actionHelp_With_Scripting.setText('Help With &Scripting\tF11')
-        self.ui.actionAbout.setText('&About\tF12')
+        self.ui.actionHelp.setText("&Help\tF1")
+        self.ui.actionAbout.setText('&About\tF2')
         self.ui.actionNone.setText('None')
 
         self.ui.actionNew_File.setShortcut(QtGui.QKeySequence('Ctrl+N'))
@@ -83,9 +84,8 @@ class WritingEditor(QtGui.QMainWindow):
         self.ui.actionCut.setShortcut(QtGui.QKeySequence('Ctrl+X'))
         self.ui.actionPaste.setShortcut(QtGui.QKeySequence('Ctrl+V'))
         self.ui.actionPreferences.setShortcut(QtGui.QKeySequence('Ctrl+Shift+P'))
-        self.ui.actionHelp_with_Editor.setShortcut(QtGui.QKeySequence('F10'))
-        self.ui.actionHelp_With_Scripting.setShortcut(QtGui.QKeySequence('F11'))
-        self.ui.actionAbout.setShortcut(QtGui.QKeySequence('F12'))
+        self.ui.actionHelp.setShortcut(QtGui.QKeySequence('F1'))
+        self.ui.actionAbout.setShortcut(QtGui.QKeySequence('F2'))
 
         self.ui.actionNew_File.setIcon(self.createIcon('new.png'))
         self.ui.actionOpen_File.setIcon(self.createIcon('open.png'))
@@ -99,8 +99,7 @@ class WritingEditor(QtGui.QMainWindow):
         self.ui.actionCut.setIcon(self.createIcon('cut.png'))
         self.ui.actionPaste.setIcon(self.createIcon('paste.png'))
         self.ui.actionPreferences.setIcon(self.createIcon('preferences.png'))
-        self.ui.actionHelp_with_Editor.setIcon(self.createIcon('help.png'))
-        self.ui.actionHelp_With_Scripting.setIcon(self.createIcon('help.png'))
+        self.ui.actionHelp.setIcon(self.createIcon('help.png'))
         self.ui.actionAbout.setIcon(self.createIcon('about.png'))
 
         self.ui.actionNew_File.setStatusTip('Create a new file')
@@ -115,8 +114,7 @@ class WritingEditor(QtGui.QMainWindow):
         self.ui.actionCut.setStatusTip('Delete the selected text and copy it to the clipboard')
         self.ui.actionPaste.setStatusTip('Paste the text on the clipboard')
         self.ui.actionPreferences.setStatusTip('Edit preferences with the editor')
-        self.ui.actionHelp_with_Editor.setStatusTip('Help with the editor itself')
-        self.ui.actionHelp_With_Scripting.setStatusTip('Help with the scripting language')
+        self.ui.actionHelp.setStatusTip('Help with the editor and scripting language itself')
         self.ui.actionAbout.setStatusTip('About the editor')
         self.ui.actionNone.setStatusTip('There are no recent files')
 
@@ -156,16 +154,15 @@ class WritingEditor(QtGui.QMainWindow):
 
         QtCore.QObject.connect(self.ui.actionAbout, QtCore.SIGNAL("triggered()"),
                                self.createAboutWindow)
-        QtCore.QObject.connect(self.ui.actionHelp_with_Editor, QtCore.SIGNAL("triggered()"),
-                               self.createEditorHelpWindow)
-        QtCore.QObject.connect(self.ui.actionHelp_With_Scripting, QtCore.SIGNAL("triggered()"),
-                               self.createScriptingHelpWindow)
+        QtCore.QObject.connect(self.ui.actionHelp, QtCore.SIGNAL("triggered()"),
+                               self.createHelpWindow)
 
     def onTextChanged(self):
         """
         Function called when text is changed
         """
-        self.saveEnabled(True)
+        if (not self.ui.actionSave.isEnabled):
+            self.saveEnabled(True)
         if (self.windowTitle() == "PARPG Writing Editor - Untitled"):
             return
 
@@ -345,23 +342,14 @@ class WritingEditor(QtGui.QMainWindow):
         self.pref_window.show()
         self.pref_window.button_apply.setEnabled(True)
 
-    def createEditorHelpWindow(self):
+    def createHelpWindow(self):
         """
-        Create the editor help window
+        Create the help window
         @return: None
         """
-        if (not hasattr(self, "help_editor_window")):
-            self.help_editor_window = HelpWindow("editor", self.settings)
-        self.help_editor_window.show()
-
-    def createScriptingHelpWindow(self):
-        """
-        Create the scripting help window
-        @return: None
-        """
-        if (not hasattr(self, "help_scripting_window")):
-            self.help_scripting_window = HelpWindow("scripting", self.settings)
-        self.help_scripting_window.show()
+        if (not hasattr(self, "help_window")):
+            self.help_window = HelpWindow(self.settings)
+        self.help_window.show()
 
     def getRecentItems(self, filename):
         """
@@ -539,21 +527,4 @@ class WritingEditor(QtGui.QMainWindow):
         @param filename: the file to write to
         @return: None
         """
-        # if save is enabled we know there have been changes
-        if (self.ui.actionSave.isEnabled()):
-            window = ChangesWindow()
-            ret = window.run()
-
-            if (ret == QtGui.QMessageBox.Save):
-                self.saveFile()
-                return
-            
-            elif (ret == QtGui.QMessageBox.Discard):
-                return
-            
-            elif (ret == QtGui.QMessageBox.Cancel):
-                window.close()
-                return
-
-        self.writeRecentItems(filename)
         self.ui.writingEditor.close()

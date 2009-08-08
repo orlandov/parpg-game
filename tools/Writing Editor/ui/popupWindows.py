@@ -194,11 +194,8 @@ class HelpWindow(QtGui.QMainWindow):
     """
     The help window
     """
-    def __init__(self, help_type, settings, parent=None):
+    def __init__(self, settings, parent=None):
         """
-        @type help_type: string
-        @param help_type: whether the window should be for help with the editor or scripting
-                          can be either "editor" or "scripting"
         @type settings: settings.Settings
         @param settings: The editor's settings
         @return: None
@@ -206,14 +203,7 @@ class HelpWindow(QtGui.QMainWindow):
         QtGui.QWidget.__init__(self, parent)
         self.settings = settings
 
-        if (help_type == "editor"):
-            self.setWindowTitle("Help with the Editor")
-
-        elif (help_type == "scripting"):
-            self.setWindowTitle("Help with Scripting")
-
-        else:
-            print "Invalid argument for help_type. Should be either \"editor\" or \"scripting\""
+        self.setWindowTitle("Help")
 
         width = int(self.settings.res_width)
         height = int(self.settings.res_height)
