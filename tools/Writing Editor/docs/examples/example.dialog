@@ -6,7 +6,7 @@ SECTION MainDialog # A section of dialog. If you had a lot of dialog, you could 
 
 Guard SAY "You cannot pass." # [who says it] SAY [what to say]
 
-OPTION leaveOrFight # OPTION [option_name]x
+OPTION leaveOrFight # OPTION [option_name]
 1 "Fine." leaveGuard # [option_number] [what_to_say] [what_section_to_run]
 2 "I must pass." attackGuard
 ENDOPTION # End the option
@@ -17,7 +17,7 @@ ENDSECTION
 SECTION leaveGuard
    guardDead = False
    PLAYSOUND "testsound.wav" 1 # PLAYSOUND [sound_file] [number_of_times]
-   ENDSCRIPT # End the script
+   RETURN # End the script
 ENDSECTION
 
 SECTION attackGuard

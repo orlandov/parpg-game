@@ -53,8 +53,6 @@ class Ui_writingEditor(object):
         self.menuEdit.setObjectName("menuEdit")
         self.menuHelp = QtGui.QMenu(self.menubar)
         self.menuHelp.setObjectName("menuHelp")
-        self.menuHelp_2 = QtGui.QMenu(self.menuHelp)
-        self.menuHelp_2.setObjectName("menuHelp_2")
         self.writingEditor.setMenuBar(self.menubar)
 
         self.statusbar = QtGui.QStatusBar(self.writingEditor)
@@ -87,10 +85,8 @@ class Ui_writingEditor(object):
         self.actionPreferences = QtGui.QAction(self.writingEditor)
         self.actionPreferences.setObjectName("actionPreferences")
 
-        self.actionHelp_with_Editor = QtGui.QAction(self.writingEditor)
-        self.actionHelp_with_Editor.setObjectName("actionHelp_with_Editor")
-        self.actionHelp_With_Scripting = QtGui.QAction(self.writingEditor)
-        self.actionHelp_With_Scripting.setObjectName("actionHelp_With_Scripting")
+        self.actionHelp = QtGui.QAction(self.writingEditor)
+        self.actionHelp.setObjectName("actionHelp")
         self.actionAbout = QtGui.QAction(self.writingEditor)
         self.actionAbout.setObjectName("actionAbout")
 
@@ -117,9 +113,7 @@ class Ui_writingEditor(object):
         self.menuEdit.addSeparator()
         self.menuEdit.addAction(self.actionPreferences)
 
-        self.menuHelp_2.addAction(self.actionHelp_with_Editor)
-        self.menuHelp_2.addAction(self.actionHelp_With_Scripting)
-        self.menuHelp.addAction(self.menuHelp_2.menuAction())
+        self.menuHelp.addAction(self.actionHelp)
         self.menuHelp.addAction(self.actionAbout)
 
         self.menubar.addAction(self.menuFile.menuAction())
@@ -142,5 +136,4 @@ class Ui_writingEditor(object):
         self.menuRecent_Files.setTitle(QtGui.QApplication.translate("writingEditor", "Recent Files", None, QtGui.QApplication.UnicodeUTF8))
         self.menuEdit.setTitle(QtGui.QApplication.translate("writingEditor", "Edit", None, QtGui.QApplication.UnicodeUTF8))
         self.menuHelp.setTitle(QtGui.QApplication.translate("writingEditor", "Help", None, QtGui.QApplication.UnicodeUTF8))
-        self.menuHelp_2.setTitle(QtGui.QApplication.translate("writingEditor", "Help", None, QtGui.QApplication.UnicodeUTF8))
 
