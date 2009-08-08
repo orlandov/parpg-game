@@ -53,9 +53,13 @@ class SyntaxHighlighter(QtGui.QSyntaxHighlighter):
             if (cmd == "\""):
                 startExp = QtCore.QRegExp(cmd)
                 startIndex = text.indexOf(startExp)
-                endIndex = text.indexOf(startExp, startIndex+1)
-                quoteLength = endIndex - startIndex + 1
-                self.setFormat(startIndex, quoteLength, quoteFormat)
+                if (self.format(startIndex) == singleLineCommentFormat or
+                    self.format(startIndex) == multiLineCommentFormat):
+                    return
+                else:
+                    endIndex = text.indexOf(startExp, startIndex+1)
+                    quoteLength = endIndex - startIndex + 1
+                    self.setFormat(startIndex, quoteLength, quoteFormat)
                 
             # if its a singeline comment
             elif (cmd == "#"):
