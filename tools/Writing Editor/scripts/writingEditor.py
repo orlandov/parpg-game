@@ -161,8 +161,7 @@ class WritingEditor(QtGui.QMainWindow):
         """
         Function called when text is changed
         """
-        if (not self.ui.actionSave.isEnabled):
-            self.saveEnabled(True)
+        self.saveEnabled(True)
         if (self.windowTitle() == "PARPG Writing Editor - Untitled"):
             return
 
