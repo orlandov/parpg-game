@@ -35,6 +35,7 @@ class WritingEditor(QtGui.QMainWindow):
         self.ui = Ui_writingEditor()
         self.ui.setupUi(self)
         self.syntax = SyntaxHighlighter(self.ui.main_edit.document())
+        self.syntaxCreated = True
         self.connectSignals()
         self.setupMenus()
 
@@ -123,8 +124,8 @@ class WritingEditor(QtGui.QMainWindow):
         Connect all the buttons, widgets, etc to their respective functions
         @return: None
         """
-        QtCore.QObject.connect(self.ui.menubar, QtCore.SIGNAL("currentChanged(int)"),
-                               self, QtCore.SIGNAL("enableFunctionsByTabs(int)"))
+        QtCore.QObject.connect(self.ui.main_tabs, QtCore.SIGNAL("currentChanged(int)"),
+                               self.enableFunctionsByTabs)
         QtCore.QObject.connect(self.ui.main_edit, QtCore.SIGNAL("textChanged()"),
                                self.onTextChanged)
 
@@ -161,18 +162,22 @@ class WritingEditor(QtGui.QMainWindow):
         """
         Function called when text is changed
         """
-        self.saveEnabled(True)
-        if (self.windowTitle() == "PARPG Writing Editor - Untitled"):
-            return
+        if (self.syntaxCreated):
+            self.syntaxCreated = False
 
-        if (self.open_file_name == None):
-            self.setWindowTitle("PARPG Writing Editor - Untitled")
-            return
+        else:
+            self.saveEnabled(True)
+            if (self.windowTitle() == "PARPG Writing Editor - Untitled"):
+                return
 
-        if (self.title_asterisk == False):
-            self.setWindowTitle(self.windowTitle() + " *")
-            self.title_asterisk = True
+            if (self.open_file_name == None):
+                self.setWindowTitle("PARPG Writing Editor - Untitled")
+                return
 
+            if (self.title_asterisk == False):
+                self.setWindowTitle(self.windowTitle() + " *")
+                self.title_asterisk = True
+            
     def enableFunctionsByTabs(self, index):
         """
         Check if the tab is the editor or the map viewer and disable/enable actions
@@ -185,7 +190,7 @@ class WritingEditor(QtGui.QMainWindow):
             self.ui.actionCopy.setEnabled(True)
             self.ui.actionCut.setEnabled(True)
             self.ui.actionPaste.setEnabled(True)
-
+            self.saveEnabled(True)
         elif (index == 1):
             self.ui.actionCopy.setEnabled(False)
             self.ui.actionCut.setEnabled(False)
@@ -328,7 +333,7 @@ class WritingEditor(QtGui.QMainWindow):
         @return: None
         """
         if (not hasattr(self, "about_window")):
-            self.about_window = AboutWindow()
+            self.about_window = AboutWindow(self.ui.writingEditor, self)
         self.about_window.show()
 
     def createPrefWindow(self):
@@ -347,7 +352,7 @@ class WritingEditor(QtGui.QMainWindow):
         @return: None
         """
         if (not hasattr(self, "help_window")):
-            self.help_window = HelpWindow(self.settings)
+            self.help_window = HelpWindow(self.settings, self)
         self.help_window.show()
 
     def getRecentItems(self, filename):

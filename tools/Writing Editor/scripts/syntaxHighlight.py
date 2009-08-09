@@ -46,7 +46,8 @@ class SyntaxHighlighter(QtGui.QSyntaxHighlighter):
                 "endsection", "ENDSECTION", "callsection", "CALLSECTION",
                 "option", "OPTION", "endoption", "ENDOPTION", "playsound",
                 "PLAYSOUND", "say", "SAY", "attack", "ATTACK", "return",
-                "RETURN","#", "/\*", "\""]
+                "RETURN","IF", "if", "ELIF", "elif", "ELSE", "else",
+                "#", "/\*", "\""]
 
         for cmd in cmds:
             # if its a quote
