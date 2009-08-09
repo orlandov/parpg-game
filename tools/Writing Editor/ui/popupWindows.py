@@ -16,6 +16,7 @@
 #   along with PARPG.  If not, see <http://www.gnu.org/licenses/>.
 
 from PyQt4 import QtGui, QtCore
+from scripts.syntaxHighlight import SyntaxHighlighter
 
 class AboutWindow(QtGui.QMainWindow):
     """
@@ -210,6 +211,10 @@ class HelpWindow(QtGui.QMainWindow):
         self.resize(width, height)
         self.setWindowIcon(QtGui.QIcon("data/images/help.png"))
 
+        self.file_names = {"Home":"docs/html/index.html",
+                           "Scripting":"docs/html/scripting.html",
+                           "Dialog Example":"docs/html/example.html"}
+
         self.central_widget = QtGui.QWidget(self)
         self.central_widget.setGeometry(QtCore.QRect(0,0,width-10,height-50))
 
@@ -219,10 +224,20 @@ class HelpWindow(QtGui.QMainWindow):
         self.list_pane.setMaximumWidth(175)    
         self.list_layout = QtGui.QVBoxLayout()
 
+        self.list_label = QtGui.QLabel()
+        self.list_label.setText("Topics:")
+        self.list_layout.addWidget(self.list_label)
+
+        self.list = QtGui.QStandardItemModel()
+        self.list.appendRow([QtGui.QStandardItem("Home")])
+        self.list.appendRow([QtGui.QStandardItem("Scripting")])
+        self.list.appendRow([QtGui.QStandardItem("Dialog Example")])
 
         self.list_view = QtGui.QListView()
         self.list_view.setMinimumHeight(height-150)
         self.list_view.setMinimumWidth(self.list_pane.width())
+        self.list_view.setModel(self.list)
+        self.list_view.setEditTriggers(self.list_view.NoEditTriggers)
         self.list_layout.addWidget(self.list_view)
         self.list_pane.setLayout(self.list_layout)
         self.main_layout.addWidget(self.list_pane)
@@ -232,19 +247,25 @@ class HelpWindow(QtGui.QMainWindow):
         self.main_layout.addWidget(self.main_help_window)
 
         self.central_widget.setLayout(self.main_layout)        
-        
+        self.syntax = SyntaxHighlighter(self.main_help_window)
         self.connectSignals()
+        
+    def openFile(self, index):
+        """
+        Open the html file according to its index in the list
+        @type index: int
+        @param index: the index in self.list_view
+        @return: None
+        """
+        page_name = index.data().toString()
+        file_name = self.file_names[str(page_name)]
+        self.main_help_window.setHtml(open(file_name, 'r').read())
+        
 
     def connectSignals(self):
         """
         Connect all the widgets to their respective functions
         @return: None
         """
-        pass
-        
-    def search(self):
-        """
-        Search through the documentation for the contents of self.search_bar
-        @return: None
-        """
-        self.search_text = self.search_bar.text()
+        QtCore.QObject.connect(self.list_view, QtCore.SIGNAL("clicked(QModelIndex)"),
+                               self.openFile)
