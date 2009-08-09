@@ -39,7 +39,7 @@ class AboutWindow(QtGui.QMainWindow):
         self.info_icon.setGeometry(QtCore.QRect(48,1,128,128))
 
         self.credits_text = QtGui.QLabel(self.central_widget)
-        ctext = "PARPG Writing Editor written by: Brett Patterson A.K.A Bretzel\n"\
+        ctext = "PARPG Writing Editor written by:\nBrett Patterson A.K.A Bretzel\n"\
             "Written using the PyQt4 library\n"\
             "Copyright 2009"
         self.credits_text.setText(QtCore.QString(ctext))
