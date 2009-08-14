@@ -1,3 +1,5 @@
+SCRIPTNAME "Test Script" # SCRIPTNAME [script_name]
+
 /* Multline comments like C++ */
 
 # Define characters. Kind of like C++ where you declare their class
