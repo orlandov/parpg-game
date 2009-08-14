@@ -42,11 +42,11 @@ class SyntaxHighlighter(QtGui.QSyntaxHighlighter):
         multiLineCommentFormat = QtGui.QTextCharFormat()
         multiLineCommentFormat.setForeground(QtGui.QColor("magenta"))
             
-        cmds = ["npc", "NPC", "pc", "PC", "section", "SECTION",
-                "endsection", "ENDSECTION", "callsection", "CALLSECTION",
-                "option", "OPTION", "endoption", "ENDOPTION", "playsound",
-                "PLAYSOUND", "say", "SAY", "attack", "ATTACK", "return",
-                "RETURN","IF", "if", "ELIF", "elif", "ELSE", "else",
+        cmds = ["npc", "NPC", "pc", "PC", "section", "SECTION", "SCRIPTNAME",
+                "scriptname", "endsection", "ENDSECTION", "callsection", 
+                "CALLSECTION", "option", "OPTION", "endoption", "ENDOPTION", 
+                "playsound", "PLAYSOUND", "say", "SAY", "attack", "ATTACK", 
+                "return", "RETURN","IF", "if", "ELIF", "elif", "ELSE", "else",
                 "#", "/\*", "\""]
 
         for cmd in cmds:
