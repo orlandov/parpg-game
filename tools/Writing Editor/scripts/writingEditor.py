@@ -22,6 +22,7 @@ from ui.editor_ui import Ui_writingEditor
 from ui.popupWindows import *
 from scripts.syntaxHighlight import SyntaxHighlighter
 from scripts.settings import Settings
+from scripts.dialogMap import DialogMap
 
 class WritingEditor(QtGui.QMainWindow):
     """
@@ -32,16 +33,19 @@ class WritingEditor(QtGui.QMainWindow):
         Initialize the editor
         """
         QtGui.QWidget.__init__(self, parent)
-        self.ui = Ui_writingEditor()
-        self.ui.setupUi(self)
-        self.syntax = SyntaxHighlighter(self.ui.main_edit.document())
-        self.syntaxCreated = True
-        self.connectSignals()
-        self.setupMenus()
-
+        
         self.settings = Settings()
         self.settings.readSettingsFromFile('data/options.txt')
         self.resize(int(self.settings.res_width), int(self.settings.res_height))
+
+        self.ui = Ui_writingEditor()
+        self.ui.setupUi(self)
+        self.dialogMap = DialogMap(self.settings, self.ui.main_edit, self.ui.dialog_map_tab)
+        self.syntax = SyntaxHighlighter(self.ui.main_edit.document())
+        self.syntaxCreated = True
+        self.changes = False
+        self.connectSignals()
+        self.setupMenus()
 
         self.open_file_name = None
         self.saveEnabled(False)
@@ -125,7 +129,7 @@ class WritingEditor(QtGui.QMainWindow):
         @return: None
         """
         QtCore.QObject.connect(self.ui.main_tabs, QtCore.SIGNAL("currentChanged(int)"),
-                               self.enableFunctionsByTabs)
+                               self.onTabChanged)
         QtCore.QObject.connect(self.ui.main_edit, QtCore.SIGNAL("textChanged()"),
                                self.onTextChanged)
 
@@ -167,6 +171,7 @@ class WritingEditor(QtGui.QMainWindow):
 
         else:
             self.saveEnabled(True)
+            self.changes = True
             if (self.windowTitle() == "PARPG Writing Editor - Untitled"):
                 return
 
@@ -178,7 +183,7 @@ class WritingEditor(QtGui.QMainWindow):
                 self.setWindowTitle(self.windowTitle() + " *")
                 self.title_asterisk = True
             
-    def enableFunctionsByTabs(self, index):
+    def onTabChanged(self, index):
         """
         Check if the tab is the editor or the map viewer and disable/enable actions
         accordingly
@@ -186,12 +191,14 @@ class WritingEditor(QtGui.QMainWindow):
         @param index: The index of the tab
         @return: None
         """
+        # it's the main editor
         if (index == 0):
             self.ui.actionCopy.setEnabled(True)
             self.ui.actionCut.setEnabled(True)
             self.ui.actionPaste.setEnabled(True)
-            self.saveEnabled(True)
+        # it's the dialog map
         elif (index == 1):
+            self.dialogMap.parser.parse()
             self.ui.actionCopy.setEnabled(False)
             self.ui.actionCut.setEnabled(False)
             self.ui.actionPaste.setEnabled(False)
@@ -333,7 +340,7 @@ class WritingEditor(QtGui.QMainWindow):
         @return: None
         """
         if (not hasattr(self, "about_window")):
-            self.about_window = AboutWindow(self.ui.writingEditor, self)
+            self.about_window = AboutWindow(self)
         self.about_window.show()
 
     def createPrefWindow(self):
@@ -510,7 +517,7 @@ class WritingEditor(QtGui.QMainWindow):
         @param event: the event (its provided by the qt system)
         @return: None
         """
-        if (self.ui.actionSave.isEnabled()):
+        if (self.changes):
             window = ChangesWindow()
             ret = window.run()
             if (ret == QtGui.QMessageBox.Save):
