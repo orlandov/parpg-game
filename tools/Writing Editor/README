@@ -8,9 +8,11 @@ The only installation necessary is to install the dependencies.
 On Linux:
    Open up a console and type: sudo apt-get install python-qt4
 On Mac:
-   TODO
+  Follow the instructions here: http://www.oak-tree.us/blog/index.php/2009/05/12/pyqt-mac
+  You can skip installing XCode though.
 On Windows:
-   TODO
+   Go to http://www.riverbankcomputing.co.uk/software/pyqt/download and download one of the .exe installers
+   according to your python distribution
 
 
 Running the Editor
