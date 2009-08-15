@@ -44,73 +44,31 @@ class ContainerGUI():
     
         data_drag.dragging = False
         self.original_cursor_id = self.engine.getCursor().getId()
-
-
+        
+        
+        # Prepare slots 1 through 9
+        dataIsList = False
+        emptyImage = "gui/inv_images/inv_backpack.png"
+        slotCount = 9
+        self.empty_images = dict()
+        # Did this step because I'm unsure which is more costly , to check the
+        # type of object or the value of boolean object. Change as you see fit.
         if type(data) == list:
-            self.setContainerImage("Slot1", item_image_dict[data[0]])
-            self.setContainerImage("Slot2", item_image_dict[data[1]])
-            self.setContainerImage("Slot3", item_image_dict[data[2]])
-            self.setContainerImage("Slot4", item_image_dict[data[3]])
-            self.setContainerImage("Slot5", item_image_dict[data[4]])
-            self.setContainerImage("Slot6", item_image_dict[data[5]])
-            self.setContainerImage("Slot7", item_image_dict[data[6]])
-            self.setContainerImage("Slot8", item_image_dict[data[7]])
-            self.setContainerImage("Slot9", item_image_dict[data[8]])
+            dataIsList = True
+        for counter in range(1, slotCount):
+            slotName = "Slot%i" % counter
+            selectedData = None
             
-            self.container_gui.findChild(name="Slot1").item = data[0]
-            self.container_gui.findChild(name="Slot2").item = data[1]
-            self.container_gui.findChild(name="Slot3").item = data[2]
-            self.container_gui.findChild(name="Slot4").item = data[3]
-            self.container_gui.findChild(name="Slot5").item = data[4]
-            self.container_gui.findChild(name="Slot6").item = data[5]
-            self.container_gui.findChild(name="Slot7").item = data[6]
-            self.container_gui.findChild(name="Slot8").item = data[7]
-            self.container_gui.findChild(name="Slot9").item = data[8]
-
-            self.container_gui.findChild(name="Slot1").item = data[0]
-            self.container_gui.findChild(name="Slot2").item = data[1]
-            self.container_gui.findChild(name="Slot3").item = data[2]
-            self.container_gui.findChild(name="Slot4").item = data[3]
-            self.container_gui.findChild(name="Slot5").item = data[4]
-            self.container_gui.findChild(name="Slot6").item = data[5]
-            self.container_gui.findChild(name="Slot7").item = data[6]
-            self.container_gui.findChild(name="Slot8").item = data[7]
-            self.container_gui.findChild(name="Slot9").item = data[8]
-                
-                
-
-        else:
-            self.setContainerImage("Slot1", item_image_dict[data])
-            self.setContainerImage("Slot2", item_image_dict[data])
-            self.setContainerImage("Slot3", item_image_dict[data])
-            self.setContainerImage("Slot4", item_image_dict[data])
-            self.setContainerImage("Slot5", item_image_dict[data])
-            self.setContainerImage("Slot6", item_image_dict[data])
-            self.setContainerImage("Slot7", item_image_dict[data])
-            self.setContainerImage("Slot8", item_image_dict[data])
-            self.setContainerImage("Slot9", item_image_dict[data])
-
-            self.container_gui.findChild(name="Slot1").item = data
-            self.container_gui.findChild(name="Slot2").item = data
-            self.container_gui.findChild(name="Slot3").item = data
-            self.container_gui.findChild(name="Slot4").item = data
-            self.container_gui.findChild(name="Slot5").item = data
-            self.container_gui.findChild(name="Slot6").item = data
-            self.container_gui.findChild(name="Slot7").item = data
-            self.container_gui.findChild(name="Slot8").item = data
-            self.container_gui.findChild(name="Slot9").item = data
-
-
-        self.empty_images = {"Slot1":"gui/inv_images/inv_backpack.png",
-                             "Slot2":"gui/inv_images/inv_backpack.png",
-                             "Slot3":"gui/inv_images/inv_backpack.png",
-                             "Slot4":"gui/inv_images/inv_backpack.png",
-                             "Slot5":"gui/inv_images/inv_backpack.png",
-                             "Slot6":"gui/inv_images/inv_backpack.png",
-                             "Slot7":"gui/inv_images/inv_backpack.png",
-                             "Slot8":"gui/inv_images/inv_backpack.png",
-                             "Slot9":"gui/inv_images/inv_backpack.png"}
-
+            if dataIsList:
+                selectedData = data[counter-1]
+            else:
+                selectedData = data
+            
+            self.setContainerImage(slotName, item_image_dict[selectedData])
+            self.container_gui.findChild(name=slotName).item = selectedData
+            self.empty_images[slotName] = emptyImage
+        
+        
         self.events_to_map = {}
         self.buttons = {}
 
