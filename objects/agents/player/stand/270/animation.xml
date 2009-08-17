@@ -1,0 +1,17 @@
+<animation delay="100" namespace="PAPRG" id="PC:stand:270" x_offset="0" y_offset="-40">
+	<frame source="S_I.0.png" />
+	<frame source="S_I.1.png" />
+	<frame source="S_I.2.png" />
+	<frame source="S_I.3.png" />
+	<frame source="S_I.4.png" />
+	<frame source="S_I.5.png" />
+	<frame source="S_I.6.png" />
+	<frame source="S_I.7.png" />
+	<frame source="S_I.8.png" />
+	<frame source="S_I.9.png" />
+	<frame source="S_I.10.png" />
+	<frame source="S_I.11.png" />
+	<frame source="S_I.12.png" />
+	<frame source="S_I.13.png" />
+	<frame source="S_I.14.png" />
+</animation>
