@@ -13,19 +13,7 @@ class PARPGFileBrowser(FileBrowser):
 	A sub-class of filebrowser.FileBrowser
 	"""
 	def __init__(self, engine, fileSelected, savefile=False, selectdir=False, extensions=('xml',), guixmlpath="gui/filebrowser.xml"):
-		self.engine = engine
-		self.fileSelected = fileSelected
-
-		self._widget = None
-		self.savefile = savefile
-		self.selectdir = selectdir
-		
-		self.guixmlpath = guixmlpath
-
-		self.extensions = extensions
-		self.path = './saves'
-		self.dir_list = []
-		self.file_list = []
+		FileBrowser.__init__(self, engine, fileSelected, False, False, extensions, guixmlpath)
 
 	def _selectFile(self):
 		self._widget.hide()
@@ -51,17 +39,9 @@ class PARPGFileBrowser(FileBrowser):
 				self.fileSelected(self.path, u2s(self.file_list[selection]))
 				return
 			
-			if self.selectdir:
+			elif self.selectdir:
 				self.fileSelected(self.path)
 				return
 
+			else:
 				print 'FileBrowser: error, no selection.'
-				
-	def _warningMessage(self):
-		window = widgets.Window(title="Warning")
-		text = "Please save the file as a .dat"
-		label = widgets.Label(text=text)
-		ok_button = widgets.Button(name="ok_button", text="Ok")
-		window.addChildren([label, ok_button])
-		window.mapEvents({'ok_button':window.hide})
-		window.show()
