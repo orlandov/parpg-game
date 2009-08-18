@@ -130,7 +130,7 @@ class Engine:
         
         # create the extra data
         extra = {}
-        extra['agent_layer'] = self.view.agent_layer
+        extra['agent_layer'] = self.view.activeMap.agent_layer
         extra['engine'] = self
         
         # create the objects
@@ -147,14 +147,14 @@ class Engine:
            @param pc: List of data for PC attributes
            @return: None"""
         # add to view data    
-        self.view.addObject(pc.X, pc.X, pc.gfx, pc.ID)
+        self.view.activeMap.addObject(pc.X, pc.X, pc.gfx, pc.ID)
         
         # sync with game data
         if not self.gameState.PC:
             self.gameState.PC = pc
             
         self.gameState.PC.setup()
-        self.view.addPC(self.gameState.PC.behaviour.agent)
+        self.view.activeMap.addPC(self.gameState.PC.behaviour.agent)
             
         # create the PC agent
         self.gameState.PC.start()
@@ -177,7 +177,7 @@ class Engine:
             obj.gfx = ref.gfx  
             
         # add it to the view
-        self.view.addObject(obj.X, obj.Y, obj.gfx, obj.ID)          
+        self.view.activeMap.addObject(obj.X, obj.Y, obj.gfx, obj.ID)          
         
         if obj.trueAttr("NPC"):
             # create the agent
@@ -254,13 +254,14 @@ class Engine:
             npc.talk()
         self.gameState.PC.approach([npc.getLocation().getLayerCoordinates().x, npc.getLocation().getLayerCoordinates().y])
 
-    def loadMap(self, map_file):
+    def loadMap(self, map_name, map_file):
         """Load a new map. TODO: needs some error checking
            @type map_file: string
            @param map_file: Name of map file to load
            @return: None"""
         # then we let FIFE load the rest of the map
-        self.view.load(str(map_file))
+        self.view.loadMap(map_name, str(map_file))
+        self.view.setActiveMap(map_name)
         # then we update FIFE with the PC, NPC and object details
         self.reset()
         self.gameState.currentMap = map_file

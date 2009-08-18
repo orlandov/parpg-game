@@ -17,16 +17,16 @@
 
 import fife, time
 import pychan
+from sounds import SoundEngine
 from scripts.parpgfilebrowser import PARPGFileBrowser
 from datetime import date
 from scripts.common.eventlistenerbase import EventListenerBase
-from loaders import loadMapFile
-from sounds import SoundEngine
 from settings import Setting
 from scripts import inventory, hud
 from scripts.popups import *
 from scripts.context_menu import ContextMenu
 from pychan.tools import callbackWithArguments as cbwa
+from map import Map
 
 TDS = Setting()
 
@@ -37,12 +37,6 @@ TDS = Setting()
 # we should aim to never replicate any data as this leads to maintainance
 # issues (and just looks plain bad).
 # however, any logic needed to resolve this should sit in engine.py
-
-class Map(fife.MapChangeListener):
-    """Map class used to flag changes in the map"""
-    def __init__(self, fife_map):
-        fife.MapChangeListener.__init__(self)
-        self.map = fife_map
 
 class World(EventListenerBase):
     """World holds the data needed by fife to render the engine
@@ -56,18 +50,16 @@ class World(EventListenerBase):
         # self.engine is a fife.Engine object, not an Engine object
         self.engine = engine
         self.eventmanager = engine.getEventManager()
-        self.model = engine.getModel()
-        self.view = self.engine.getView()
         self.quitFunction = None
-        self.inventoryShown = False
-        self.agent_layer = None
-        self.cameras = {}
+        self.inventoryShown = False 
+        
         # self.data is an engine.Engine object, but is set in run.py
         self.data = None
         self.mouseCallback = None
         self.obj_hash={}
         # self.map is a Map object, set to none here
-        self.map = None
+        self.activeMap = None
+        self.maps = {}
         self.hud = hud.Hud(self.engine, TDS)
         self.hud.events_to_map["inventoryButton"] = cbwa(self.displayInventory, True)
         self.hud.events_to_map["saveButton"] = self.saveGame
@@ -89,102 +81,32 @@ class World(EventListenerBase):
         self.inventory.events_to_map['close_button'] = self.closeInventoryAndToggle
         self.inventory.inventory.mapEvents(self.inventory.events_to_map)
         self.refreshReadyImages()
-        # init the sound (don't start playing yet)
-        self.sounds = SoundEngine(self.engine)
         
         self.context_menu = ContextMenu (self.engine, [], (0,0))
         self.context_menu.hide()
         self.boxOpen = False
         self.boxCreated = False
-
-    def reset(self):
-        """Reset the data to default settings.
-           @return: None"""
-        # We have to delete the map in Fife.
-        # TODO: We're killing the PC now, but later we will have to save the PC
-        if self.map:
-            self.model.deleteObjects()
-            self.model.deleteMap(self.map)
-        self.transitions = []
-        self.map,self.agent_layer = None,None
-        # We have to clear the cameras in the view as well, or we can't reuse
-        # camera names like 'main'
-        self.view.clearCameras()
-        self.cameras = {}
-        self.cur_cam2_x,self.initial_cam2_x,self.cam2_scrolling_right = 0,0,True
-        self.target_rotation = 0
-
-    def load(self, filename):
-        """Load a map given the filename.
-           @type filename: string
-           @param filename: Name of map to load
-           @return: None"""
-        self.reset()
-        # some messy code to handle music changes when we enter a new map
-        if(self.sounds.music_on == True):
-            self.sounds.pauseMusic()
-            unpause = True
-        else:
-            unpause = False
-        self.map = loadMapFile(filename, self.engine)
-        self.maplistener = Map(self.map)
-        # there must be a PC object on the objects layer!
-        self.agent_layer = self.map.getLayer('ObjectLayer')
-        # it's possible there's no transition layer
-        size = len('TransitionLayer')
-        for layer in self.map.getLayers():
-            # could be many layers, but hopefully no more than 3
-            if(layer.getId()[:size] == 'TransitionLayer'):
-                self.transitions.append(self.map.getLayer(layer.getId()))
-        # init the camera
-        for cam in self.view.getCameras():
-            self.cameras[cam.getId()] = cam
-        self.view.resetRenderers()
-        self.target_rotation = self.cameras['main'].getRotation()
-        self.cord_render = self.cameras['main'].getRenderer('CoordinateRenderer')
-        self.outline_render = fife.InstanceRenderer.getInstance(self.cameras['main'])
-        # set the render text
-        rend = fife.FloatingTextRenderer.getInstance(self.cameras['main'])
-        text = self.engine.getGuiManager().createFont('fonts/rpgfont.png',
-                                                       0, str(TDS.readSetting("FontGlyphs", strip=False)))
-        rend.changeDefaultFont(text)
-        # start playing the music
-        # TODO: remove hard coding by putting this in the level data
+        
+        # init the sound
+        self.sounds = SoundEngine(engine)
+        
         # don't force restart if skipping to new section
         if (TDS.readSetting("PlaySounds") == "1"):
             if(self.sounds.music_init == False):
                 self.sounds.playMusic("/music/preciouswasteland.ogg")
-            elif(unpause == True):
-                self.sounds.playMusic()
-
-    def addPC(self, agent):
-        """Add the player character to the map
-           @type agent: Fife.instance
-           @param : The object to use as the PC sprite
-           @return: None"""
-        # actually this is real easy, we just have to
-        # attach the main camera to the PC
-        self.cameras['main'].attach(agent)
-
-    def addObject(self, xpos, ypos, gfx, name):
-        """Add an object or an NPC to the map.
-           It makes no difference to fife which is which.
-           @type xpos: integer
-           @param xpos: x position of object
-           @type ypos: integer
-           @param ypos: y position of object
-           @type gfx: string
-           @param gfx: name of gfx image
-           @type name: string
-           @param name: name of object
-           @return: None"""
-        obj = self.agent_layer.createInstance(
-                self.model.getObject(str(gfx), "PARPG"),
-                fife.ExactModelCoordinate(float(xpos), float(ypos), 0.0), str(name))
-        obj.setRotation(0)
-        fife.InstanceVisual.create(obj)
-        # save it for later use
-        self.obj_hash[name]=obj
+                
+    def loadMap(self, mapname, filename):
+        """Loads a map an stores it under the given name in the maps list.
+        """
+        map = Map(self.engine)
+        map.load(filename)
+        self.maps[mapname] = map
+    
+    def setActiveMap(self, mapname):
+        """Sets the active map that is to be rendered.
+        """
+        self.activeMap = self.maps[mapname]
+        self.activeMap.makeActive()
 
     def displayObjectText(self, obj, text):
         """Display on screen the text of the object over the object.
@@ -300,7 +222,7 @@ class World(EventListenerBase):
             self.data.handleMouseClick(self.getCoords(scr_point))      
         elif(evt.getButton() == fife.MouseEvent.RIGHT):
             # is there an object here?
-            instances = self.cameras['main'].getMatchingInstances(scr_point, self.agent_layer)
+            instances = self.activeMap.cameras['main'].getMatchingInstances(scr_point, self.activeMap.agent_layer)
             info = None
             for inst in instances:
                 # check to see if this is an active item
@@ -326,21 +248,21 @@ class World(EventListenerBase):
            @param evt: The event that fife caught
            @return: None"""
         click = fife.ScreenPoint(evt.getX(), evt.getY())
-        i=self.cameras['main'].getMatchingInstances(click, self.agent_layer)
+        i=self.activeMap.cameras['main'].getMatchingInstances(click, self.activeMap.agent_layer)
         # no object returns an empty tuple
         if(i != ()):
             for obj in i:
                 # check to see if this in our list at all
                 if(self.data.objectActive(obj.getId())):
                     # yes, so outline    
-                    self.outline_render.addOutlined(obj, 0, 137, 255, 2)
+                    self.activeMap.outline_render.addOutlined(obj, 0, 137, 255, 2)
                     # get the text
                     item = self.data.objectActive(obj.getId())
                     if(item):
                         self.displayObjectText(obj, item.name)
         else:
             # erase the outline
-            self.outline_render.removeAllOutlines()
+            self.activeMap.outline_render.removeAllOutlines()
 
     def getCoords(self, click):
         """Get the map location x, y cords from the screen co-ords
@@ -348,17 +270,11 @@ class World(EventListenerBase):
            @param click: Screen co-ords
            @rtype: fife.Location
            @return: The map co-ords"""
-        coord = self.cameras["main"].toMapCoordinates(click, False)
+        coord = self.activeMap.cameras["main"].toMapCoordinates(click, False)
         coord.z = 0
-        location = fife.Location(self.agent_layer)
+        location = fife.Location(self.activeMap.agent_layer)
         location.setMapCoordinates(coord)
         return location
-
-    def toggle_renderer(self, r_name):
-        """Enable or disable the grid renderer.
-           @return: None"""
-        renderer = self.cameras['main'].getRenderer('GridRenderer')
-        renderer.setEnabled(not renderer.isEnabled())
 
     def clearMenu(self):
         """ Hides the context menu. Just nice to have it as a function.
