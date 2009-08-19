@@ -1,14 +1,14 @@
 <animation delay="100" namespace="PAPRG" id="PC:run:315" x_offset="0" y_offset="-40">
-	<frame source="W.1.png" />
-	<frame source="W.2.png" />
-	<frame source="W.3.png" />
-	<frame source="W.4.png" />
-	<frame source="W.5.png" />
-	<frame source="W.6.png" />
-	<frame source="W.7.png" />
-	<frame source="W.8.png" />
-	<frame source="W.9.png" />
-	<frame source="W.10.png" />
-	<frame source="W.11.png" />
-	<frame source="W.12.png" />
+	<frame source="walk_1.png" />
+	<frame source="walk_2.png" />
+	<frame source="walk_3.png" />
+	<frame source="walk_4.png" />
+	<frame source="walk_5.png" />
+	<frame source="walk_6.png" />
+	<frame source="walk_7.png" />
+	<frame source="walk_8.png" />
+	<frame source="walk_9.png" />
+	<frame source="walk_10.png" />
+	<frame source="walk_11.png" />
+	<frame source="walk_12.png" />
 </animation>
