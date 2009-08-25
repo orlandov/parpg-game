@@ -20,9 +20,9 @@ from scripts import drag_drop_data as data_drag
 from pychan.tools import callbackWithArguments as cbwa
 from scripts.items import item_image_dict
 
-class Inventory():
+class Inventory(object):
     """Main inventory class"""
-    def __init__(self, engine, items, readyCallback):
+    def __init__(self, engine, items, readyCallback, toggleInventoryButtonCallback):
         """Initialise the instance.
            @type engine: fife.Engine
            @param engine: An instance of the fife engine
@@ -33,13 +33,17 @@ class Inventory():
            @param readyCallback: The function that will make the
                                  ready slots on the HUD reflect those
                                  within the inventory
+           @type toggleInventoryButtonCallback: function
+           @param toggleInventoryButtonCallback: Function that will toggle the state of the inventory button
            @return: None"""
         pychan.init(engine, debug = True)
         self.engine = engine
         self.readyCallback = readyCallback
+        self.toggleInventoryButtonCallback = toggleInventoryButtonCallback
         self.original_cursor_id = self.engine.getCursor().getId()
         # TODO: remove hard-coded string?
         self.inventory = pychan.loadXML("gui/inventory.xml")
+        self.inventoryShown = False 
         self.events_to_map = {}
         # the images that should be used for the buttons when they are "empty"
         self.empty_images = {'A1':'gui/inv_images/inv_backpack.png',
@@ -111,6 +115,7 @@ class Inventory():
             if button not in items:
                 ch.item = ""
 
+        self.events_to_map['close_button'] = self.closeInventoryAndToggle
         self.inventory.mapEvents(self.events_to_map)   
         self.resetMouseCursor()
 
@@ -118,6 +123,30 @@ class Inventory():
         """Close the inventory.
            @return: None"""
         self.inventory.hide()
+
+    def closeInventoryAndToggle(self):
+        """Close the inventory screen.
+           @return: None"""
+        self.closeInventory()
+        self.toggleInventoryButtonCallback()
+        self.inventoryShown = False
+
+    def displayInventory(self, callFromHud):
+        """Pause the game and enter the inventory screen, or close the
+           inventory screen and resume the game. callFromHud should be true
+           (must be True?) if you call this function from the HUD script
+           @type callFromHud: boolean
+           @param callFromHud: Whether this function is being called 
+                               from the HUD script
+           @return: None"""
+        if (self.inventoryShown == False):
+            self.showInventory()
+            self.inventoryShown = True
+        else:
+            self.closeInventory()
+            self.inventoryShown = False
+        if (callFromHud == False):
+            self.toggleInventoryButtonCallback()
 
     def showInventory(self):
         """Show the inventory.

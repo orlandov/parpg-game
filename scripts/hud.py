@@ -17,11 +17,13 @@
 
 import shutil, fife, pychan
 from pychan.tools import callbackWithArguments as cbwa
+from scripts.parpgfilebrowser import PARPGFileBrowser
+from scripts.context_menu import ContextMenu
+import weakref
 
-
-class Hud():
+class Hud(object):
     """Main Hud class"""
-    def __init__(self, engine, settings):
+    def __init__(self, engine, world, settings):
         """Initialise the instance.
            @type engine: fife.Engine
            @param engine: An instance of the fife engine
@@ -29,16 +31,21 @@ class Hud():
            @param settings: The settings data
            @return: None"""
         pychan.init(engine, debug = True)
+
         # TODO: perhaps this should not be hard-coded here
         self.hud = pychan.loadXML("gui/hud.xml")
+        self.engine = engine
         self.settings = settings
+        self.world = weakref.proxy(world)
         self.actionsBox = self.hud.findChild(name="actionsBox")
         self.actionsText = []
         self.menu_displayed = False
         self.initializeHud()
         self.initializeMainMenu()
+        self.initializeContextMenu()
         self.initializeOptionsMenu()
         self.initializeHelpMenu()
+        self.initializeEvents()
 
     def initializeHud(self):
         """Initialize and show the main HUD
@@ -121,7 +128,22 @@ class Hud():
         """Hide the HUD.
            @return: None"""
         self.hud.hide()
-        
+
+    def initializeContextMenu(self):
+        """Initialize the Context Menu
+           @return: None"""
+        self.context_menu = ContextMenu (self.engine, [], (0,0))
+        self.context_menu.hide()
+
+    def showContextMenu(self, data, pos):
+        """Display the Context Menu with data at pos
+           @type data: list
+           @param data: data to pass to context menu
+           @type pos: tuple
+           @param pos: tuple of x and y coordinates
+           @return: None"""
+        self.context_menu = ContextMenu(self.engine, data, pos)
+
     def initializeMainMenu(self):
         """Initalize the main menu.
            @return: None"""
@@ -152,7 +174,7 @@ class Hud():
         self.help_dialog = pychan.loadXML("gui/help.xml")
         help_events = {"closeButton":self.help_dialog.hide}
         self.help_dialog.mapEvents(help_events)
-        main_help_text = "Welcome to Post-Apocalyptic RPG or PARPG![br][br]"\
+        main_help_text = u"Welcome to Post-Apocalyptic RPG or PARPG![br][br]"\
         "This game is still in development, so please expect for there to be bugs"\
         " and[br]feel free to tell us about them at http://www.forums.parpg.net.[br]"\
         "This game uses a \"Point 'N' Click\" interface, which means that to move around,[br]"\
@@ -161,7 +183,7 @@ class Hud():
         "anywhere[br]on the screen and a menu will come up. This menu will change"\
         " depending on[br]what you have clicked on, hence it's name \"context menu\".[br][br]"
         
-        k_text =" Keybindings" 
+        k_text = u" Keybindings" 
         k_text+="[br] A : Add a test action to the actions display"
         k_text+="[br] I : Toggle the inventory screen"
         k_text+="[br] F5 : Take a screenshot"
@@ -228,6 +250,116 @@ class Hud():
         self.options_menu.distributeData(dataToDistribute)
 
         self.options_menu.mapEvents(self.options_events)
+
+    def saveGame(self):
+        """ Called when the user wants to save the game.
+            @return: None"""
+        save_browser = PARPGFileBrowser(self.engine,
+                                   self.world.saveFunction,
+                                   savefile=True,
+                                   guixmlpath="gui/savebrowser.xml",
+                                   extensions = ('.dat'))
+        save_browser.showBrowser()
+            
+    def newGame(self):
+        """Called when user request to start a new game.
+           @return: None"""
+        print 'new game'
+
+    def loadGame(self):
+        """ Called when the user wants to load a game.
+            @return: None"""
+        load_browser = PARPGFileBrowser(self.engine,
+                                   self.world.loadFunction,
+                                   savefile=False,
+                                   guixmlpath='gui/loadbrowser.xml',
+                                   extensions=('.dat'))
+        load_browser.showBrowser()
+
+    def quitGame(self):
+        """Called when user requests to quit game.
+           @return: None"""
+
+        window = pychan.widgets.Window(title=unicode("Quit?"))
+
+        hbox = pychan.widgets.HBox()
+        are_you_sure = "Are you sure you want to quit?"
+        label = pychan.widgets.Label(text=unicode(are_you_sure))
+        yes_button = pychan.widgets.Button(name="yes_button", 
+                                           text=unicode("Yes"))
+        no_button = pychan.widgets.Button(name="no_button",
+                                          text=unicode("No"))
+
+        window.addChild(label)
+        hbox.addChild(yes_button)
+        hbox.addChild(no_button)
+        window.addChild(hbox)
+
+        events_to_map = {"yes_button":self.world.quitFunction,
+                         "no_button":window.hide}
+        
+        window.mapEvents(events_to_map)
+        window.show()
+
+    def toggleInventoryButton(self):
+        """Manually toggles the inventory button.
+           @return: None"""
+        button = self.hud.findChild(name="inventoryButton")
+        if(button.toggled == 0):
+            button.toggled = 1
+        else:
+            button.toggled = 0
+
+    def displayInventory(self, *args, **kwargs):
+        """Display's the inventory screen
+           @return: None"""
+        self.world.inventory.displayInventory(*args, **kwargs)
+
+    def refreshReadyImages(self):
+        """Make the Ready slot images on the HUD be the same as those 
+           on the inventory
+           @return: None"""
+        self.setImages(self.hud.findChild(name="hudReady1"),
+                       self.world.inventory.inventory.findChild(name="Ready1").up_image)
+        self.setImages(self.hud.findChild(name="hudReady2"),
+                       self.world.inventory.inventory.findChild(name="Ready2").up_image)
+        self.setImages(self.hud.findChild(name="hudReady3"),
+                       self.world.inventory.inventory.findChild(name="Ready3").up_image)
+        self.setImages(self.hud.findChild(name="hudReady4"),
+                       self.world.inventory.inventory.findChild(name="Ready4").up_image)
+
+    def setImages(self, widget, image):
+        """Set the up, down, and hover images of an Imagebutton.
+           @type widget: pychan.widget
+           @param widget: widget to set
+           @type image: string
+           @param image: image to use
+           @return: None"""
+        widget.up_image = image
+        widget.down_image = image
+        widget.hover_image = image
+
+    def initializeEvents(self):
+        """Intialize Hud events
+           @return: None"""
+        events_to_map = {}
+        events_to_map["inventoryButton"] = cbwa(self.displayInventory, True)
+        events_to_map["saveButton"] = self.saveGame
+        events_to_map["loadButton"] = self.loadGame
+
+        hud_ready_buttons = ["hudReady1", "hudReady2", "hudReady3", "hudReady4"]
+
+        for item in hud_ready_buttons:
+            events_to_map[item] = cbwa(self.readyAction, item)
+
+        self.hud.mapEvents(events_to_map)
+
+        menu_events = {}
+        menu_events["newButton"] = self.newGame
+        menu_events["quitButton"] = self.quitGame
+        menu_events["saveButton"] = self.saveGame
+        menu_events["loadButton"] = self.loadGame
+        self.main_menu.mapEvents(menu_events)
 
     def updateVolumeText(self):
         """
@@ -344,15 +476,6 @@ class Hud():
            @return: None"""
         self.options_menu.show()
     
-    def toggleInventory(self):
-        """Manually toggles the inventory button.
-           @return: None"""
-        button = self.hud.findChild(name="inventoryButton")
-        if(button.toggled == 0):
-            button.toggled = 1
-        else:
-            button.toggled = 0
-
     def readyAction(self, ready_button):
         """ Called when the user selects a ready button from the HUD """
         text = "Used the item from %s" % ready_button
