@@ -101,69 +101,57 @@ class Engine:
         if self.gameState.currentMap:
             self.loadMap(self.gameState.currentMap) 
 
-    def loadObjects(self, filename):
-        """Load objects from the XML file
-           Returns True if it worked, False otherwise.
-           @type filename: string
-           @param filename: The XML file to read.
-           @rtype: boolean
-           @return: Status of result (True/False)"""
-        try:
-            objects_file = open(filename, 'rt')
-        except(IOError):
-            sys.stderr.write("Error: Can't find objects file\n")
-            return False
-        # now open and read the XML file
-        other_handler = ObjectXMLParser()
-        other_handler.getObjects(objects_file)
-        objects_file.close()
-            
-        # now add to the map and the engine
-        self.createGameObjects(other_handler.local_info)
-        return True
-
-    def createGameObjects(self, objList):
-        """Add all found game objects to the world
-           @type objList: list
-           @param objList: a list of the objects found in the xml file
-           @return: None"""
-        
+    def createObject (self, layer, attributes, instance):
+        """Create an object and add it to the current map.
+            Inputs:
+                layer = FIFE layer object exists in
+                attributes = dictionary of all object attributes
+                instance = FIFE instance corresponding to the object
+            Return:
+                Nothing
+        """
         # create the extra data
         extra = {}
-        extra['agent_layer'] = self.view.activeMap.agent_layer
+        extra['agent_layer'] = layer
         extra['engine'] = self
         
-        # create the objects
-        for info in objList:
-            obj = createObject(info, extra)
-            if obj.trueAttr("PC"):
-                self.addPC(obj)
-            else:
-                self.addObject(obj)
+        obj = createObject(attributes, extra)
+        
+        if obj.trueAttr("PC"):
+            self.addPC( layer, obj, instance)
+        else:
+            self.addObject( layer, obj, instance)
 
-    def addPC(self,pc):
-        """Add the PC to the world
-           @type pc: list
-           @param pc: List of data for PC attributes
-           @return: None"""
-        # add to view data    
-        self.view.activeMap.addObject(pc.X, pc.X, pc.gfx, pc.ID)
+        
+
+    def addPC(self, layer, pc, instance):
+        """Add the PC to the map
+            Inputs:
+                layer = FIFE layer object exists in
+                pc = PlayerCharacter object
+                instance = FIFE instance of PC
+            Returns:
+                Nothing
+        """
+        # add to view data 
+        self.view.activeMap.addObject(pc.ID, instance)          
         
         # sync with game data
         if not self.gameState.PC:
             self.gameState.PC = pc
             
         self.gameState.PC.setup()
-        self.view.activeMap.addPC(self.gameState.PC.behaviour.agent)
-            
-        # create the PC agent
-        self.gameState.PC.start()
 
-    def addObject(self,obj):
-        """Adds an object to the game state.
-           @type npcs: list
-           @param npcs: List of NPC's to add
-           @return: None"""
+
+    def addObject(self, layer, obj, instance):
+        """Adds an object to the map.
+            Inputs:
+                layer = FIFE layer object exists in
+                obj = corresponding object class
+                instance = FIFE instance of object
+            Returns:
+                Nothing
+        """
         
         ref = self.gameState.getObjectById(obj.ID) 
         if ref is None:
@@ -177,8 +165,8 @@ class Engine:
             obj.gfx = ref.gfx  
             
         # add it to the view
-        self.view.activeMap.addObject(obj.X, obj.Y, obj.gfx, obj.ID)          
-        
+        self.view.activeMap.addObject(obj.ID, instance)          
+       
         if obj.trueAttr("NPC"):
             # create the agent
             obj.setup()
@@ -259,13 +247,15 @@ class Engine:
            @type map_file: string
            @param map_file: Name of map file to load
            @return: None"""
-        # then we let FIFE load the rest of the map
+        self.gameState.currentMap = map_file
         self.view.loadMap(map_name, str(map_file))
         self.view.setActiveMap(map_name)
-        # then we update FIFE with the PC, NPC and object details
-        self.reset()
-        self.gameState.currentMap = map_file
-        self.loadObjects(map_file[:-4] + "_objects.xml")
+
+        self.reset()        
+        
+        # create the PC agent
+        self.view.activeMap.addPC(self.gameState.PC.behaviour.agent)
+        self.gameState.PC.start()
 
     def handleMouseClick(self,position):
         """Code called when user left clicks the screen.

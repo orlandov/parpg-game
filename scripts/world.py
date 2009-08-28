@@ -20,6 +20,8 @@ import pychan
 from sounds import SoundEngine
 from datetime import date
 from scripts.common.eventlistenerbase import EventListenerBase
+from local_loaders.loaders import loadMapFile
+from sounds import SoundEngine
 from settings import Setting
 from scripts import inventory, hud
 from scripts.popups import *
@@ -90,9 +92,17 @@ class World(EventListenerBase):
     def loadMap(self, mapname, filename):
         """Loads a map an stores it under the given name in the maps list.
         """
-        map = Map(self.engine)
-        map.load(filename)
+        map = Map(self.engine, self.data)
+        
+        """Need to set active map before we load it because the map 
+        loader uses call backs that expect to find an active map. 
+        This needs to be reworked.
+        """
         self.maps[mapname] = map
+        self.setActiveMap(mapname)
+
+        map.load(filename)
+
     
     def setActiveMap(self, mapname):
         """Sets the active map that is to be rendered.
@@ -198,7 +208,7 @@ class World(EventListenerBase):
             for obj in i:
                 # check to see if this in our list at all
                 if(self.data.objectActive(obj.getId())):
-                    # yes, so outline    
+                    # yes, so outline 
                     self.activeMap.outline_render.addOutlined(obj, 0, 137, 255, 2)
                     # get the text
                     item = self.data.objectActive(obj.getId())

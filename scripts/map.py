@@ -16,7 +16,7 @@
 #   along with PARPG.  If not, see <http://www.gnu.org/licenses/>.
 
 import fife, time
-from loaders import loadMapFile
+from local_loaders.loaders import loadMapFile
 from scripts.common.eventlistenerbase import EventListenerBase
 
 from settings import Setting
@@ -24,11 +24,12 @@ TDS = Setting()
 
 class Map(fife.MapChangeListener):
     """Map class used to flag changes in the map"""
-    def __init__(self, engine):
+    def __init__(self, engine, data):
         # init mapchange listener
         fife.MapChangeListener.__init__(self)
         self.map = None
         self.engine = engine
+        self.data = data
         
         # init map attributes
         self.cameras = {}
@@ -71,8 +72,8 @@ class Map(fife.MapChangeListener):
            @param filename: Name of map to load
            @return: None"""
         self.reset()
-        self.map = loadMapFile(filename, self.engine)
-        
+        self.map = loadMapFile(filename, self.engine, self.data)
+         
         # there must be a PC object on the objects layer!
         self.agent_layer = self.map.getLayer('ObjectLayer')
         
@@ -99,30 +100,20 @@ class Map(fife.MapChangeListener):
                 
     def addPC(self, agent):
         """Add the player character to the map
-           @type agent: Fife.instance
-           @param : The object to use as the PC sprite
+           @type agent: Fife.instance of PC
            @return: None"""
         # actually this is real easy, we just have to
         # attach the main camera to the PC
         self.cameras['main'].attach(agent)
 
-    def addObject(self, xpos, ypos, gfx, name):
-        """Add an object or an NPC to the map.
-           It makes no difference to fife which is which.
-           @type xpos: integer
-           @param xpos: x position of object
-           @type ypos: integer
-           @param ypos: y position of object
-           @type gfx: string
-           @param gfx: name of gfx image
-           @type name: string
-           @param name: name of object
-           @return: None"""
-        obj = self.agent_layer.createInstance(
-                self.model.getObject(str(gfx), "PARPG"),
-                fife.ExactModelCoordinate(float(xpos), float(ypos), 0.0), str(name))
-        obj.setRotation(0)
-        fife.InstanceVisual.create(obj)
+    def addObject(self, name, obj):
+        """Add an object to this map0
+            Inputs:
+                name - ID of object
+                obj - FIFE instance of object
+            Return:
+                Nothing
+        """
         # save it for later use
         self.obj_hash[name]=obj
         

@@ -1117,6 +1117,24 @@
             <i x="7" o="block" z="0.0" y="-3" r="0"></i>
             <i x="8" o="block" z="0.0" y="-4" r="0"></i>
             <i x="8" o="block" z="0.0" y="-3" r="0"></i>
+            
+            <!-- There must be one and one only PC character -->
+			<i x="0.0" o="PC" z="0.0" y="0.0" r="0" id="PC" object_type="PlayerCharacter"></i>
+            
+            <!-- There can be any number of NPC characters -->
+			<i x="-4.0" o="npc-woman" z="0.0" y="-7.0" r="0" id="woman01" object_type="NonPlayerCharacter"
+				text="A friendly woman"></i>
+            
+            
+ 			<i x="-3.0" o="crate" z="0.0" y="-4.0" r="0" id="crate01" object_type="WoodenCrate" is_open="False" locked="False" text="asdf"
+		desc="A crate that is covered in grime and dirt. There doesn't seem to be anything remarkable about it"></i>
+ 
+			<!-- There can be any number of objects -->
+			<!-- Object blocking is set in the objects own xml file -->
+			<i x="-4.0" o="crate" z="0.0" y="-6.0" r="0" id="crate02" object_type="WoodenCrate"
+            	is_open="False" locked="False" text="A dirty old crate"
+	    		desc="A crate that is covered in grime and dirt. There doesn't seem to be anything remarkable about it"></i>
+            
 		</instances>
 	</layer>
 
