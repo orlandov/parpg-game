@@ -297,8 +297,8 @@ class XMLMapLoader(fife.ResourceLoader):
                 inst_dict["gfx"] = objectID
                 inst_dict["is_open"] = instance.get('is_open')
                 inst_dict["locked"] = instance.get('locked')
+                inst_dict["name"] = instance.get('name')
                 inst_dict["text"] = instance.get('text')
-                inst_dict["desc"] = instance.get('desc')
                 self.data.createObject( layer, inst_dict, inst )
                 
     def parseCameras(self, map_elt, map):
