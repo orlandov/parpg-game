@@ -213,17 +213,17 @@ class Inventory(object):
             # get the item that the widget is 'storing'
             data_drag.dragged_item = drag_widget.item
             # get the up and down images of the widget
-            up_image = drag_widget._getUpImage()
-            down_image = drag_widget._getDownImage()
+            up_image = drag_widget.up_image
+            down_image = drag_widget.down_image
             # set the mouse cursor to be the widget's image
-            self.setMouseCursor(up_image,down_image)
-            data_drag.dragged_image = up_image
+            self.setMouseCursor(up_image.source,down_image.source)
+            data_drag.dragged_image = up_image.source
             data_drag.dragging = True
             # after dragging the 'item', set the widgets' images
             # so that it has it's default 'empty' images
-            drag_widget._setUpImage(self.empty_images[obj])
-            drag_widget._setDownImage(self.empty_images[obj])
-            drag_widget._setHoverImage(self.empty_images[obj])
+            drag_widget.up_image=(self.empty_images[obj])
+            drag_widget.down_image=(self.empty_images[obj])
+            drag_widget.hover_image=(self.empty_images[obj])
             # then set it's item to nothing
             drag_widget.item = ""
             
@@ -241,9 +241,9 @@ class Inventory(object):
         if((data_drag.dragged_type == 'main_inv') or
            (data_drag.dropped_type == 'main_inv')):
             drag_widget = self.inventory.findChild(name = obj)
-            drag_widget._setUpImage(data_drag.dragged_image)
-            drag_widget._setHoverImage(data_drag.dragged_image)
-            drag_widget._setDownImage(data_drag.dragged_image)
+            drag_widget.up_image = data_drag.dragged_image
+            drag_widget.hover_image = data_drag.dragged_image
+            drag_widget.down_image = data_drag.dragged_image
             drag_widget.item = data_drag.dragged_item
             print 'Item: ' + drag_widget.item
             data_drag.dragging = False
@@ -260,9 +260,9 @@ class Inventory(object):
         elif((data_drag.dragged_type == data_drag.dropped_type) and
              (data_drag.dragged_type in self.locations)):
             drag_widget = self.inventory.findChild(name = obj)
-            drag_widget._setUpImage(data_drag.dragged_image)
-            drag_widget._setHoverImage(data_drag.dragged_image)
-            drag_widget._setDownImage(data_drag.dragged_image)
+            drag_widget.up_image = data_drag.dragged_image
+            drag_widget.hover_image = data_drag.dragged_image
+            drag_widget.down_image = data_drag.dragged_image
             drag_widget.item = data_drag.dragged_item
             print 'Item: ' + drag_widget.item
             data_drag.dragging = False
