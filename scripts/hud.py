@@ -62,42 +62,18 @@ class Hud(object):
         ready3 = self.hud.findChild(name='hudReady3')
         ready4 = self.hud.findChild(name='hudReady4')
         actions_scroll_area = self.hud.findChild(name='actionsScrollArea')
+        if (screen_width <=800) :
+            gap = 0
+        else :
+            gap = 40
         # annoying code that is both essential and boring to enter
-        if (screen_width == 1440):
-            ready1.position = (screen_width-1235, 7)
-            ready2.position = (screen_width-1175, 7)
-            ready3.position = (screen_width-215, 7)
-            ready4.position = (screen_width-155, 7)
-            actions_scroll_area.position = (325, 5)
-            actions_width = screen_width - 550
-        elif (screen_width == 1280):
-            ready1.position = (screen_width-1075, 7)
-            ready2.position = (screen_width-1015, 7)
-            ready3.position = (screen_width-215, 7)
-            ready4.position = (screen_width-155, 7)
-            actions_scroll_area.position = (325, 5)
-            actions_width = screen_width - 550
-        elif (screen_width == 1024):
-            ready1.position = (screen_width-820, 7)
-            ready2.position = (screen_width-760, 7)
-            ready3.position = (screen_width-215, 7)
-            ready4.position = (screen_width-155, 7)
-            actions_scroll_area.position = (325, 5)
-            actions_width = screen_width - 550
-        elif (screen_width == 800):
-            ready1.position = (screen_width-640, 7)
-            ready2.position = (screen_width-580, 7)
-            ready3.position = (screen_width-185, 7)
-            ready4.position = (screen_width-125, 7)
-            actions_scroll_area.position = (280, 5)
-            actions_width = screen_width - 475
-        else:
-            ready1.position = (screen_width-475, 7)
-            ready2.position = (screen_width-420, 7)
-            ready3.position = (screen_width-175, 7)
-            ready4.position = (screen_width-120, 7)
-            actions_scroll_area.position = (280, 5)
-            actions_width = screen_width - 465
+        ready1.position = (160+gap, 7)
+        ready2.position = (220+gap, 7)
+        ready3.position = (screen_width-180-gap, 7)
+        ready4.position = (screen_width-120-gap, 7)
+        actions_scroll_area.position = (280+gap, 5)
+        actions_width = screen_width - 470 - 2*gap
+
         # and finally add an actions box
         self.hud.findChild(name="actionsBox").min_size = (actions_width, 0)
         actions_scroll_area.min_size = (actions_width, 55)
@@ -207,9 +183,13 @@ class Hud(object):
                                "closeButton":self.options_menu.hide,
                                "defaultsButton":self.setToDefaults,
                                "InitialVolumeSlider":self.updateVolumeText}
-
-        self.Resolutions = ['640x480', '800x600',
-                            '1024x768', '1280x1024', '1440x900']
+        
+        settings = self.engine.getSettings()
+        current_fullscreen = settings.isFullScreen()
+        settings.setFullScreen(True)
+        availableResolutions = settings.getPossibleResolutions()
+        self.Resolutions = [str(x[0])+'x'+str(x[1]) for x in availableResolutions];
+        settings.setFullScreen(current_fullscreen)
         self.RenderBackends = ['OpenGL', 'SDL']
         self.renderNumber = 0
         if (str(self.settings.readSetting('RenderBackend')) == "SDL"):

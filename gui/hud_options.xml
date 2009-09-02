@@ -7,7 +7,7 @@
   <Slider name="InitialVolumeSlider" scale_start="0" scale_end="10" />
   <HBox min_size="120,90">
     <Label text="Resolution: " />
-    <ListBox name="ResolutionBox" min_size="120,0" />
+    <ListBox name="ResolutionBox" min_size="120,0" max_size="200,150" />
     <Spacer />
   </HBox>
   <HBox min_size="120,47">
