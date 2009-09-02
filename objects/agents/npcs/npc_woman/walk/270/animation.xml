@@ -1,0 +1,14 @@
+<animation delay="100" namespace="PAPRG" id="npc-woman:run:270" x_offset="0" y_offset="-40">
+	<frame source="W0.png" />
+	<frame source="W1.png" />
+	<frame source="W2.png" />
+	<frame source="W3.png" />
+	<frame source="W4.png" />
+	<frame source="W5.png" />
+	<frame source="W6.png" />
+	<frame source="W7.png" />
+	<frame source="W8.png" />
+	<frame source="W9.png" />
+	<frame source="W10.png" />
+	<frame source="W11.png" />
+</animation>
