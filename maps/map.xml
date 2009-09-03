@@ -2,7 +2,7 @@
 <map id="my-map" format="1.0">
     <!-- Firstly import all the gfx objects we need for this map -->
 	<import file="../objects/agents/player/player.xml"></import>
-	<import file="../objects/agents/npcs/npc_woman/npc-woman.xml"></import>
+	<import file="../objects/agents/npcs/npc_woman/npc_woman.xml"></import>
 	<import file="../objects/ground/grass/grass-a.xml"></import>
 	<import file="../objects/ground/grass/grass-b.xml"></import>
 	<import file="../objects/ground/gravel/gravel.xml"></import>
