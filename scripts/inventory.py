@@ -22,24 +22,25 @@ from scripts.items import item_image_dict
 
 class Inventory(object):
     """Main inventory class"""
-    def __init__(self, engine, items, readyCallback, toggleInventoryButtonCallback):
+    def __init__(self, engine, items, callbacks):
         """Initialise the instance.
            @type engine: fife.Engine
            @param engine: An instance of the fife engine
            @type items: dict
            @param items: A dictionary for every slot that goes '{slot:item, slot:item}'
                          if a slot is not included in the dict, it is assumed to be empty
-           @type readyCallback: function
-           @param readyCallback: The function that will make the
-                                 ready slots on the HUD reflect those
-                                 within the inventory
-           @type toggleInventoryButtonCallback: function
-           @param toggleInventoryButtonCallback: Function that will toggle the state of the inventory button
+           @type callbacks: dict
+           @param callbacks: a dict of callbacks
+               refreshReadyImages:
+                   Function that will make the ready slots on the HUD
+                   reflect those within the inventory
+               toggleInventoryButton:
+                   Function that will toggle the state of the inventory button
            @return: None"""
         pychan.init(engine, debug = True)
         self.engine = engine
-        self.readyCallback = readyCallback
-        self.toggleInventoryButtonCallback = toggleInventoryButtonCallback
+        self.readyCallback = callbacks['refreshReadyImages']
+        self.toggleInventoryButtonCallback = callbacks['toggleInventoryButton']
         self.original_cursor_id = self.engine.getCursor().getId()
         # TODO: remove hard-coded string?
         self.inventory = pychan.loadXML("gui/inventory.xml")
@@ -131,21 +132,24 @@ class Inventory(object):
         self.toggleInventoryButtonCallback()
         self.inventoryShown = False
 
-    def displayInventory(self, callFromHud):
+    def toggleInventory(self, toggleImage=True):
         """Pause the game and enter the inventory screen, or close the
-           inventory screen and resume the game. callFromHud should be true
-           (must be True?) if you call this function from the HUD script
-           @type callFromHud: boolean
-           @param callFromHud: Whether this function is being called 
-                               from the HUD script
+           inventory screen and resume the game.
+           @type toggleImage: bool
+           @param toggleImage:
+               Call toggleInventoryCallback if True. Toggling via a
+               keypress requires that we toggle the Hud inventory image
+               explicitly. Clicking on the Hud inventory button toggles the
+               image implicitly, so we don't change it.
            @return: None"""
-        if (self.inventoryShown == False):
+        if not self.inventoryShown:
             self.showInventory()
             self.inventoryShown = True
         else:
             self.closeInventory()
             self.inventoryShown = False
-        if (callFromHud == False):
+
+        if toggleImage:
             self.toggleInventoryButtonCallback()
 
     def showInventory(self):
@@ -295,4 +299,10 @@ class Inventory(object):
 
         return items
                 
+    def getImage(self, name):
+        """Return a current image from the inventory
+           @type name: string
+           @param name: name of image to get
+           @return: None"""
+        return self.inventory.findChild(name=name)
 

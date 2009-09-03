@@ -19,16 +19,22 @@ import shutil, fife, pychan
 from pychan.tools import callbackWithArguments as cbwa
 from scripts.parpgfilebrowser import PARPGFileBrowser
 from scripts.context_menu import ContextMenu
-import weakref
+from scripts import inventory
 
 class Hud(object):
     """Main Hud class"""
-    def __init__(self, engine, world, settings):
+    def __init__(self, engine, settings, inv_model, callbacks):
         """Initialise the instance.
            @type engine: fife.Engine
            @param engine: An instance of the fife engine
            @type settings: settings.Setting
            @param settings: The settings data
+           @type inv_model: dict
+           @type callbacks: dict
+           @param callbacks: a dict of callbacks
+               saveGame: called when the user clicks on Save
+               loadGame: called when the user clicks on Load
+               quitGame: called when the user clicks on Quit
            @return: None"""
         pychan.init(engine, debug = True)
 
@@ -36,7 +42,19 @@ class Hud(object):
         self.hud = pychan.loadXML("gui/hud.xml")
         self.engine = engine
         self.settings = settings
-        self.world = weakref.proxy(world)
+
+        inv_callbacks = {
+            'refreshReadyImages': self.refreshReadyImages,
+            'toggleInventoryButton': self.toggleInventoryButton,
+        }
+
+        self.inventory = inventory.Inventory(self.engine, inv_model, inv_callbacks)
+        self.refreshReadyImages()
+
+        self.saveGameCallback = callbacks['saveGame']
+        self.loadGameCallback = callbacks['loadGame']
+        self.quitCallback     = callbacks['quitGame']
+
         self.actionsBox = self.hud.findChild(name="actionsBox")
         self.actionsText = []
         self.menu_displayed = False
@@ -119,6 +137,11 @@ class Hud(object):
            @param pos: tuple of x and y coordinates
            @return: None"""
         self.context_menu = ContextMenu(self.engine, data, pos)
+
+    def hideContextMenu(self):
+        """Hides the context menu
+           @return: None"""
+        self.context_menu.hide()
 
     def initializeMainMenu(self):
         """Initalize the main menu.
@@ -235,7 +258,7 @@ class Hud(object):
         """ Called when the user wants to save the game.
             @return: None"""
         save_browser = PARPGFileBrowser(self.engine,
-                                   self.world.saveFunction,
+                                   self.saveGameCallback,
                                    savefile=True,
                                    guixmlpath="gui/savebrowser.xml",
                                    extensions = ('.dat'))
@@ -250,7 +273,7 @@ class Hud(object):
         """ Called when the user wants to load a game.
             @return: None"""
         load_browser = PARPGFileBrowser(self.engine,
-                                   self.world.loadFunction,
+                                   self.loadGameCallback,
                                    savefile=False,
                                    guixmlpath='gui/loadbrowser.xml',
                                    extensions=('.dat'))
@@ -275,8 +298,8 @@ class Hud(object):
         hbox.addChild(no_button)
         window.addChild(hbox)
 
-        events_to_map = {"yes_button":self.world.quitFunction,
-                         "no_button":window.hide}
+        events_to_map = { "yes_button": self.quitCallback,
+                          "no_button":  window.hide }
         
         window.mapEvents(events_to_map)
         window.show()
@@ -285,28 +308,32 @@ class Hud(object):
         """Manually toggles the inventory button.
            @return: None"""
         button = self.hud.findChild(name="inventoryButton")
-        if(button.toggled == 0):
+        if button.toggled == 0:
             button.toggled = 1
         else:
             button.toggled = 0
 
-    def displayInventory(self, *args, **kwargs):
+    def toggleInventory(self, toggleImage=True):
         """Display's the inventory screen
            @return: None"""
-        self.world.inventory.displayInventory(*args, **kwargs)
+
+        self.inventory.toggleInventory(toggleImage)
 
     def refreshReadyImages(self):
         """Make the Ready slot images on the HUD be the same as those 
            on the inventory
            @return: None"""
         self.setImages(self.hud.findChild(name="hudReady1"),
-                       self.world.inventory.inventory.findChild(name="Ready1").up_image)
+                       self.inventory.getImage("Ready1").up_image)
+
         self.setImages(self.hud.findChild(name="hudReady2"),
-                       self.world.inventory.inventory.findChild(name="Ready2").up_image)
+                       self.inventory.getImage("Ready2").up_image)
+
         self.setImages(self.hud.findChild(name="hudReady3"),
-                       self.world.inventory.inventory.findChild(name="Ready3").up_image)
+                       self.inventory.getImage("Ready3").up_image)
+
         self.setImages(self.hud.findChild(name="hudReady4"),
-                       self.world.inventory.inventory.findChild(name="Ready4").up_image)
+                       self.inventory.getImage("Ready4").up_image)
 
     def setImages(self, widget, image):
         """Set the up, down, and hover images of an Imagebutton.
@@ -323,7 +350,9 @@ class Hud(object):
         """Intialize Hud events
            @return: None"""
         events_to_map = {}
-        events_to_map["inventoryButton"] = cbwa(self.displayInventory, True)
+
+        # when we click the toggle button don't change the image
+        events_to_map["inventoryButton"] = cbwa(self.toggleInventory, False)
         events_to_map["saveButton"] = self.saveGame
         events_to_map["loadButton"] = self.loadGame
 

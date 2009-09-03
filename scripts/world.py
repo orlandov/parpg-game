@@ -23,7 +23,7 @@ from scripts.common.eventlistenerbase import EventListenerBase
 from local_loaders.loaders import loadMapFile
 from sounds import SoundEngine
 from settings import Setting
-from scripts import inventory, hud
+from scripts import hud
 from scripts.popups import *
 from pychan.tools import callbackWithArguments as cbwa
 from map import Map
@@ -56,18 +56,23 @@ class World(EventListenerBase):
         self.data = None
         self.mouseCallback = None
         self.obj_hash={}
+
         # self.map is a Map object, set to none here
         self.activeMap = None
         self.maps = {}
-        self.hud = hud.Hud(self.engine, self, TDS)
 
-        self.action_number = 1
-        # setup the inventory
+        # setup the inventory model
         # make slot 'A1' and 'A3' container daggers
-        inv_data = {'A1':'dagger01', 'A3':'dagger01'}
-        self.inventory = inventory.Inventory(self.engine, inv_data, self.hud.refreshReadyImages, self.hud.toggleInventoryButton)
-        self.hud.refreshReadyImages()
-        
+        inv_model = {'A1':'dagger01', 'A3':'dagger01'}
+
+        hud_callbacks = {
+            'saveGame': self.saveGame,
+            'loadGame': self.loadGame,
+            'quitGame': self.quitGame,
+        }
+        self.hud = hud.Hud(self.engine, TDS, inv_model, hud_callbacks)
+        self.action_number = 1
+
         self.boxOpen = False
         self.boxCreated = False
         
@@ -79,13 +84,18 @@ class World(EventListenerBase):
             if(self.sounds.music_init == False):
                 self.sounds.playMusic("/music/preciouswasteland.ogg")
                 
-    def saveFunction(self, *args, **kwargs):
-        """Callback for save game
+    def quitGame(self):
+        """Quits the game
+        @return: None"""
+        self.quitFunction()
+
+    def saveGame(self, *args, **kwargs):
+        """Saves the game state
            @return: None"""
         self.data.save(*args, **kwargs)
 
-    def loadFunction(self, *args, **kwargs):
-        """Callback for load game
+    def loadGame(self, *args, **kwargs):
+        """Loads the game state
            @return: None"""
         self.data.load(*args, **kwargs)
 
@@ -151,7 +161,7 @@ class World(EventListenerBase):
             self.engine.getGuiManager().getConsole().toggleShowHide()
         if(keyval == key.I):
             # I opens and closes the inventory
-            self.hud.displayInventory(callFromHud=False)
+            self.hud.toggleInventory()
         if(keyval == key.A):
             # A adds a test action to the action box
             # The test actions will follow this format: Action 1, Action 2, etc.
@@ -170,7 +180,7 @@ class World(EventListenerBase):
            @type evt: fife.event
            @param evt: The event that fife caught
            @return: None"""
-        self.hud.context_menu.hide() # hide the context menu in case it is displayed
+        self.hud.hideContextMenu() # hide the context menu in case it is displayed
         scr_point = fife.ScreenPoint(evt.getX(), evt.getY())
         if(evt.getButton() == fife.MouseEvent.LEFT):
             self.data.handleMouseClick(self.getCoords(scr_point))      
@@ -193,7 +203,7 @@ class World(EventListenerBase):
     def onWalk(self, click):
         """Callback sample for the context menu.
         """
-        self.hud.context_menu.hide()
+        self.hud.hideContainer()
         self.data.gameState.PC.run(click)
 
     def mouseMoved(self, evt):
