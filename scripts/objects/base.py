@@ -254,38 +254,3 @@ class Trappable (object):
     """Provides trap slots to the object"""
     def __init__ (self, **kwargs):
         self.is_trappable = True
-        
-if __name__=="__main__":
-    """This will be turned into a test suite"""
-    class Wildcard (GameObject, Lockable, Container, Living, Scriptable, 
-                    CharStats, Wearable, Usable, Weapon, Destructable,
-                    Trappable, Carryable, ):
-        def __init__ (self, ID, *args, **kwargs):
-            self.name = 'All-purpose carry-all'
-            self.text = 'What is this? I dont know'    
-            GameObject.  __init__( self, ID, **kwargs )
-            Lockable.    __init__( self, **kwargs )
-            Container.   __init__( self, **kwargs )
-            Living.      __init__( self, **kwargs )
-            Scriptable.  __init__( self, **kwargs )
-            CharStats.   __init__( self, **kwargs )
-            Wearable.    __init__( self, **kwargs )
-            Usable.      __init__( self, **kwargs )
-            Weapon.      __init__( self, **kwargs )
-            Destructable.__init__( self, **kwargs )
-            Trappable.   __init__( self, **kwargs )
-            Carryable.   __init__( self, **kwargs )
-    
-    test = GameObject (1, {'map':'img/test.png'}, (1,1), None, 'Test object','Description')
-    print test
-    assert test.X == 1
-    assert test.Y == 1
-    assert test.coords == (1,1)
-    test.coords = (2,2)
-    assert test.X == 2.0
-    assert test.Y == 2.0
-    
-    wc = Wildcard (2)
-    print wc
-    print wc.is_carryable
-

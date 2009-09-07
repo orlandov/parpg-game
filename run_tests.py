@@ -9,7 +9,8 @@ for p in _paths:
     if p not in sys.path:
         sys.path.append(_jp(p))
 
-from scripts.tests.classTests import WoodenCrateTest
+from tests.test_objects_base import *
+from tests.test_crate import *
 
 if __name__ == '__main__':
     unittest.main()
