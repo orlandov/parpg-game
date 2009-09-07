@@ -1,27 +1,27 @@
-<Container name="mainHudWindow" position_technique="center:bottom">
+<Container name="mainHudWindow" position_technique="center:bottom" is_focusable="0">
 
-  <Button name="menuButton" text="Menu"  max_size="200,15" position="5,5"/>
-  <Button name="saveButton" text="Save" max_size="200,15" position="6,25"/>
-  <Button name="loadButton" text="Load" max_size="200,15" position="6,45"/>
+  <Button name="menuButton" text="Menu"  max_size="200,15" position="5,5" is_focusable="0" />
+  <Button name="saveButton" text="Save" max_size="200,15" position="6,25" is_focusable="0" />
+  <Button name="loadButton" text="Load" max_size="200,15" position="6,45" is_focusable="0" />
 
-  <Label name="healthPoints" text="HP: 100" position="56,14"/>
-  <Label name="actionPoints" text="AP: 100" position="56,34" />
-  <Label name="armorClass" text="AC: 100" position="106,14" />
-  <Label name="tempGauge" text="Temp: 100" position="106,34" />
+  <Label name="healthPoints" text="HP: 100" position="56,14" is_focusable="0" />
+  <Label name="actionPoints" text="AP: 100" position="56,34" is_focusable="0" />
+  <Label name="armorClass" text="AC: 100" position="106,14" is_focusable="0" />
+  <Label name="tempGauge" text="Temp: 100" position="106,34" is_focusable="0" />
   
-  <ImageButton name="hudReady1" />
-  <ImageButton name="hudReady2" />
+  <ImageButton name="hudReady1" is_focusable="0" />
+  <ImageButton name="hudReady2" is_focusable="0" />
 
   <ScrollArea name="actionsScrollArea" vertical_scrollbar="1" 
-	      horizontal_scrollbar="0">
-    <ListBox name="actionsBox" />
+	      horizontal_scrollbar="0" is_focusable="0">
+    <ListBox name="actionsBox" is_focusable="0" />
   </ScrollArea>
 
-  <ImageButton name="hudReady3" />
-  <ImageButton name="hudReady4" />
+  <ImageButton name="hudReady3" is_focusable="0" />
+  <ImageButton name="hudReady4" is_focusable="0" />
 
   <ToggleButton name="inventoryButton" up_image="gui/inv_images/inv_backpack.png" 
 		down_image="gui/inv_images/inv_backpack_open.png" 
-		hover_image="gui/inv_images/inv_backpack.png" />
+		hover_image="gui/inv_images/inv_backpack.png" is_focusable="0" />
 </Container>
 
