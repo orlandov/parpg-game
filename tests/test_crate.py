@@ -8,7 +8,7 @@ class WoodenCrateTest(unittest.TestCase):
         self.crate = WoodenCrate(ID='crate01')
         self.crate2 = WoodenCrate(ID='crate02', locked=False)
 
-    def test_creation(self):
+    def testCreation(self):
         self.assertEqual(self.crate.ID, 'crate01')
         self.assertEqual(self.crate.name, 'Wooden Crate')
         self.assertEqual(self.crate.text, 'A battered crate')
@@ -25,7 +25,7 @@ class WoodenCrateTest(unittest.TestCase):
 
     # can't test containing functionality...there are no containable objects
 
-    def test_lockable(self):
+    def testLockable(self):
         self.crate2.lock()
         self.assertEqual(self.crate2.locked, True)
         self.crate2.unlock()
