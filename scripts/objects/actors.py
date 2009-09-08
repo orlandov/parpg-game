@@ -73,6 +73,7 @@ class PCBehaviour (ActorBehaviour):
         if self.nextAction:
             self.nextAction.execute()
             self.nextAction = None
+            self.idle()
         else:
             self.idle()
             
