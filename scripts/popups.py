@@ -113,7 +113,8 @@ class ContainerGUI():
         Hide the container
         @return: None
         """
-        self.container_gui.hide()
+        if self.container_gui.isVisible():
+            self.container_gui.hide()
         
     def setMouseCursor(self, image, dummy_image, type = "native"): 
         """Set the mouse cursor to an image.
@@ -276,7 +277,8 @@ class ExaminePopup():
         self.examineWindow.mapEvents({'closeButton':self.examineWindow.hide})
 
     def closePopUp(self):
-        self.examineWindow.hide()
+        if self.examineWindow.isVisible():
+            self.examineWindow.hide()
     
     def showPopUp(self):
         self.examineWindow.show()

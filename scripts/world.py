@@ -73,9 +73,6 @@ class World(EventListenerBase):
         self.hud = hud.Hud(self.engine, TDS, inv_model, hud_callbacks)
         self.action_number = 1
 
-        self.boxOpen = False
-        self.boxCreated = False
-        
         # init the sound
         self.sounds = SoundEngine(engine)
         
@@ -201,8 +198,7 @@ class World(EventListenerBase):
             self.hud.showContextMenu(data, (scr_point.x, scr_point.y))
 
     def onWalk(self, click):
-        """Callback sample for the context menu.
-        """
+        """Callback sample for the context menu."""
         self.hud.hideContainer()
         self.data.gameState.PC.run(click)
 
@@ -239,37 +235,6 @@ class World(EventListenerBase):
         location = fife.Location(self.activeMap.agent_layer)
         location.setMapCoordinates(coord)
         return location
-
-    def createBoxGUI(self, title):
-        """
-        Creates a window to display the contents of a box
-
-        @type title: string
-        @param title: The title for the window
-        @return: None
-        """
-        if ((self.boxCreated == True) and (self.boxOpen == False)):
-            # if it has already been created, just show it
-            self.box_container.showContainer()
-            self.boxOpen = True
-        else:
-            # otherwise create it then show it
-            data = ["dagger01", "empty", "empty", "empty", "empty",
-                    "empty", "empty", "empty", "empty"]
-            self.box_container = ContainerGUI(self.engine, unicode(title), data)
-            def close_and_delete():
-                self.box_container.hideContainer()
-                self.boxOpen = False
-            events = {'takeAllButton':close_and_delete,
-                      'closeButton':close_and_delete}
-            self.box_container.container_gui.mapEvents(events)
-            self.box_container.showContainer()
-            self.boxOpen = True
-            self.boxCreated = True
-
-    def createExamineBox(self, title, desc):
-        self.examineBox = ExaminePopup(self.engine, title, desc)
-        self.examineBox.showPopUp()
 
     def pump(self):
         """Routine called during each frame. Our main loop is in ./run.py

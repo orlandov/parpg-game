@@ -52,7 +52,7 @@ class OpenBoxAction(Action):
     
     def execute(self):
         """Open the box."""
-        self.engine.view.createBoxGUI(self.boxTitle)
+        self.engine.view.hud.createBoxGUI(self.boxTitle)
         
 class ExamineBoxAction(Action):
     """Examine a box. Needs to be more generic, but will do for now."""
@@ -70,4 +70,4 @@ class ExamineBoxAction(Action):
         
     def execute(self):
         """Examine the box."""
-        self.engine.view.createExamineBox(self.examineName, self.examineDesc)
+        self.engine.view.hud.createExamineBox(self.examineName, self.examineDesc)

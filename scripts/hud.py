@@ -20,6 +20,7 @@ from pychan.tools import callbackWithArguments as cbwa
 from scripts.parpgfilebrowser import PARPGFileBrowser
 from scripts.context_menu import ContextMenu
 from scripts import inventory
+from scripts.popups import ExaminePopup, ContainerGUI
 
 class Hud(object):
     """Main Hud class"""
@@ -54,6 +55,9 @@ class Hud(object):
         self.saveGameCallback = callbacks['saveGame']
         self.loadGameCallback = callbacks['loadGame']
         self.quitCallback     = callbacks['quitGame']
+
+        self.box_container = None
+        self.examine_box = None
 
         self.actionsBox = self.hud.findChild(name="actionsBox")
         self.actionsText = []
@@ -490,3 +494,42 @@ class Hud(object):
         text = "Used the item from %s" % ready_button
         self.addAction(text)
         
+    def createBoxGUI(self, title):
+        """Creates a window to display the contents of a box
+           @type title: string
+           @param title: The title for the window
+           @return: None"""
+        if self.box_container:
+            # if it has already been created, just show it
+            self.box_container.showContainer()
+        else:
+            # otherwise create it then show it
+            data = ["dagger01", "empty", "empty", "empty", "empty",
+                    "empty", "empty", "empty", "empty"]
+            self.box_container = ContainerGUI(self.engine, unicode(title), data)
+            def close_and_delete():
+                self.hideContainer()
+            events = {'takeAllButton':close_and_delete,
+                      'closeButton':close_and_delete}
+            self.box_container.container_gui.mapEvents(events)
+            self.box_container.showContainer()
+
+    def hideContainer(self):
+        """Hide the container box
+           @return: None"""
+        if self.box_container:
+            self.box_container.hideContainer()
+
+    def createExamineBox(self, title, desc):
+        """Create an examine box. It displays some textual description of an
+           object
+           @type title: string
+           @param title: The title of the examine box
+           @type desc: string
+           @param desc: The main body of the examine box
+           @return: None"""
+
+        if self.examine_box:
+            self.examine_box.closePopUp()
+        self.examine_box = ExaminePopup(self.engine, title, desc)
+        self.examine_box.showPopUp()
