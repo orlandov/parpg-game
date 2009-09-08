@@ -1,0 +1,18 @@
+<Window title="NPC NAME" position_technique="center:center" min_size="500,400">
+    <HBox>
+        <VBox>
+            <Icon image="gui/icons/npc.png" size="200,200" />
+            <Label name="stats_label" />
+        </VBox>
+        <ScrollArea size="400,300" min_size="400,300">
+            <Label name="speech" wrap_text="1" max_size="360,500000"/>
+        </ScrollArea>
+    </HBox>
+    <ScrollArea min_size="100,100" horizontal_scrollbar="0">
+        <VBox name="choices_list" hexpand="1" margins="0,0"
+            foreground_color="255,255,0">
+            <Label text="dummy label" />
+        </VBox>
+    </ScrollArea>
+    <Button name="button6" border_size="0" base_color="128,128,0" text="Stop talking" min_size="250,10"/>
+</Window>
