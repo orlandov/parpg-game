@@ -143,6 +143,8 @@ class World(EventListenerBase):
         if(keyval == key.F1):
             # display the help screen and pause the game
             self.hud.displayHelp()
+        if (keyval == key.D):
+            self.hud.showDialogue()
         if(keyval == key.F5):
             # logic would say we use similar code to above and toggle
             # logic here does not work, my friend :-(

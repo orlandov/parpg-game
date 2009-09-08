@@ -16,6 +16,7 @@
 #   along with PARPG.  If not, see <http://www.gnu.org/licenses/>.
 
 import shutil, fife, pychan
+import pychan.widgets as widgets
 from pychan.tools import callbackWithArguments as cbwa
 from scripts.parpgfilebrowser import PARPGFileBrowser
 from scripts.context_menu import ContextMenu
@@ -170,6 +171,7 @@ class Hud(object):
            @return: None"""
         self.main_menu.hide()
         self.menu_displayed = False
+
 
     def initializeHelpMenu(self):
         """Initialize the help menu
@@ -533,3 +535,25 @@ class Hud(object):
             self.examine_box.closePopUp()
         self.examine_box = ExaminePopup(self.engine, title, desc)
         self.examine_box.showPopUp()
+
+    def showDialogue(self):
+        dialogue = DialogueGUI()
+        dialogue.show()
+
+class DialogueGUI(object):
+    def __init__(self):
+        self.dialogue_gui = pychan.loadXML("gui/dialogue.xml")
+
+    def show(self):
+        choices_list = self.dialogue_gui.findChild(name='choices_list')
+        choices = ['Response 1', 'Response 2', 'Response 3', 'Repsonse 5', "A super very long response thats large", "This one really really really really really  really really really really really really really really super very too much long"]
+        for i,r in enumerate(choices):
+            button = widgets.Button(name=u"reponse%s"%i, selection_color=fife.Color(0,255,255), text=unicode(r), hexpand="1", min_size=(100,32), max_size=(490,32))
+            button.border_size = 0
+            button.margins = (0, 0)
+            print choices_list.addChild(button)
+        self.dialogue_gui.distributeInitialData({
+            "speech": u""" Lorem ipsum dolor sit amet, consectetur adipiscing elit.  Pellentesque congue, nisi id dictum ornare, mauris elit ullamcorper tellus, in convallis ipsum mauris ac leo. Ut nec dolor nec nisi ullamcorper hendrerit. Nulla sem mauris, consectetur nec tempus eleifend, lobortis ut orci. Mauris dui ligula, placerat vitae lobortis sit amet, blandit convallis sem. Nullam nec lobortis dui. Nam volutpat, tellus non sodales faucibus, lectus felis posuere libero, id ullamcorper lacus libero sed enim. Nunc sagittis est ut ligula consequat ullamcorper. Curabitur consectetur semper condimentum. Donec dignissim diam vitae orci faucibus eget condimentum mauris luctus. Pellentesque consequat, felis id malesuada viverra, ante arcu ornare risus, sed rhoncus mi erat adipiscing mi. In porta fringilla quam et dictum. Nunc tempor scelerisque ipsum eu tempus. Ut suscipit risus est, id blandit mauris. Nunc faucibus aliquam facilisis. Sed luctus aliquam ipsum sed pharetra. Integer nec nisl id lectus sodales luctus ut at ipsum. Aliquam convallis, odio in faucibus sagittis, nisl justo ultrices nunc, a porttitor mauris metus quis massa.  Proin fermentum nisi ipsum. Donec gravida faucibus lectus, sit amet auctor enim condimentum et. Donec ac neque nibh.\n\nDuis nunc orci, placerat quis rutrum vel, tempus in quam. Aenean venenatis neque sed urna porta ut dignissim velit egestas. Curabitur ultricies, arcu a pretium molestie, arcu sem lacinia enim, et interdum sapien sapien et nisl. Nunc nec est sit amet mi tempor sollicitudin quis et arcu. Curabitur velit mi, sagittis in tempus vitae, sollicitudin vitae felis. Mauris placerat felis non augue posuere commodo. Sed turpis leo, euismod elementum pulvinar in, gravida vel elit. Sed sagittis nibh a lorem dignissim egestas ut vitae mauris. Aenean ut mi elit, sed convallis erat. Vivamus ipsum massa, tincidunt a cursus sed, ultrices at sem. Cras congue est at turpis molestie at aliquam elit commodo. Quisque malesuada risus nec eros tincidunt iaculis a dignissim turpis. In at eros et mi condimentum interdum ut ut quam."""
+        })
+        self.dialogue_gui.show()
+

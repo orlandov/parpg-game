@@ -121,6 +121,8 @@ class PARPG(ApplicationBase):
         eSet.setScreenHeight(int(TDS.readSetting("ScreenHeight")))
         eSet.setRenderBackend(str(TDS.readSetting("RenderBackend")))
         eSet.setFullScreen(int(TDS.readSetting("FullScreen")))
+        eSet.setDefaultFontSize(12)
+
         try:
             eSet.setWindowTitle(str(TDS.readSetting("WindowTitle")))
             eSet.setWindowIcon(str(TDS.readSetting("WindowIcon")))
