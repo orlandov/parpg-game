@@ -26,6 +26,7 @@ import fife_compat, fife, fifelog
 import pychan
 from scripts import world
 from scripts import engine
+from scripts import console
 from scripts.engine import Engine
 from scripts.common import eventlistenerbase
 from basicapplication import ApplicationBase
@@ -58,6 +59,7 @@ class ApplicationListener(eventlistenerbase.EventListenerBase):
         engine.getEventManager().setNonConsumableKeys([fife.Key.ESCAPE,])
         self.quit = False
         self.aboutWindow = None
+        self.console=console.Console(self)
 
     def quitGame(self):
         """Forces a quit game on next cycle.
@@ -66,52 +68,14 @@ class ApplicationListener(eventlistenerbase.EventListenerBase):
 
     def onConsoleCommand(self, command):
         """
-        Called on every console comand
+        Called on every console comand, delegates calls  to the a console
+        object, implementing the callbacks
         @type command: string
         @param command: the command to run
         @return: result
         """
-        result = None
 
-        if (command.lower() in ('quit', 'exit')):
-            self.quitGame()
-
-        load_regex = re.compile('^load')
-        l_matches = load_regex.match(command.lower())
-        if (l_matches != None):
-            end_load = l_matches.end()
-            try:
-                l_args = command.lower()[end_load+1:].strip()
-                l_path, l_filename = l_args.split(' ')
-                self.model.load(l_path, l_filename)
-                result = "Loaded file: " + l_path + l_filename
-
-            except Exception, l_error:
-                self.engine.getGuiManager().getConsole().println('Error: ' + str(l_error))
-
-        save_regex = re.compile('^save')
-        s_matches = save_regex.match(command.lower())
-        if (s_matches != None):
-            end_save = s_matches.end()
-            try:
-                s_args = command.lower()[end_save+1:].strip()
-                s_path, s_filename = s_args.split(' ')
-                self.model.save(s_path, s_filename)
-                result = "Saved to file: " + s_path + s_filename
-
-            except Exception, s_error:
-                self.engine.getGuiManager().getConsole().println('Error: ' + str(s_error))
-                   
-        else:
-            try:
-                result = str(eval(command))
-            except Exception, e:
-                result = str(e)
-
-        if not result:
-            result = 'no result'
-        
-        return result
+        return self.console.handleConsoleCommand(command)
 
     def onCommand(self, command):
         """Enables the game to be closed via the 'X' button on the window frame
