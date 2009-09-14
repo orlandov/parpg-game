@@ -22,6 +22,7 @@ from scripts.parpgfilebrowser import PARPGFileBrowser
 from scripts.context_menu import ContextMenu
 from scripts import inventory
 from scripts.popups import ExaminePopup, ContainerGUI
+from scripts.dialogue import DialogueEngine
 
 class Hud(object):
     """Main Hud class"""
@@ -542,34 +543,57 @@ class Hud(object):
 
 class DialogueGUI(object):
     def __init__(self):
+        def say(state, say):
+            print "say'd", say
+        def responses(state, responses):
+            print "say'd", responses
+        callbacks = {
+            'say': say,
+            'responses': responses
+        }
+        self.dialogue_engine = DialogueEngine('demo.yaml', callbacks, {})
         self.dialogue_gui = pychan.loadXML("gui/dialogue.xml")
 
     def show(self):
         stats_label = self.dialogue_gui.findChild(name='stats_label')
         stats_label.text = 'Test 0\nTest 1'
 
+        responses_list = self.dialogue_gui.findChild(name='choices_list')
+        responses = ['Response 1', 'Response 2', 'Response 3', 'Repsonse 5', "A super very long response thats large", "This one really really really really really  really really really really really really really really super very too much long", "Last one, promise"]
+        self.setResponses(responses)
+        self.dialogue_gui.distributeInitialData({
+            "speech": u"""Hi i'm some sample text!"""
+        })
+        events = {
+            'stop_button': self.endConversation
+        }
+        self.dialogue_gui.mapEvents(events)
+        self.dialogue_gui.show()
+
+    def click_response(self):
+        pass
+
+    def endConversation(self):
+        del self.dialogue_engine
+        self.dialogue_gui.hide()
+
+    def setResponses(self, responses):
         def handle_entered(*args):
-            print args[0].foreground_color.r
-            print args[0].foreground_color.g
-            print args[0].foreground_color.b
-            args[0].foreground_color = fife.Color(16,0,0)
+            pass
         def handle_exited(*args):
-            args[0].foreground_color.r = 0
-            args[0].foreground_color.g = 255
-            args[0].foreground_color.b = 255
-            args[0].foreground_color.a = 255
+            pass
         def handle_clicked(*args):
             print "Clicked", args[0].text
-
         choices_list = self.dialogue_gui.findChild(name='choices_list')
-        choices = ['Response 1', 'Response 2', 'Response 3', 'Repsonse 5', "A super very long response thats large", "This one really really really really really  really really really really really really really really super very too much long", "Last one, promise"]
-        for i,r in enumerate(choices):
+        choices_list.removeAllChildren()
+        for i,r in enumerate(responses):
             button = widgets.Label(
                 name="reponse%s"%(i,),
                 text=unicode(r),
                 hexpand="1",
                 min_size=(100,16),
                 max_size=(490,48),
+                position_technique='center:center'
             )
             button.margins=(5,5)
             button.background_color=fife.Color(0,0,0)
@@ -580,8 +604,5 @@ class DialogueGUI(object):
             button.capture(lambda button=button: handle_exited(button), event_name='mouseExited')
             button.capture(lambda button=button: handle_clicked(button), event_name='mouseClicked')
             print choices_list.addChild(button)
-        self.dialogue_gui.distributeInitialData({
-            "speech": u"""Lorem ipsum dolor sit amet, consectetur adipiscing elit.  Pellentesque congue, nisi id dictum ornare, mauris elit ullamcorper tellus, in convallis ipsum mauris ac leo. Ut nec dolor nec nisi ullamcorper hendrerit. Nulla sem mauris, consectetur nec tempus eleifend, lobortis ut orci. Mauris dui ligula, placerat vitae lobortis sit amet, blandit convallis sem. Nullam nec lobortis dui. Nam volutpat, tellus non sodales faucibus, lectus felis posuere libero, id ullamcorper lacus libero sed enim. Nunc sagittis est ut ligula consequat ullamcorper. Curabitur consectetur semper condimentum. Donec dignissim diam vitae orci faucibus eget condimentum mauris luctus. Pellentesque consequat, felis id malesuada viverra, ante arcu ornare risus, sed rhoncus mi erat adipiscing mi. In porta fringilla quam et dictum. Nunc tempor scelerisque ipsum eu tempus. Ut suscipit risus est, id blandit mauris. Nunc faucibus aliquam facilisis. Sed luctus aliquam ipsum sed pharetra. Integer nec nisl id lectus sodales luctus ut at ipsum. Aliquam convallis, odio in faucibus sagittis, nisl justo ultrices nunc, a porttitor mauris metus quis massa.  Proin fermentum nisi ipsum. Donec gravida faucibus lectus, sit amet auctor enim condimentum et. Donec ac neque nibh.\n\nDuis nunc orci, placerat quis rutrum vel, tempus in quam. Aenean venenatis neque sed urna porta ut dignissim velit egestas. Curabitur ultricies, arcu a pretium molestie, arcu sem lacinia enim, et interdum sapien sapien et nisl. Nunc nec est sit amet mi tempor sollicitudin quis et arcu. Curabitur velit mi, sagittis in tempus vitae, sollicitudin vitae felis. Mauris placerat felis non augue posuere commodo. Sed turpis leo, euismod elementum pulvinar in, gravida vel elit. Sed sagittis nibh a lorem dignissim egestas ut vitae mauris. Aenean ut mi elit, sed convallis erat. Vivamus ipsum massa, tincidunt a cursus sed, ultrices at sem. Cras congue est at turpis molestie at aliquam elit commodo. Quisque malesuada risus nec eros tincidunt iaculis a dignissim turpis. In at eros et mi condimentum interdum ut ut quam."""
-        })
-        self.dialogue_gui.show()
+
 
