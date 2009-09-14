@@ -539,28 +539,59 @@ class Hud(object):
 
     def showDialogue(self):
         dialogue = DialogueGUI()
-        dialogue.show()
+        dialogue.initiateDialogue()
+
+class Player(object):
+    """
+    Mock player object that always has complete quests
+    """
+    def __init__(self):
+        self.current_quests = set()
+        self.finished_quests = set()
+
+    def canAcceptQuest(self, quest):
+        return     quest not in self.finished_quests \
+               and quest not in self.current_quests
+
+    def hasSatisfiedQuest(self, quest):
+        return quest in self.current_quests
+
+    def startQuest(self, quest):
+        if quest in self.current_quests:
+            raise RuntimeError("Already have quest, %s" % quest)
+        self.current_quests.add(quest)
+
+    def completeQuest(self, quest):
+        self.finished_quests.add(quest)
+        self.current_quests.remove(quest)
 
 class DialogueGUI(object):
     def __init__(self):
-        def say(state, say):
-            print "say'd", say
-        def responses(state, responses):
-            print "say'd", responses
         callbacks = {
-            'say': say,
-            'responses': responses
+            'say': self.handleSay,
+            'responses': self.handleResponses,
+            'start_quest': self.startQuest,
+            'complete_quest': self.completeQuest,
         }
-        self.dialogue_engine = DialogueEngine('demo.yaml', callbacks, {})
+        pc = Player()
+        state = {
+            'pc': pc
+        }
+        self.dialogue_engine = DialogueEngine('demo.yaml', callbacks, state)
         self.dialogue_gui = pychan.loadXML("gui/dialogue.xml")
 
-    def show(self):
+    def startQuest(self, state, quest):
+        print "You've picked up the '%s' quest!" % quest,
+        state['pc'].startQuest(quest)
+
+    def completeQuest(self, state, quest):
+        print "You've finished the '%s' quest" % quest
+        state['pc'].completeQuest(quest)
+
+    def initiateDialogue(self):
         stats_label = self.dialogue_gui.findChild(name='stats_label')
         stats_label.text = 'Test 0\nTest 1'
 
-        responses_list = self.dialogue_gui.findChild(name='choices_list')
-        responses = ['Response 1', 'Response 2', 'Response 3', 'Repsonse 5', "A super very long response thats large", "This one really really really really really  really really really really really really really really super very too much long", "Last one, promise"]
-        self.setResponses(responses)
         self.dialogue_gui.distributeInitialData({
             "speech": u"""Hi i'm some sample text!"""
         })
@@ -569,6 +600,13 @@ class DialogueGUI(object):
         }
         self.dialogue_gui.mapEvents(events)
         self.dialogue_gui.show()
+        responses_list = self.dialogue_gui.findChild(name='choices_list')
+        responses = self.dialogue_engine.run()
+        self.setResponses(responses)
+
+    def handleSay(self, state, say):
+        speech = self.dialogue_gui.findChild(name='speech')
+        speech.text = speech.text + "\n-----\n" + unicode(say)
 
     def click_response(self):
         pass
@@ -577,19 +615,26 @@ class DialogueGUI(object):
         del self.dialogue_engine
         self.dialogue_gui.hide()
 
+    def handle_entered(self, *args):
+        pass
+    def handle_exited(self, *args):
+        pass
+    def handle_clicked(self, *args):
+        print "Clicked", args
+        response = int(args[0].name.replace('response', ''))
+        self.dialogue_engine.reply(response)
+
+    def handleResponses(self, *args):
+        self.setResponses(args[1])
+
     def setResponses(self, responses):
-        def handle_entered(*args):
-            pass
-        def handle_exited(*args):
-            pass
-        def handle_clicked(*args):
-            print "Clicked", args[0].text
         choices_list = self.dialogue_gui.findChild(name='choices_list')
         choices_list.removeAllChildren()
         for i,r in enumerate(responses):
+            print r[0]
             button = widgets.Label(
-                name="reponse%s"%(i,),
-                text=unicode(r),
+                name="response%s"%(i,),
+                text=unicode(r[0]),
                 hexpand="1",
                 min_size=(100,16),
                 max_size=(490,48),
@@ -600,9 +645,10 @@ class DialogueGUI(object):
             button.color=fife.Color(0,255,0)
             button.border_size = 0
             button.wrap_text = 1
-            button.capture(lambda button=button: handle_entered(button), event_name='mouseEntered')
-            button.capture(lambda button=button: handle_exited(button), event_name='mouseExited')
-            button.capture(lambda button=button: handle_clicked(button), event_name='mouseClicked')
+            button.capture(lambda button=button: self.handle_entered(button), event_name='mouseEntered')
+            button.capture(lambda button=button: self.handle_exited(button), event_name='mouseExited')
+            button.capture(lambda button=button: self.handle_clicked(button), event_name='mouseClicked')
             print choices_list.addChild(button)
+            self.dialogue_gui.adaptLayout(True)
 
 
