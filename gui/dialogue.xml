@@ -4,7 +4,7 @@
             <Icon image="gui/icons/npc.png" size="200,200" />
             <Label name="stats_label" />
         </VBox>
-        <ScrollArea size="400,300" min_size="400,300">
+        <ScrollArea size="400,200" min_size="400,200">
             <Label name="speech" wrap_text="1" max_size="360,500000"/>
         </ScrollArea>
     </HBox>

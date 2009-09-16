@@ -606,7 +606,8 @@ class DialogueGUI(object):
 
     def handleSay(self, state, say):
         speech = self.dialogue_gui.findChild(name='speech')
-        speech.text = speech.text + "\n-----\n" + unicode(say)
+        #speech.text = speech.text + "\n-----\n" + unicode(say)
+        speech.text = unicode(say)
 
     def click_response(self):
         pass
