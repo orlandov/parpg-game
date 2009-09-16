@@ -122,15 +122,20 @@ class Openable(object):
     def open(self):
         """Opens the object, and runs an 'onOpen' script, if present"""
         self.is_open = True
-        if self.trueAttr ('scriptable'):
-            self.runScript('onOpen')
+        try:
+            if self.trueAttr ('scriptable'):
+                self.runScript('onOpen')
+        except AttributeError :
+            pass
             
     def close(self):
         """Opens the object, and runs an 'onClose' script, if present"""
         self.is_open = False
-        if self.trueAttr ('scriptable'):
-            self.runScript('onClose')             
-        
+        try:
+            if self.trueAttr ('scriptable'):
+                self.runScript('onClose')
+        except AttributeError :
+            pass
 class Lockable (Openable):
     """Allows objects to be locked"""
     def __init__ (self, locked = True, **kwargs):
