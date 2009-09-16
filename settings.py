@@ -28,7 +28,7 @@ class Setting(object):
         self.isSetToDefault = True
         self.changesRequireRestart = True
 
-    def readSetting(self, name, type='int', strip=True, text=False):
+    def readSetting(self, name, type='int', strip=True, text=False, default=None):
         if not hasattr(self, 'tree'):
             self.tree = ET.parse('settings.xml')
             self.root_element = self.tree.getroot()
@@ -58,6 +58,8 @@ class Setting(object):
                     return False if element_value.strip() == 'False' else True
         else:
             print 'Setting,', name, 'does not exist!'
+
+        return default
 
     def setSetting(self, name, value):
         element = self.root_element.find(name)

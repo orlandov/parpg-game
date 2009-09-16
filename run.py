@@ -113,6 +113,7 @@ class PARPG(ApplicationBase):
         eSet.setDefaultFontGlyphs(str(TDS.readSetting("FontGlyphs",
                                                       strip=False)))
         eSet.setDefaultFontPath(str(TDS.readSetting("Font")))
+        eSet.setDefaultFontSize(int(TDS.readSetting("FontSize", default=12)))
         eSet.setBitsPerPixel(int(TDS.readSetting("BitsPerPixel")))
         eSet.setInitialVolume(float(TDS.readSetting("InitialVolume")))
         eSet.setSDLRemoveFakeAlpha(int(TDS.readSetting("SDLRemoveFakeAlpha")))
