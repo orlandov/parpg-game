@@ -537,8 +537,8 @@ class Hud(object):
         self.examine_box = ExaminePopup(self.engine, title, desc)
         self.examine_box.showPopUp()
 
-    def showDialogue(self):
-        dialogue = DialogueGUI()
+    def showDialogue(self, npc):
+        dialogue = DialogueGUI(npc)
         dialogue.initiateDialogue()
 
 class Player(object):
@@ -566,14 +566,16 @@ class Player(object):
         self.current_quests.remove(quest)
 
 class DialogueGUI(object):
-    def __init__(self):
+    def __init__(self, npc):
         callbacks = {
             'say': self.handleSay,
             'responses': self.handleResponses,
             'start_quest': self.startQuest,
             'complete_quest': self.completeQuest,
+            'end': self.handleEnd
         }
         pc = Player()
+        self.npc = npc
         state = {
             'pc': pc
         }
@@ -590,13 +592,10 @@ class DialogueGUI(object):
 
     def initiateDialogue(self):
         stats_label = self.dialogue_gui.findChild(name='stats_label')
-        stats_label.text = 'Test 0\nTest 1'
+        stats_label.text = u'Name: Mockup\nType: Awesome'
 
-        self.dialogue_gui.distributeInitialData({
-            "speech": u"""Hi i'm some sample text!"""
-        })
         events = {
-            'stop_button': self.endConversation
+            'end_button': self.handleEnd
         }
         self.dialogue_gui.mapEvents(events)
         self.dialogue_gui.show()
@@ -612,18 +611,21 @@ class DialogueGUI(object):
     def click_response(self):
         pass
 
-    def endConversation(self):
-        del self.dialogue_engine
-        self.dialogue_gui.hide()
-
     def handle_entered(self, *args):
         pass
     def handle_exited(self, *args):
         pass
     def handle_clicked(self, *args):
-        print "Clicked", args
         response = int(args[0].name.replace('response', ''))
-        self.dialogue_engine.reply(response)
+        
+        if not self.dialogue_engine.reply(response):
+            self.handleEnd()
+
+    def handleEnd(self):
+        self.dialogue_engine = None
+        self.dialogue_gui.hide()
+        self.npc.behaviour.state = 1
+        self.npc.behaviour.idle()
 
     def handleResponses(self, *args):
         self.setResponses(args[1])
@@ -632,7 +634,6 @@ class DialogueGUI(object):
         choices_list = self.dialogue_gui.findChild(name='choices_list')
         choices_list.removeAllChildren()
         for i,r in enumerate(responses):
-            print r[0]
             button = widgets.Label(
                 name="response%s"%(i,),
                 text=unicode(r[0]),
@@ -649,7 +650,7 @@ class DialogueGUI(object):
             button.capture(lambda button=button: self.handle_entered(button), event_name='mouseEntered')
             button.capture(lambda button=button: self.handle_exited(button), event_name='mouseExited')
             button.capture(lambda button=button: self.handle_clicked(button), event_name='mouseClicked')
-            print choices_list.addChild(button)
+            choices_list.addChild(button)
             self.dialogue_gui.adaptLayout(True)
 
 

@@ -5,7 +5,7 @@
             <Label name="stats_label" />
         </VBox>
         <ScrollArea size="400,200" min_size="400,200">
-            <Label name="speech" wrap_text="1" max_size="360,500000"/>
+            <Label name="speech" wrap_text="1" max_size="360,500000" text="hi"/>
         </ScrollArea>
     </HBox>
     <ScrollArea min_size="100,100" horizontal_scrollbar="0">
@@ -14,5 +14,5 @@
             <Label text="dummy label" />
         </VBox>
     </ScrollArea>
-    <Button name="stop_button" border_size="0" base_color="128,128,0" text="Stop talking" min_size="250,10"/>
+    <Button name="end_button" border_size="0" base_color="128,0,0" text="End Conversation" min_size="250,10"/>
 </Window>

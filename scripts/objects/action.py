@@ -71,3 +71,23 @@ class ExamineBoxAction(Action):
     def execute(self):
         """Examine the box."""
         self.engine.view.hud.createExamineBox(self.examineName, self.examineDesc)
+
+class TalkAction(Action):
+    """An action to represent starting a dialogue"""
+    def __init__(self, engine, npc):
+        """@type engine: Engine reference
+           @param engine: A reference to the engine.
+           @type examineName: String
+           @param examineName: Name of the object to be examined.
+           @type examineName: String
+           @param examineName: Description of the object to be examined.
+           """
+        self.engine = engine
+        self.npc = npc
+        
+    def execute(self):
+        """Examine the box."""
+        pc = self.engine.gameState.PC
+        pc.behaviour.agent.act('stand', self.npc.getLocation())
+        self.npc.talk(pc)
+        self.engine.view.hud.showDialogue(self.npc)

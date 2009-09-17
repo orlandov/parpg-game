@@ -241,10 +241,11 @@ class NonPlayerCharacter(GameObject, Living, Scriptable, CharStats):
            @param location: Where the NPC will run to."""
         self.behaviour.agent.move('run', location, self.behaviour.speed+1)
 
-    def talk(self):
+    def talk(self, pc):
         """ Makes the NPC ready to talk to the PC
             @return: None"""
-        self.state = _AGENT_STATE_TALK
+        self.behaviour.state = _AGENT_STATE_TALK
+        self.behaviour.pc = pc.behaviour.agent
         self.behaviour.idle()
     
     def setup(self):
