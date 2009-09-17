@@ -18,7 +18,7 @@
 
   <Spacer />
 
-  <HBox min_size="290,20" max_size="290,20">
+  <HBox min_size="290,25" max_size="290,25">
     <Button name="closeButton" text="Close" />
     <Spacer />
     <Button name="defaultsButton" text="Reset to Defaults" />
