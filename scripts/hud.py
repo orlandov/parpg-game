@@ -579,7 +579,7 @@ class DialogueGUI(object):
         state = {
             'pc': pc
         }
-        self.dialogue_engine = DialogueEngine('demo.yaml', callbacks, state)
+        self.dialogue_engine = DialogueEngine('dialogue/sample.yaml', callbacks, state)
         self.dialogue_gui = pychan.loadXML("gui/dialogue.xml")
 
     def startQuest(self, state, quest):
