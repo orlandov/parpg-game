@@ -10,12 +10,21 @@ import sys
 import itertools
 
 class EndException(Exception):
+    """EndException is used to bail out from a deeply nested
+       run_section/continue_with_response call stack and end the
+       conversation"""
     pass
 
 class ResponseException(Exception):
+    """ResponseException is used to bail out from a deeply nested
+       run_section/continue_with_response call stack and allow the user to
+       specify a response"""
     pass
 
 class BackException(Exception):
+    """BackException is used to bail out from a deeply nested
+       run_section/continue_with_response call stack and rewind the section
+       stack"""
     pass
 
 class DialogueEngine(object):
@@ -66,7 +75,7 @@ class DialogueEngine(object):
         @return: dict"""
         return self.tree['SECTIONS'][section_name]
 
-    def reply(self, choice):
+    def reply(self, response):
         """After being prompted to provide a response, reply is called to
            submit a response.
            @type choice: int
@@ -75,7 +84,10 @@ class DialogueEngine(object):
            @return: None (if at the end of the script)"""
         while True:
             try:
-                self.run_section(self.section_stack[-1], choice)
+                if response is not None:
+                    self.continue_with_response(self.section_stack[-1], response)
+                else:
+                    self.run_section(self.section_stack[-1])
             except ResponseException, e:
                 logging.debug("Got response exception %s" % (e.args, ))
                 return e.args[0]
@@ -86,13 +98,13 @@ class DialogueEngine(object):
                     stack.reverse()
                     for i,s in enumerate(stack):
                        if s == e.args[0]:
-                           # remove the end of the stack up to desired
+                           # remove the end of the section stack up to desired
                            # section
                            del self.section_stack[-i:]
                            break
                 else:
                     self.section_stack.pop(-1)
-                choice = None
+                response = None
                 continue
             except EndException:
                 end_cb = self.callbacks.get('end')
@@ -100,21 +112,52 @@ class DialogueEngine(object):
                 logging.debug("Reached the end")
                 return
 
-    def run_section(self, section_name, choice=None):
-        """Run a section, or reply to a previously run section
+    def continue_with_response(self, section_name, response):
+        """Reply to a response in a section and continue executing dialogue script
+           @type section_name: str
+           @param section_name: the section to continue
+           @type response: int
+           @param response: the index [0,n-1] of the desired response
+           @raises: EndException on end of script
+           @raises: BackException on "back" reply
+           @return: None"""
+        state = self.state
+        if len(self.section_stack) > 1:
+            if self.section_stack[-1] == self.section_stack[-2]:
+                self.section_stack.pop(-1)
+
+        for command in itertools.cycle(self.get_section(section_name)):
+            if not command.get('responses'): continue
+
+            responses = []
+            for r in command.get('responses'):
+                cond = r[2:]
+                if not cond or eval(cond[0], state, {}):
+                    responses.append(r)
+
+            section = responses[response][1]
+            logging.debug("User chose %s" % (section,))
+
+            if section == "back":
+                raise BackException()
+            elif section.startswith("back "):
+                raise BackException(section[5:])
+            elif section == "end":
+                raise EndException()
+
+            self.run_section(section)
+
+    def run_section(self, section_name):
+        """Run a section
            @type section_name: string
            @param section_name: The section to run
-           @type choice: int
-           @param choice: Index of desired reply, if replying (None by default)
            @return: None
            @raises: EndException on end of script
            @raises: BackException on "back" reply"""
 
         state = self.state
-        tree = self.tree
 
-        if choice is None:
-            self.section_stack.append(section_name)
+        self.section_stack.append(section_name)
 
         if len(self.section_stack) > 1:
             if self.section_stack[-1] == self.section_stack[-2]:
@@ -123,7 +166,7 @@ class DialogueEngine(object):
         logging.debug("In run_section %s %s" % (section_name, self.section_stack,))
         for command in itertools.cycle(self.get_section(section_name)):
             if command.get("say"):
-                if choice is None and self.callbacks.get('say'):
+                if self.callbacks.get('say'):
                     self.callbacks["say"](state, command["say"])
 
             elif command.get("responses"):
@@ -132,32 +175,16 @@ class DialogueEngine(object):
                     cond = response[2:]
                     if not cond or eval(cond[0], state, {}):
                         responses.append(response)
-                if choice is None:
-                    if self.callbacks.get("responses"):
-                        self.callbacks["responses"](state, responses)
+                if self.callbacks.get("responses"):
+                    self.callbacks["responses"](state, responses)
 
-                    raise ResponseException(responses)
-
-                else:
-                    section = responses[choice][1]
-                    logging.debug("User chose %s" % (section,))
-
-                    if section == "back":
-                        raise BackException()
-                    elif section.startswith("back "):
-                        raise BackException(section[5:])
-                    elif section == "end":
-                        raise EndException()
-
-                    self.run_section(section)
+                raise ResponseException(responses)
 
             elif command.get("start_quest"):
-                if choice is None:
-                    self.callbacks["start_quest"](state, command.get("start_quest"))
+                self.callbacks["start_quest"](state, command.get("start_quest"))
 
             elif command.get("complete_quest"):
-                if choice is  None:
-                    self.callbacks["complete_quest"](state, command.get("complete_quest"))
+                self.callbacks["complete_quest"](state, command.get("complete_quest"))
 
             elif command.get("dialogue"):
                 command = command.get("dialogue")
@@ -172,4 +199,4 @@ class DialogueEngine(object):
                     raise Exception("Unknown command %s" % (command,))
 
             else:
-                raise Exception("Unknown command %s %s" % (command, choice))
+                raise Exception("Unknown command %s %s" % (command,))
