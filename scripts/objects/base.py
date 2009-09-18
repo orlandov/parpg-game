@@ -138,14 +138,18 @@ class Openable(object):
             pass
 class Lockable (Openable):
     """Allows objects to be locked"""
-    def __init__ (self, locked = True, **kwargs):
+    def __init__ (self, locked = False, is_open=True, **kwargs):
         """Init operation for lockable objects
         @type locked: Boolean
         @param locked: Keyword boolen argument to set the initial locked state.
+        @type is_open: Boolean
+        @param is_open: Keyword boolean argument sets the initial open state. It is ignored if locked is True -- locked objects are always closed.
         """
         self.is_lockable = True
         self.locked = locked
-        Openable.__init__( self, **kwargs )
+        if locked :
+            is_open=False
+        Openable.__init__( self, is_open, **kwargs )
         
     def unlock (self):
         """Handles unlocking functionality"""
@@ -184,9 +188,12 @@ class Container (object):
         item.in_container = self
         self.items.append (item)
         # Run any scripts associated with storing an item in the container
-        if self.trueAttr ('scriptable'):
-            self.runScript('onPlaceItem')
-        
+        try:
+            if self.trueAttr ('scriptable'):
+                self.runScript('onPlaceItem')
+        except AttributeError :
+            pass
+
     def takeItem (self, item):
         """Takes the listed item out of the inventory. 
            Runs an 'ontakeItem' script"""        
@@ -194,8 +201,11 @@ class Container (object):
             raise ValueError ('I do not contain this item: %s' % item)
         self.items.remove (item)
         # Run any scripts associated with popping an item out of the container
-        if self.trueAttr ('scriptable'):
-            self.runScript('ontakeItem')
+        try:
+            if self.trueAttr ('scriptable'):
+                self.runScript('onTakeItem')
+        except AttributeError :
+            pass
         
 class Inventory (object):
     """Aggregate class for things that have multiple Containers"""

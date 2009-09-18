@@ -47,7 +47,7 @@ class TestObjectsBase(unittest.TestCase):
             is_openable = True,
             is_open = True,
             is_lockable = True,
-            locked = True,
+            locked = False,
             is_carryable = True,
             weight = 1.0,
             is_container = True,
