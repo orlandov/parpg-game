@@ -538,5 +538,8 @@ class Hud(object):
         self.examine_box.showPopUp()
 
     def showDialogue(self, npc):
+        """Show the NPC dialogue window
+           @type npc: ???
+           @param npc: the npc that we are having a dialogue with"""
         dialogue = DialogueGUI(npc)
         dialogue.initiateDialogue()
