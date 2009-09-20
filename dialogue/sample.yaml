@@ -1,12 +1,26 @@
+#   This file is part of PARPG.
+
+#   PARPG is free software: you can redistribute it and/or modify
+#   it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation, either version 3 of the License, or
+#   (at your option) any later version.
+
+#   PARPG is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
+
+#   You should have received a copy of the GNU General Public License
+#   along with PARPG.  If not, see <http://www.gnu.org/licenses/>.
+
+---
 NPC: Guard
 AVATAR: Guard1.png
 START: main_dialog
 
 SECTIONS:
     main_dialog:
-        - say: |
-            Things are tough around here, let me tell you our problems
-
+        - say: "Things are tough around here, let me tell you our problems"
         - responses:
             -
               - "Sure, tell me all about it"
@@ -19,9 +33,7 @@ SECTIONS:
               - end
 
     listen_more:
-        - say: |
-            Raiders stole our cattle, our well was poisoned, and the beer is all gone!
-
+        - say: "Raiders stole our cattle, our well was poisoned, and the beer is all gone!"
         - responses:
             # Raiders quest
             -
@@ -65,8 +77,7 @@ SECTIONS:
 
     # Raiders quest
     elaborate_raiders:
-        - say: |
-            They mostly come at night... mostly.
+        - say: "They mostly come at night... mostly."
         - responses:
             -
               - "I can help you, for a price"
@@ -80,17 +91,15 @@ SECTIONS:
               - end
 
     quest_raiders:
-        - say: |
-            Thank you so much, these raiders have terrified our village for too long!
+        - say: "Thank you so much, these raiders have terrified our village for too long!"
         - start_quest: raiders
         - responses:
             -
-              - "Quit your yammering, I'll get the water back"
+              - "Quit your yammering, those raiders won't be a problem anymore."
               - back listen_more
 
     complete_raiders:
-        - say: |
-            Thank you for defeating those evil doers
+        - say: "Thank you for defeating those evil doers"
         - complete_quest: raiders
         - responses:
             -
@@ -99,8 +108,7 @@ SECTIONS:
 
     # Well quest
     elaborate_well:
-        - say: |
-            A foul and dreadful toxin has contaminated our water well. Rumors tell of an antidote. If only someone could find it.
+        - say: "A foul and dreadful toxin has contaminated our water well. Rumors tell of an antidote. If only someone could find it."
         - responses:
             -
               - "Wait a second... I'm someone! I will fix your well."
@@ -115,23 +123,20 @@ SECTIONS:
 
     quest_well:
         - start_quest: well
-        - say: |
-            You are a brave hero indeed, water bringer.
+        - say: "You are a brave hero indeed, water bringer."
         - responses:
             -
               - "Fear not, gentle villager. I will return shortly with the antidote."
               - back listen_more
 
     complete_well:
-        - say: |
-            Thank heavens now the orphans will have water to drink
+        - say: "Thank heavens now the orphans will have water to drink"
         - complete_quest: well
         - dialogue: back
 
     # Beer quest
     elaborate_beer:
-        - say: |
-            After this keg, and that keg, there is only one keg left! Something must be done.
+        - say: "After this keg, and that keg, there is only one keg left! Something must be done."
         - responses:
             -
               - "Running out of beer is no laughing matter. I'll run to the brewery for more"
@@ -144,16 +149,14 @@ SECTIONS:
 
     quest_beer:
         - start_quest: beer
-        - say: |
-            I do not know what we would have done without you.
+        - say: "I do not know what we would have done without you."
         - responses: 
             -
               - "It's my pleasure"
               - back listen_more
 
     complete_beer:
-        - say: |
-            Thank heavens now the orphans will have beer to drink
+        - say: "Thank heavens now the orphans will have beer to drink"
         - complete_quest: beer
         - responses:
             -
@@ -162,8 +165,7 @@ SECTIONS:
 
     # Final reward
     all_done:
-        - say: |
-            For saving our village, I will give you the prized McGuffin. Thank you, Player Character
+        - say: "For saving our village, I will give you the prized McGuffin. Thank you, Player Character"
         - responses:
             -
               - "I am so awesome"
