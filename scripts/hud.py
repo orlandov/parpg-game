@@ -16,11 +16,13 @@
 #   along with PARPG.  If not, see <http://www.gnu.org/licenses/>.
 
 import shutil, fife, pychan
+import pychan.widgets as widgets
 from pychan.tools import callbackWithArguments as cbwa
 from scripts.parpgfilebrowser import PARPGFileBrowser
 from scripts.context_menu import ContextMenu
 from scripts import inventory
 from scripts.popups import ExaminePopup, ContainerGUI
+from scripts.dialoguegui import DialogueGUI
 
 class Hud(object):
     """Main Hud class"""
@@ -170,6 +172,7 @@ class Hud(object):
            @return: None"""
         self.main_menu.hide()
         self.menu_displayed = False
+
 
     def initializeHelpMenu(self):
         """Initialize the help menu
@@ -533,3 +536,10 @@ class Hud(object):
             self.examine_box.closePopUp()
         self.examine_box = ExaminePopup(self.engine, title, desc)
         self.examine_box.showPopUp()
+
+    def showDialogue(self, npc):
+        """Show the NPC dialogue window
+           @type npc: ???
+           @param npc: the npc that we are having a dialogue with"""
+        dialogue = DialogueGUI(npc)
+        dialogue.initiateDialogue()

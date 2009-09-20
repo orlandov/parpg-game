@@ -238,9 +238,7 @@ class Engine:
         # TODO: work more on this when we get NPCData and HeroData straightened
         # out
         npc = self.gameState.getObjectById(npcInfo.ID)
-        if npc:
-            npc.talk()
-        self.gameState.PC.approach([npc.getLocation().getLayerCoordinates().x, npc.getLocation().getLayerCoordinates().y])
+        self.gameState.PC.approach([npc.getLocation().getLayerCoordinates().x, npc.getLocation().getLayerCoordinates().y], TalkAction(self, npc))
 
     def loadMap(self, map_name, map_file):
         """Load a new map. TODO: needs some error checking
