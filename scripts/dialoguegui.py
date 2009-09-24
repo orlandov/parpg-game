@@ -49,6 +49,7 @@ class DialogueGUI(object):
             'responses': self.handleResponses,
             'start_quest': self.startQuest,
             'complete_quest': self.completeQuest,
+            'npc_avatar': self.handleAvatarImage,
             'end': self.handleEnd
         }
 
@@ -118,6 +119,13 @@ class DialogueGUI(object):
         self.dialogue_gui.hide()
         self.npc.behaviour.state = 1
         self.npc.behaviour.idle()
+
+    def handleAvatarImage(self, image):
+        """Callback to handle when the dialogue engine wants to set the NPC image
+           @type image: str
+           @param image: filename of avatar image"""
+        avatar_image = self.dialogue_gui.findChild(name='npc_avatar')
+        avatar_image.image = image
 
     def handleResponses(self, *args):
         """Callback to handle when the dialogue engine wants to display a new

@@ -1,7 +1,7 @@
 <Window title="NPC NAME" position_technique="center:center" min_size="500,400">
     <HBox>
         <VBox>
-            <Icon image="gui/icons/npc.png" size="200,200" />
+            <Icon name="npc_avatar" size="200,200" />
             <Label name="stats_label" />
         </VBox>
         <ScrollArea size="400,200" min_size="400,200">

@@ -14,8 +14,8 @@
 #   along with PARPG.  If not, see <http://www.gnu.org/licenses/>.
 
 ---
-NPC: Guard
-AVATAR: Guard1.png
+NPC: Friendly NPC
+AVATAR: gui/icons/npc.png
 START: main_dialog
 
 SECTIONS:
