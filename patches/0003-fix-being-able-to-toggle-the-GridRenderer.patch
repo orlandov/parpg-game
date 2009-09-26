@@ -1,0 +1,22 @@
+From 640c7e7e9fee4e011405ae9e64f13cc66f6918ce Mon Sep 17 00:00:00 2001
+From: Orlando Vazquez <ovazquez@gmail.com>
+Date: Sat, 22 Aug 2009 11:22:21 -0700
+Subject: [PATCH] fix being able to toggle the GridRenderer
+
+
+diff --git a/scripts/world.py b/scripts/world.py
+index 8afa008..1bffc7d 100644
+--- a/scripts/world.py
++++ b/scripts/world.py
+@@ -176,7 +176,7 @@ class World(EventListenerBase):
+             # we need to quit the game
+             self.hud.quitGame()
+         if(keyval == key.T):
+-            self.toggle_renderer('GridRenderer')
++            self.activeMap.toggle_renderer('GridRenderer')
+         if(keyval == key.F1):
+             # display the help screen and pause the game
+             self.displayHelp()
+-- 
+1.6.0.4
+

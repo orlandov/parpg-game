@@ -1,0 +1,22 @@
+From 3ebed22662410acf382a09d50bb22d3cbbd858ef Mon Sep 17 00:00:00 2001
+From: Orlando Vazquez <ovazquez@gmail.com>
+Date: Sat, 22 Aug 2009 12:54:18 -0700
+Subject: [PATCH] fix a bug with help: displayHelp is in Hud now
+
+
+diff --git a/scripts/world.py b/scripts/world.py
+index 95eaf3e..be01f7b 100644
+--- a/scripts/world.py
++++ b/scripts/world.py
+@@ -176,7 +176,7 @@ class World(EventListenerBase):
+             self.activeMap.toggle_renderer('GridRenderer')
+         if(keyval == key.F1):
+             # display the help screen and pause the game
+-            self.displayHelp()
++            self.hud.displayHelp()
+         if(keyval == key.F5):
+             # logic would say we use similar code to above and toggle
+             # logic here does not work, my friend :-(
+-- 
+1.6.0.4
+

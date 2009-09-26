@@ -1,0 +1,242 @@
+From 03af011d5362c5c76ca11e60fb305b6615f69798 Mon Sep 17 00:00:00 2001
+From: Orlando Vazquez <ovazquez@gmail.com>
+Date: Sun, 23 Aug 2009 12:49:16 -0700
+Subject: [PATCH] Pull out inventory display logic out of World to Hud and Inventory
+
+
+diff --git a/scripts/hud.py b/scripts/hud.py
+index af0e8c3..09d6ba3 100644
+--- a/scripts/hud.py
++++ b/scripts/hud.py
+@@ -301,11 +301,49 @@ class Hud(object):
+         window.mapEvents(events_to_map)
+         window.show()
+ 
++    def toggleInventoryButton(self):
++        """Manually toggles the inventory button.
++           @return: None"""
++        button = self.hud.findChild(name="inventoryButton")
++        if(button.toggled == 0):
++            button.toggled = 1
++        else:
++            button.toggled = 0
++
++    def displayInventory(self, *args, **kwargs):
++        """Display's the inventory screen
++           @return: None"""
++        self.world.inventory.displayInventory(*args, **kwargs)
++
++    def refreshReadyImages(self):
++        """Make the Ready slot images on the HUD be the same as those 
++           on the inventory
++           @return: None"""
++        self.setImages(self.hud.findChild(name="hudReady1"),
++                       self.world.inventory.inventory.findChild(name="Ready1").up_image)
++        self.setImages(self.hud.findChild(name="hudReady2"),
++                       self.world.inventory.inventory.findChild(name="Ready2").up_image)
++        self.setImages(self.hud.findChild(name="hudReady3"),
++                       self.world.inventory.inventory.findChild(name="Ready3").up_image)
++        self.setImages(self.hud.findChild(name="hudReady4"),
++                       self.world.inventory.inventory.findChild(name="Ready4").up_image)
++
++    def setImages(self, widget, image):
++        """Set the up, down, and hover images of an Imagebutton.
++           @type widget: pychan.widget
++           @param widget: widget to set
++           @type image: string
++           @param image: image to use
++           @return: None"""
++        widget.up_image = image
++        widget.down_image = image
++        widget.hover_image = image
++
+     def initializeEvents(self):
+         """Intialize Hud events
+            @return: None"""
+         events_to_map = {}
+-        events_to_map["inventoryButton"] = cbwa(self.world.displayInventory, True)
++        events_to_map["inventoryButton"] = cbwa(self.displayInventory, True)
+         events_to_map["saveButton"] = self.saveGame
+         events_to_map["loadButton"] = self.loadGame
+ 
+@@ -438,15 +476,6 @@ class Hud(object):
+            @return: None"""
+         self.options_menu.show()
+     
+-    def toggleInventory(self):
+-        """Manually toggles the inventory button.
+-           @return: None"""
+-        button = self.hud.findChild(name="inventoryButton")
+-        if(button.toggled == 0):
+-            button.toggled = 1
+-        else:
+-            button.toggled = 0
+-
+     def readyAction(self, ready_button):
+         """ Called when the user selects a ready button from the HUD """
+         text = "Used the item from %s" % ready_button
+diff --git a/scripts/inventory.py b/scripts/inventory.py
+index 4b2cf76..3dbb85c 100644
+--- a/scripts/inventory.py
++++ b/scripts/inventory.py
+@@ -20,9 +20,9 @@ from scripts import drag_drop_data as data_drag
+ from pychan.tools import callbackWithArguments as cbwa
+ from scripts.items import item_image_dict
+ 
+-class Inventory():
++class Inventory(object):
+     """Main inventory class"""
+-    def __init__(self, engine, items, readyCallback):
++    def __init__(self, engine, items, readyCallback, toggleInventoryButtonCallback):
+         """Initialise the instance.
+            @type engine: fife.Engine
+            @param engine: An instance of the fife engine
+@@ -33,13 +33,17 @@ class Inventory():
+            @param readyCallback: The function that will make the
+                                  ready slots on the HUD reflect those
+                                  within the inventory
++           @type toggleInventoryButtonCallback: function
++           @param toggleInventoryButtonCallback: Function that will toggle the state of the inventory button
+            @return: None"""
+         pychan.init(engine, debug = True)
+         self.engine = engine
+         self.readyCallback = readyCallback
++        self.toggleInventoryButtonCallback = toggleInventoryButtonCallback
+         self.original_cursor_id = self.engine.getCursor().getId()
+         # TODO: remove hard-coded string?
+         self.inventory = pychan.loadXML("gui/inventory.xml")
++        self.inventoryShown = False 
+         self.events_to_map = {}
+         # the images that should be used for the buttons when they are "empty"
+         self.empty_images = {'A1':'gui/inv_images/inv_backpack.png',
+@@ -111,6 +115,7 @@ class Inventory():
+             if button not in items:
+                 ch.item = ""
+ 
++        self.events_to_map['close_button'] = self.closeInventoryAndToggle
+         self.inventory.mapEvents(self.events_to_map)   
+         self.resetMouseCursor()
+ 
+@@ -119,6 +124,30 @@ class Inventory():
+            @return: None"""
+         self.inventory.hide()
+ 
++    def closeInventoryAndToggle(self):
++        """Close the inventory screen.
++           @return: None"""
++        self.closeInventory()
++        self.toggleInventoryButtonCallback()
++        self.inventoryShown = False
++
++    def displayInventory(self, callFromHud):
++        """Pause the game and enter the inventory screen, or close the
++           inventory screen and resume the game. callFromHud should be true
++           (must be True?) if you call this function from the HUD script
++           @type callFromHud: boolean
++           @param callFromHud: Whether this function is being called 
++                               from the HUD script
++           @return: None"""
++        if (self.inventoryShown == False):
++            self.showInventory()
++            self.inventoryShown = True
++        else:
++            self.closeInventory()
++            self.inventoryShown = False
++        if (callFromHud == False):
++            self.toggleInventoryButtonCallback()
++
+     def showInventory(self):
+         """Show the inventory.
+            @return: None"""
+diff --git a/scripts/world.py b/scripts/world.py
+index be01f7b..04f7894 100644
+--- a/scripts/world.py
++++ b/scripts/world.py
+@@ -48,7 +48,6 @@ class World(EventListenerBase):
+         # self.engine is a fife.Engine object, not an Engine object
+         self.engine = engine
+         self.eventmanager = engine.getEventManager()
+-        self.inventoryShown = False 
+         self.quitFunction = None
+         
+         # self.data is an engine.Engine object, but is set in run.py
+@@ -64,10 +63,8 @@ class World(EventListenerBase):
+         # setup the inventory
+         # make slot 'A1' and 'A3' container daggers
+         inv_data = {'A1':'dagger01', 'A3':'dagger01'}
+-        self.inventory = inventory.Inventory(self.engine, inv_data, self.refreshReadyImages)
+-        self.inventory.events_to_map['close_button'] = self.closeInventoryAndToggle
+-        self.inventory.inventory.mapEvents(self.inventory.events_to_map)
+-        self.refreshReadyImages()
++        self.inventory = inventory.Inventory(self.engine, inv_data, self.hud.refreshReadyImages, self.hud.toggleInventoryButton)
++        self.hud.refreshReadyImages()
+         
+         self.boxOpen = False
+         self.boxCreated = False
+@@ -112,54 +109,6 @@ class World(EventListenerBase):
+            @return: None"""
+         obj.say(str(text), 1000)
+ 
+-    def refreshReadyImages(self):
+-        """Make the Ready slot images on the HUD be the same as those 
+-           on the inventory
+-           @return: None"""
+-        self.setImages(self.hud.hud.findChild(name="hudReady1"),
+-                       self.inventory.inventory.findChild(name="Ready1").up_image)
+-        self.setImages(self.hud.hud.findChild(name="hudReady2"),
+-                       self.inventory.inventory.findChild(name="Ready2").up_image)
+-        self.setImages(self.hud.hud.findChild(name="hudReady3"),
+-                       self.inventory.inventory.findChild(name="Ready3").up_image)
+-        self.setImages(self.hud.hud.findChild(name="hudReady4"),
+-                       self.inventory.inventory.findChild(name="Ready4").up_image)
+-
+-    def setImages(self, widget, image):
+-        """Set the up, down, and hover images of an Imagebutton.
+-           @type widget: pychan.widget
+-           @param widget: widget to set
+-           @type image: string
+-           @param image: image to use
+-           @return: None"""
+-        widget.up_image = image
+-        widget.down_image = image
+-        widget.hover_image = image
+-
+-    def closeInventoryAndToggle(self):
+-        """Close the inventory screen.
+-           @return: None"""
+-        self.inventory.closeInventory()
+-        self.hud.toggleInventory()
+-        self.inventoryShown = False
+-
+-    def displayInventory(self, callFromHud):
+-        """Pause the game and enter the inventory screen, or close the
+-           inventory screen and resume the game. callFromHud should be true
+-           (must be True?) if you call this function from the HUD script
+-           @type callFromHud: boolean
+-           @param callFromHud: Whether this function is being called 
+-                               from the HUD script
+-           @return: None"""
+-        if (self.inventoryShown == False):
+-            self.inventory.showInventory()
+-            self.inventoryShown = True
+-        else:
+-            self.inventory.closeInventory()
+-            self.inventoryShown = False
+-        if (callFromHud == False):
+-            self.hud.toggleInventory()
+-
+     # all key / mouse event handling routines go here
+     def keyPressed(self, evt):
+         """Whenever a key is pressed, fife calls this routine.
+@@ -192,7 +141,7 @@ class World(EventListenerBase):
+             self.engine.getGuiManager().getConsole().toggleShowHide()
+         if(keyval == key.I):
+             # I opens and closes the inventory
+-            self.displayInventory(callFromHud=False)
++            self.hud.displayInventory(callFromHud=False)
+         if(keyval == key.A):
+             # A adds a test action to the action box
+             # The test actions will follow this format: Action 1, Action 2, etc.
+-- 
+1.6.0.4
+

@@ -1,0 +1,31 @@
+From 618ca71bd8dad024dc76565463a0aef9fbc4a3f6 Mon Sep 17 00:00:00 2001
+From: Orlando Vazquez <ovazquez@gmail.com>
+Date: Sat, 22 Aug 2009 14:24:37 -0700
+Subject: [PATCH] fix a couple of FIFE warnings about non-unicode-encoded strings
+
+
+diff --git a/scripts/hud.py b/scripts/hud.py
+index 9bc088a..af0e8c3 100644
+--- a/scripts/hud.py
++++ b/scripts/hud.py
+@@ -174,7 +174,7 @@ class Hud(object):
+         self.help_dialog = pychan.loadXML("gui/help.xml")
+         help_events = {"closeButton":self.help_dialog.hide}
+         self.help_dialog.mapEvents(help_events)
+-        main_help_text = "Welcome to Post-Apocalyptic RPG or PARPG![br][br]"\
++        main_help_text = u"Welcome to Post-Apocalyptic RPG or PARPG![br][br]"\
+         "This game is still in development, so please expect for there to be bugs"\
+         " and[br]feel free to tell us about them at http://www.forums.parpg.net.[br]"\
+         "This game uses a \"Point 'N' Click\" interface, which means that to move around,[br]"\
+@@ -183,7 +183,7 @@ class Hud(object):
+         "anywhere[br]on the screen and a menu will come up. This menu will change"\
+         " depending on[br]what you have clicked on, hence it's name \"context menu\".[br][br]"
+         
+-        k_text =" Keybindings" 
++        k_text = u" Keybindings" 
+         k_text+="[br] A : Add a test action to the actions display"
+         k_text+="[br] I : Toggle the inventory screen"
+         k_text+="[br] F5 : Take a screenshot"
+-- 
+1.6.0.4
+
