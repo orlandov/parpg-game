@@ -23,6 +23,7 @@ class TestDialogue(unittest.TestCase):
     def setUp(self):
         self.tree = {
             'START': 'main',
+            'AVATAR': 'npc.png',
             'SECTIONS': {
                 'main': [
                     { "say": "Greetings stranger" },
@@ -58,12 +59,16 @@ class TestDialogue(unittest.TestCase):
 
         self.replies = ["resp1", "back", "stop"]
 
+        def npc_avatar_cb(state, image):
+            state['npc_avatar'] = image
+
         def responses_cb(state, responses):
             state['responses'] = responses
 
         callbacks = {
             "say": say_cb,
-            "responses": responses_cb
+            "responses": responses_cb,
+            "npc_avatar": npc_avatar_cb
         }
 
         self.dialogue = DialogueEngine(self.tree, callbacks, test_vars)
@@ -74,11 +79,15 @@ class TestDialogue(unittest.TestCase):
     def assert_responses(self, responses):
         self.assertEqual(responses, self.dialogue.state['responses'])
 
+    def assert_npc_image(self, image):
+        self.assertEqual(image, self.dialogue.state['npc_avatar'])
+
     def test_simple(self):
         """Test basic dialogue interaction"""
         self.dialogue.state['show'] = False
         self.dialogue.run()
 
+        self.assert_npc_image('npc.png')
         self.assert_say('Greetings stranger')
         self.assert_responses([
             ["Hi, can you tell me where I am?", "friendly"],

@@ -61,7 +61,7 @@ class DialogueEngine(object):
         start_section = self.tree['START']
         self.section_stack = []
 
-        self.callbacks['npc_avatar'](self.tree['AVATAR'])
+        self.callbacks['npc_avatar'](self.state, self.tree['AVATAR'])
 
         try:
             self.run_section(start_section)

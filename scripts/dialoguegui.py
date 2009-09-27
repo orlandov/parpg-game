@@ -120,7 +120,7 @@ class DialogueGUI(object):
         self.npc.behaviour.state = 1
         self.npc.behaviour.idle()
 
-    def handleAvatarImage(self, image):
+    def handleAvatarImage(self, state, image):
         """Callback to handle when the dialogue engine wants to set the NPC image
            @type image: str
            @param image: filename of avatar image"""
