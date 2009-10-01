@@ -1,5 +1,5 @@
 <Window title="PARPG Options" position_technique="center:center"
-	min_size="300,300" max_size="300,300">
+	min_size="300,300" max_size="350,450">
 
   <CheckBox name="FullscreenBox" text="Full Screen" />
   <CheckBox name="SoundsBox" text="Play Sounds" />

@@ -167,6 +167,8 @@ class World(EventListenerBase):
         if(keyval == key.ESCAPE):
             # Escape brings up the main menu
             self.hud.displayMenu()
+            # Hide the quit menu 
+            self.hud.quitWindow.hide()
         if(keyval == key.M):
             self.sounds.toggleMusic()
 

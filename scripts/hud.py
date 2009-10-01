@@ -70,6 +70,7 @@ class Hud(object):
         self.initializeOptionsMenu()
         self.initializeHelpMenu()
         self.initializeEvents()
+        self.initializeQuitDialog()
 
     def initializeHud(self):
         """Initialize and show the main HUD
@@ -285,31 +286,40 @@ class Hud(object):
                                    guixmlpath='gui/loadbrowser.xml',
                                    extensions=('.dat'))
         load_browser.showBrowser()
-
-    def quitGame(self):
-        """Called when user requests to quit game.
+    
+    def initializeQuitDialog(self):
+        """Creates the quit confirmation dialog
            @return: None"""
-
-        window = pychan.widgets.Window(title=unicode("Quit?"))
+        self.quitWindow = pychan.widgets.Window(title=unicode("Quit?"),min_size=(200,0))
 
         hbox = pychan.widgets.HBox()
         are_you_sure = "Are you sure you want to quit?"
         label = pychan.widgets.Label(text=unicode(are_you_sure))
         yes_button = pychan.widgets.Button(name="yes_button", 
-                                           text=unicode("Yes"))
+                                           text=unicode("Yes"),
+                                           min_size=(90,20),
+                                           max_size=(90,20))
         no_button = pychan.widgets.Button(name="no_button",
-                                          text=unicode("No"))
+                                          text=unicode("No"),
+                                          min_size=(90,20),
+                                          max_size=(90,20))
 
-        window.addChild(label)
+        self.quitWindow.addChild(label)
         hbox.addChild(yes_button)
         hbox.addChild(no_button)
-        window.addChild(hbox)
+        self.quitWindow.addChild(hbox)
 
         events_to_map = { "yes_button": self.quitCallback,
-                          "no_button":  window.hide }
+                          "no_button":  self.quitWindow.hide }
         
-        window.mapEvents(events_to_map)
-        window.show()
+        self.quitWindow.mapEvents(events_to_map)
+
+
+    def quitGame(self):
+        """Called when user requests to quit game.
+           @return: None"""
+
+        self.quitWindow.show()
 
     def toggleInventoryButton(self):
         """Manually toggles the inventory button.
