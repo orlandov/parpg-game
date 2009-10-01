@@ -49,6 +49,7 @@ class Engine:
         self.view = view
         self.mapchange = False
         self.gameState = GameState()
+        self.pc_run = 1
 
     def reset(self):
         """Clears the data on a map reload so we don't have objects/npcs from
@@ -260,7 +261,10 @@ class Engine:
            @type position: fife.ScreenPoint
            @param position: Screen position of click
            @return: None"""
-        self.gameState.PC.run(position)
+        if(self.pc_run==1):
+            self.gameState.PC.run(position)
+        else:
+            self.gameState.PC.walk(position)
         
     def changeMap(self, map, targetPosition):
         """Registers for a mapchange on the next pump().

@@ -121,12 +121,21 @@ class PlayerCharacter (GameObject, Living, CharStats):
         self.behaviour.idle()
     
     def run(self, location):
-        """@type location: ???
-           @param location: ???
+        """Makes the PC run to a certain location
+           @type location: fife.ScreenPoint
+           @param location: Screen position to run to.
            @return: None"""
         self.state = _AGENT_STATE_RUN
-        self.behaviour.agent.move('run', location, self.behaviour.speed)
-        
+        self.behaviour.agent.move('run', location, self.behaviour.speed+1)
+
+    def walk(self, location):
+        """Makes the PC walk to a certain location.
+           @type location: fife.ScreenPoint
+           @param location: Screen position to walk to.
+           @return: None"""
+        self.state = _AGENT_STATE_RUN
+        self.behaviour.agent.move('walk', location, self.behaviour.speed-1)
+      
     def approach(self, location, action = None):
         """Approaches an npc and then ???.
            @type loc: fife.Location

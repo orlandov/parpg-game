@@ -24,13 +24,14 @@ class Console:
         the engine, the world and the model"""
 
         self.commands = [
-            {"cmd":"exit"  ,"callback":self.handleQuit  ,"help":"Terminate application"},
-            {"cmd":"grid"  ,"callback":self.handleGrid  ,"help":"Toggle grid display  "},
-            {"cmd":"help"  ,"callback":self.handleHelp  ,"help":"Show this help string"},
-            {"cmd":"load"  ,"callback":self.handleLoad  ,"help":"load directory file  "},
-            {"cmd":"python","callback":self.handlePython,"help":"Run some python code "},
-            {"cmd":"quit"  ,"callback":self.handleQuit  ,"help":"Terminate application"},
-            {"cmd":"save"  ,"callback":self.handleSave  ,"help":"save directory file  "},
+            {"cmd":"exit"  ,"callback":self.handleQuit  ,"help":"Terminate application "},
+            {"cmd":"grid"  ,"callback":self.handleGrid  ,"help":"Toggle grid display   "},
+            {"cmd":"run"   ,"callback":self.handleRun   ,"help":"Toggle player run/walk"},
+            {"cmd":"help"  ,"callback":self.handleHelp  ,"help":"Show this help string "},
+            {"cmd":"load"  ,"callback":self.handleLoad  ,"help":"load directory file   "},
+            {"cmd":"python","callback":self.handlePython,"help":"Run some python code  "},
+            {"cmd":"quit"  ,"callback":self.handleQuit  ,"help":"Terminate application "},
+            {"cmd":"save"  ,"callback":self.handleSave  ,"help":"save directory file   "},
         ]
         self.appListener=appListener
 
@@ -53,6 +54,21 @@ class Console:
 
         self.appListener.world.activeMap.toggle_renderer('GridRenderer')
         return "Grid toggled"
+
+    def handleRun(self, command):
+        """
+        Toggles run/walk mode of the PC player
+        @type command: string
+        @param command: The command to run.
+        @return: The response"""
+        
+        if self.appListener.model.pc_run==1:
+            self.appListener.model.pc_run=0
+            return "PC is now walking"
+        else:
+            self.appListener.model.pc_run=1
+            return "PC is now running"
+            
 
     def handleHelp(self, command):
         """ 
@@ -132,6 +148,7 @@ class Console:
                 result = "Failed to save file"
 
         return result 
+
 
     def handleConsoleCommand(self, command):
         """
