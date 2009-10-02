@@ -1,0 +1,9 @@
+<animation delay="125" namespace="PAPRG" id="PC:stand:000" x_offset="0" y_offset="-92">
+	<frame source="stand_idle_0.png" />
+	<frame source="stand_idle_1.png" />
+	<frame source="stand_idle_2.png" />
+	<frame source="stand_idle_3.png" />
+	<frame source="stand_idle_4.png" />
+	<frame source="stand_idle_5.png" />
+	<frame source="stand_idle_6.png" />
+</animation>
