@@ -24,6 +24,7 @@ class GameState(object):
         self.PC = None
         self.objects = {}
         self.currentMap = None
+        self.currentMapName = None
         
     def getObjectsFromMap(self, map_id):
         """Gets all objects that are currently on the given map.

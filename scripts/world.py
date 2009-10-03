@@ -97,22 +97,28 @@ class World(EventListenerBase):
         self.data.load(*args, **kwargs)
 
     def loadMap(self, mapname, filename):
-        """Loads a map an stores it under the given name in the maps list.
+        """Loads a map and stores it under the given name in the maps list.
+           @type mapname: text
+           @param mapname: The name of the map to load 
+           @type filename: text
+           @param filename: File which contains the map to be loaded
+           @return: None
         """
-        map = Map(self.engine, self.data)
-        
-        """Need to set active map before we load it because the map 
-        loader uses call backs that expect to find an active map. 
-        This needs to be reworked.
-        """
-        self.maps[mapname] = map
-        self.setActiveMap(mapname)
-
-        map.load(filename)
-
+        if not mapname in self.maps:
+            """Need to set active map before we load it because the map 
+            loader uses call backs that expect to find an active map. 
+            This needs to be reworked.
+            """
+            map = Map(self.engine, self.data)
+            self.maps[mapname] = map        
+            self.setActiveMap(mapname)
+            map.load(filename)
     
     def setActiveMap(self, mapname):
         """Sets the active map that is to be rendered.
+           @type mapname: text
+           @param mapname: The name of the map to load 
+           @return: None
         """
         self.activeMap = self.maps[mapname]
         self.activeMap.makeActive()

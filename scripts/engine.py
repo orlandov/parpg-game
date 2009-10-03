@@ -100,7 +100,7 @@ class Engine:
         self.gameState = pickle.load(f)
         f.close()
         if self.gameState.currentMap:
-            self.loadMap(self.gameState.currentMap) 
+            self.loadMap(self.gameState.currentMapName, self.gameState.currentMap) 
 
     def createObject (self, layer, attributes, instance):
         """Create an object and add it to the current map.
@@ -243,10 +243,13 @@ class Engine:
 
     def loadMap(self, map_name, map_file):
         """Load a new map. TODO: needs some error checking
+           @type map_name: string
+           @param map_name: Name of the map to load
            @type map_file: string
-           @param map_file: Name of map file to load
+           @param map_file: Filename of map file to load
            @return: None"""
         self.gameState.currentMap = map_file
+        self.gameState.currentMapName= map_name
         self.view.loadMap(map_name, str(map_file))
         self.view.setActiveMap(map_name)
 
@@ -255,6 +258,7 @@ class Engine:
         # create the PC agent
         self.view.activeMap.addPC(self.gameState.PC.behaviour.agent)
         self.gameState.PC.start()
+
 
     def handleMouseClick(self,position):
         """Code called when user left clicks the screen.

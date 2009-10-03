@@ -42,9 +42,9 @@ TDS = Setting()
 class ApplicationListener(eventlistenerbase.EventListenerBase):
     def __init__(self, engine, world, model):
         """Initialise the instance.
-           @type engine: ???
+           @type engine: engine.Engine
            @param engine: ???
-           @type world: ???
+           @type world: world.World
            @param world: ???
            @type model: engine.Engine
            @param model: an instance of PARPG's engine"""
