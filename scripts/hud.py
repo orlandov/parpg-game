@@ -219,7 +219,13 @@ class Hud(object):
         current_fullscreen = settings.isFullScreen()
         settings.setFullScreen(True)
         availableResolutions = settings.getPossibleResolutions()
-        self.Resolutions = [str(x[0])+'x'+str(x[1]) for x in availableResolutions];
+
+        # Filter too small resolutions
+        self.Resolutions=[]
+        for x in availableResolutions:
+            if x[0]>=1024 and x[1]>=768:
+                self.Resolutions.append(str(x[0])+'x'+str(x[1]))
+
         settings.setFullScreen(current_fullscreen)
         self.RenderBackends = ['OpenGL', 'SDL']
         self.renderNumber = 0

@@ -3,8 +3,8 @@
 	<FullScreen>0</FullScreen>
 	<PlaySounds>1</PlaySounds>
 	<RenderBackend> OpenGL </RenderBackend>
-	<ScreenWidth>640</ScreenWidth>
-	<ScreenHeight>480</ScreenHeight>
+	<ScreenWidth>1024</ScreenWidth>
+	<ScreenHeight>768</ScreenHeight>
 	<BitsPerPixel> 0 </BitsPerPixel>
 	<InitialVolume> 5.0 </InitialVolume>
 	<SDLRemoveFakeAlpha> 1 </SDLRemoveFakeAlpha>
