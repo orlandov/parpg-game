@@ -18,7 +18,7 @@
 import shutil, fife, pychan
 import pychan.widgets as widgets
 from pychan.tools import callbackWithArguments as cbwa
-from scripts.parpgfilebrowser import PARPGFileBrowser
+from scripts.filebrowser import FileBrowser
 from scripts.context_menu import ContextMenu
 from scripts import inventory
 from scripts.popups import ExaminePopup, ContainerGUI
@@ -265,7 +265,7 @@ class Hud(object):
     def saveGame(self):
         """ Called when the user wants to save the game.
             @return: None"""
-        save_browser = PARPGFileBrowser(self.engine,
+        save_browser = FileBrowser(self.engine,
                                    self.saveGameCallback,
                                    savefile=True,
                                    guixmlpath="gui/savebrowser.xml",
@@ -280,7 +280,7 @@ class Hud(object):
     def loadGame(self):
         """ Called when the user wants to load a game.
             @return: None"""
-        load_browser = PARPGFileBrowser(self.engine,
+        load_browser = FileBrowser(self.engine,
                                    self.loadGameCallback,
                                    savefile=False,
                                    guixmlpath='gui/loadbrowser.xml',
