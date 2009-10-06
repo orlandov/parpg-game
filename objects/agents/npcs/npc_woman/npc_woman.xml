@@ -1,5 +1,5 @@
 <?fife type="object"?>
-<object id="npc-woman" namespace="PARPG" blocking="1" static="0">
+<object id="npc_woman" namespace="PARPG" blocking="1" static="0">
 	<action id="run">
 		<animation source="walk/000/animation.xml" direction="0" />
 		<animation source="walk/045/animation.xml" direction="45" />

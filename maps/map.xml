@@ -3,6 +3,10 @@
     <!-- Firstly import all the gfx objects we need for this map -->
 	<import file="../objects/agents/player/player.xml"></import>
 	<import file="../objects/agents/npcs/npc_woman/npc_woman.xml"></import>
+	<import file="../objects/agents/npcs/long_coat_female/long_coat_female.xml"></import>
+	<import file="../objects/agents/npcs/long_coat_male/long_coat_male.xml"></import>
+	<import file="../objects/agents/npcs/male_farmer_1/male_farmer_1.xml"></import>
+	<import file="../objects/agents/npcs/male_traveler_1/male_traveler_1.xml"></import>
 	<import file="../objects/ground/grass/grass-a.xml"></import>
 	<import file="../objects/ground/grass/grass-b.xml"></import>
 	<import file="../objects/ground/gravel/gravel.xml"></import>
@@ -1122,7 +1126,7 @@
 			<i x="0.0" o="PC" z="0.0" y="0.0" r="0" id="PC" object_type="PlayerCharacter"></i>
             
             <!-- There can be any number of NPC characters -->
-			<i x="-4.0" o="npc-woman" z="0.0" y="-7.0" r="0" id="woman01" object_type="NonPlayerCharacter"
+	    <i x="-4.0" o="npc_woman" z="0.0" y="-7.0" r="0" id="woman01" object_type="NonPlayerCharacter"
 				text="A friendly woman"></i>
             
             
