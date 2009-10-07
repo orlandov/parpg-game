@@ -13,25 +13,9 @@ class Data(object):
         print "GOT", args
 
 def loadMapFile(path, engine, callback=None):
-    """     load map file and get (an optional) callback if major stuff is done:
-    - map creation
-    - parsed impor0ts
-    - parsed layers 
-    - parsed cameras
-    the callback will send both a string and a float (which shows
-    the overall process), callback(string, float)
-    
-    Inputs:
-        path = filename for map
-        engine = FIFE engine
-        data = Engine object for PARPG data
-        
-    @return    map    : map object
-    """
     data = Data()
     map_loader = XMLMapLoader(engine, data, callback)
     map = map_loader.loadResource(fife.ResourceLocation(path))
-    print "--- Loading map took: ", map_loader.time_to_load, " seconds."
     return map
 
 def loadImportFile(path, engine):
