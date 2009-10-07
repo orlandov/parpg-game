@@ -10,6 +10,7 @@ fileExtensions = ('xml',)
 
 class Data(object):
     def createObject(self, *args):
+        
         print "GOT", args
 
 def loadMapFile(path, engine, callback=None):
