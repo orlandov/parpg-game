@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/python
 
 # ###################################################
 # Copyright (C) 2009 The Unknown Horizons Team
@@ -31,7 +31,7 @@ if __name__ == '__main__':
 	os.chdir('../editor')
         print os.getcwd()
 	#start editor
-	args = [sys.executable, './run.py', ]
+	args = [sys.executable, './run.py', '../parpg/maps/map.xml']
         env = os.environ.copy()
         env['PYTHONPATH'] = "../parpg/editor:../parpg/local_loaders"
 
