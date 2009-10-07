@@ -33,7 +33,7 @@ if __name__ == '__main__':
 	#start editor
 	args = [sys.executable, './run.py', ]
         env = os.environ.copy()
-        env['PYTHONPATH'] = "../parpg/editor"
+        env['PYTHONPATH'] = "../parpg/editor:../parpg/local_loaders"
 
         os.execve(args[0], args, env)
         #os.execvp(args[0], args)
