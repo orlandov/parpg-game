@@ -1,6 +1,21 @@
 #!python
 
+#   This file is part of PARPG.
+#   PARPG is free software: you can redistribute it and/or modify
+#   it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation, either version 3 of the License, or
+#   (at your option) any later version.
+#
+#   PARPG is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
+#
+#   You should have received a copy of the GNU General Public License
+#   along with PARPG.  If not, see <http://www.gnu.org/licenses/>.
+
 import fife
+import loaders
 from serializers import root_subfile
 
 from xml.etree.ElementTree import Element, SubElement, tostring
@@ -97,6 +112,19 @@ class Saver(object):
             inst_id = inst.getId()
             if inst_id:
                 attrib['id'] = inst_id
+
+            if inst_id is not None and inst_id in loaders.data.objects:
+                for key in loaders.data.objects[inst_id]:
+                    if key not in attrib and loaders.data.objects[inst_id][key]:
+                        print key
+                        attrib[key] = str(loaders.data.objects[inst_id][key])
+                        print key, attrib[key]
+
+            # the local_loader loader sets object_type as type, we have to
+            # correct for that here but really we should fix that there
+            if attrib.get('type'):
+                attrib['object_type'] = attrib['type']
+                del attrib['type']
 
             instances_element.append(Element('i', attrib))
 
