@@ -140,7 +140,7 @@ def usage():
     print "Options:"
     print "   --verbose, -v      Verbose"
     print "   --help, -h         This help message"
-    print "   --path DIR, -p     Root path of the agen (default .)"
+    print "   --path DIR, -p     Root path of the agent (default .)"
     print "   --delay DLY, -d    Delay value (default 100)"
     print "   --x_offset OFF, -x X Offset (default 0)"
     print "   --y_offset OFF, -y Y Offset (default 0)"
