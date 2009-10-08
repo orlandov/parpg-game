@@ -40,7 +40,7 @@ class Saver(object):
         self.write_layers()
         self.write_cameras()
 
-        print file('../parpg/maps/map_new.xml', 'w').write(
+        print file(self.filepath, 'w').write(
             """<?xml version="1.0" encoding="ascii"?>"""+
             tostring(self.map_element) + "\n")
 
