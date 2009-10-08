@@ -17,17 +17,36 @@
 import os
 import sys
 
-"""This program is a hack to be able to hook into the FIFE map editor load and
-save functionality. It runs the FIFE editor such that our custom loaders and savers are
-used instead of the stock FIFE ones. Ideally the FIFE editor could be extended
-to support custom loaders and savers in a way that's not trying to trick the
-process into running our code. :)"""
+"""
+This program is a hack. To be able to hook into the FIFE map editor load and
+save functionality we have to change the import path. It runs the FIFE
+editor such that our custom loaders and savers are used instead of the stock
+FIFE ones. Ideally the FIFE editor could be extended to support custom loaders
+and savers so we don't have to resort to tricking the editor. :)
+"""
+
 if __name__ == '__main__':
-	os.chdir( os.path.split( os.path.realpath( sys.argv[0]) )[0] )
+    # Either FIFE or the editor do not like being passed an absolute
+    # path. Maybe a bug? We have to force paths relative to the parpg
+    # directory. This also assumes that the parpg directory is at the same
+    # level as the FIFE editor. :P
+    parpg_path = os.path.split(os.path.realpath(sys.argv[0]))[0]
+    parpg_dir = parpg_path.split('/')[-1]
 
-	os.chdir('../editor')
-	args = [sys.executable, './run.py', '../parpg/maps/map.xml']
-        env = os.environ.copy()
-        env['PYTHONPATH'] = "../parpg/editor:../parpg/local_loaders"
+    args = [sys.executable, './run.py']
 
-        os.execve(args[0], args, env)
+    if len(sys.argv) > 1:
+        map_path = sys.argv[1]
+
+        args.append(os.path.join('..', parpg_dir, map_path))
+        print args
+
+    fife_editor_path = os.path.join(parpg_path, '..', 'editor')
+    os.chdir(fife_editor_path)
+    env = os.environ.copy()
+    env['PYTHONPATH'] = ":".join([
+        os.path.join('..', parpg_path, 'editor'),
+        os.path.join('..', parpg_path, 'local_loaders')
+    ])
+
+    os.execve(args[0], args, env)

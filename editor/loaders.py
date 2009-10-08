@@ -51,3 +51,15 @@ def loadImportFile(path, engine):
         pass
 #        print 'ignored already loaded file ' + path
     return res
+
+def loadImportDir(path, engine):
+    for file in filter(
+            lambda f: f.split('.')[-1] == 'xml', engine.getVFS().listFiles(path)
+        ):
+        loadImportFile('/'.join([path, file]), engine)
+
+def loadImportDirRec(path, engine):
+    loadImportDir(path, engine)
+
+    for dir in filter(lambda d: not d.startswith('.'), engine.getVFS().listDirectories(path)):
+        loadImportDirRec('/'.join([path, dir]), engine)
