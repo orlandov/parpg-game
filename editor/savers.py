@@ -1,18 +1,18 @@
 #!python
 
-#   This file is part of PARPG.
-#   PARPG is free software: you can redistribute it and/or modify
-#   it under the terms of the GNU General Public License as published by
-#   the Free Software Foundation, either version 3 of the License, or
-#   (at your option) any later version.
+# This file is part of PARPG.
+# PARPG is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
 #
-#   PARPG is distributed in the hope that it will be useful,
-#   but WITHOUT ANY WARRANTY; without even the implied warranty of
-#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#   GNU General Public License for more details.
+# PARPG is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
 #
-#   You should have received a copy of the GNU General Public License
-#   along with PARPG.  If not, see <http://www.gnu.org/licenses/>.
+# You should have received a copy of the GNU General Public License
+# along with PARPG.  If not, see <http://www.gnu.org/licenses/>.
 
 import fife
 import loaders
@@ -21,33 +21,37 @@ from serializers import root_subfile
 from xml.etree.ElementTree import Element, SubElement, tostring
 
 class Saver(object):
+    """Serialize a FIFE map object to an XML file"""
+
     def __init__(self, filepath, engine):
         self.filepath = filepath
         self.engine = engine
         self.namespace = ''
 
     def write_map(self, map, import_list):
-        print "import list", import_list
-        self.map = map
+        """Write the specified map to an XML file"""
 
+        self.map = map
         attrib = {
             'id': map.getId(),
             'format': "1.0"
         }
         self.map_element = Element('map', attrib)
 
+        # serialize FIFE details
         self.write_imports(import_list)
         self.write_layers()
         self.write_cameras()
 
-        print file(self.filepath, 'w').write(
-            """<?xml version="1.0" encoding="ascii"?>"""+
-            tostring(self.map_element) + "\n")
+        # finally write out the XML file
+        file(self.filepath, 'w').write(
+            """<?xml version="1.0" encoding="ascii"?>%s\n"""
+                % (tostring(self.map_element),))
 
     def write_imports(self, import_list):
+        """Serialize imports"""
         map = self.map
         for import_dir in import_list:
-            print "GRF", map.getResourceFile()
             self.write_importdir(
                 root_subfile(map.getResourceFile(), import_dir))
 
@@ -62,22 +66,26 @@ class Saver(object):
                     root_subfile(map.getResourceFile(), file))
 
     def have_superdir(self, file, import_list):
-        '''returns true, if file is in directories given in import_list'''
+        """Returns true, if file is in directories given in import_list"""
         for dir in import_list:
             have = True
+            # TODO use os.path.split here
             for test in zip(dir.split(os.path.sep), file.split(os.path.sep)):
                 if test[0] != test[1]: have = False
             if have: return True
 
         return False
 
-    def write_import(self, file):
-        self.map_element.append(Element('import', { 'file': file }))
+    def write_import(self, filename):
+        """Write an import filename"""
+        self.map_element.append(Element('import', { 'file': filename }))
 
     def write_import_dir(import_dir):
-        self.map_element.append(Element('import', { 'dir': dir }))
+        """Write an import dir"""
+        self.map_element.append(Element('import', { 'dir': import_dir }))
 
     def write_layers(self):
+        """Write a layer"""
         for layer in self.map.getLayers():
             cellgrid = layer.getCellGrid()
             attrib = {
@@ -95,6 +103,7 @@ class Saver(object):
             self.write_instances(layer_element, layer)
 
     def write_instances(self, layer_element, layer):
+        """Write out the instances in a layer"""
         instances_element = SubElement(layer_element, 'instances')
         for inst in layer.getInstances():
             position = inst.getLocationRef().getExactLayerCoordinates()
@@ -129,6 +138,7 @@ class Saver(object):
             instances_element.append(Element('i', attrib))
 
     def write_cameras(self):
+        """Write out the cameras specified in a map"""
         cameras = self.engine.getView().getCameras()
 
         for cam in cameras:
@@ -150,8 +160,8 @@ class Saver(object):
                 attrib['viewport'] = '%d,%d,%d,%d' % (viewport.x, viewport.y, viewport.w, viewport.h)
             self.map_element.append(Element('camera', attrib))
 
-
     def pathing_val_to_str(self, val):
+        """Convert a pathing value to a string"""
         if val == fife.CELL_EDGES_AND_DIAGONALS:
             return "cell_edges_and_diagonals"
         if val == fife.FREEFORM:
@@ -159,6 +169,7 @@ class Saver(object):
         return "cell_edges_only"
 
 def saveMapFile(path, engine, map, **kwargs):
+    """Saves a map"""
     map.setResourceFile(path) #wtf is this
     saver = Saver(path, engine)
     saver.write_map(map, kwargs.get('importList'))

@@ -22,7 +22,13 @@ from serializers.xmlobject import XMLObjectLoader
 
 fileExtensions = ('xml',)
 
-class Data(object):
+class AttributeInterceptor(object):
+    """
+    The purpose of this class is to intercept createObject calls by the PARPG
+    XMLMapLoader and record the attributes of instances so that they can be
+    re-applied to objects on save.
+    """
+
     def __init__(self):
         self.objects = {}
 
@@ -32,8 +38,8 @@ class Data(object):
 
 data = None
 def loadMapFile(path, engine, callback=None):
-    global data # ugly hack
-    data = Data()
+    global data
+    data = AttributeInterceptor()
     map_loader = XMLMapLoader(engine, data, callback)
     map = map_loader.loadResource(fife.ResourceLocation(path))
     return map
