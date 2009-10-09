@@ -30,3 +30,17 @@ class ImmovableContainer(GameObject, Container, Lockable, Scriptable,
         Trappable    .__init__(self, **kwargs)
         Destructable .__init__(self, **kwargs)
         self.blocking = True
+
+class Door(GameObject, Lockable, Scriptable, Trappable):
+    """Composite class that can be used to create doors on a map."""
+    def __init__ (self, target_map_name = 'my-map', target_map = 'map/map.xml', target_pos = (0.0, 0.0), \
+                        **kwargs):
+        GameObject   .__init__(self, **kwargs)
+        Lockable     .__init__(self, **kwargs)
+        Scriptable   .__init__(self, **kwargs)
+        Trappable    .__init__(self, **kwargs)
+        self.is_door = True
+        self.target_map_name = target_map_name
+        self.target_map = target_map
+        self.target_pos = target_pos
+        self.blocking = True

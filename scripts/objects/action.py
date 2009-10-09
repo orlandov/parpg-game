@@ -23,21 +23,26 @@ class Action(object):
 
 class ChangeMapAction(Action):
     """A change map scheduled"""
-    def __init__(self, engine, targetmap, targetpos):
-        """@type engine: Engine reference
+    def __init__(self, engine, targetmapname, targetmapfile , targetpos):
+        """Initiates a change of the position of the character
+           possibly flagging a new map to be loaded.
+           @type engine: Engine reference
            @param engine: A reference to the engine.
-           @type targetmap: String
-           @param targetmap: Target mapname.
+           @type targetmapname: String
+           @param targetmapname: Target map id 
+           @type targetmapfile: String
+           @param targetmapfile: Target map filename
            @type targetpos: Tuple
            @param targetpos: (X, Y) coordinates on the target map.
            @return: None"""
         self.engine = engine
         self.targetpos = targetpos
-        self.targetmap = targetmap
-       
+        self.targetmapname = targetmapname
+        self.targetmapfile = targetmapfile
+
     def execute(self):
         """Executes the mapchange."""
-        self.engine.changeMap(self.targetmap, self.targetpos)
+        self.engine.changeMap(self.targetmapname, self.targetmapfile, self.targetpos)
        
 class OpenBoxAction(Action):
     """Open a box. Needs to be more generic, but will do for now."""

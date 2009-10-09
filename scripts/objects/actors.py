@@ -135,7 +135,15 @@ class PlayerCharacter (GameObject, Living, CharStats):
            @return: None"""
         self.state = _AGENT_STATE_RUN
         self.behaviour.agent.move('walk', location, self.behaviour.speed-1)
-      
+
+    def teleport(self, location):
+        """Teleports a PC instantly to the given location.
+           @type location: fife.Location
+           @param location: Target coordinates for PC.
+           @return: None"""
+        self.state = _AGENT_STATE_IDLE
+        self.behaviour.agent.setLocation(location)
+
     def approach(self, location, action = None):
         """Approaches an npc and then ???.
            @type loc: fife.Location

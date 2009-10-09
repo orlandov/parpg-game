@@ -22,16 +22,6 @@ from objects import *
 from objectLoader import ObjectXMLParser
 from objects.action import *
 
-# design note:
-# there is a map file that FIFE reads. We use that file for half the map
-# format because the map editor in FIFE uses it, and secondly because it
-# save us writing a bunch of new code.
-# However, the objects and characters on a map are liable to change
-# whilst the game is being run, so when we change the map, we need to
-# to grab the objects and npc data EITHER from the engine state, or grab
-# from another file if in their initial state
-# This other file has the name AAA_objects.xml where AAA.xml is the name
-# of the original mapfile.
 
 class Engine:
     """Engine holds the logic for the game.
@@ -50,7 +40,7 @@ class Engine:
         self.mapchange = False
         self.gameState = GameState()
         self.pc_run = 1
-
+        self.targetPosition = None
     def reset(self):
         """Clears the data on a map reload so we don't have objects/npcs from
            other maps hanging around.
@@ -88,6 +78,8 @@ class Engine:
 
     def load(self, path, filename):
         """Loads a saver from a file.
+           @type path: string 
+           @param path: the path where the savefile is located
            @type filename: string
            @param filename: the name of the file to load from
            @return: None"""
@@ -104,12 +96,13 @@ class Engine:
 
     def createObject (self, layer, attributes, instance):
         """Create an object and add it to the current map.
-            Inputs:
-                layer = FIFE layer object exists in
-                attributes = dictionary of all object attributes
-                instance = FIFE instance corresponding to the object
-            Return:
-                Nothing
+           @type layer: fife.Layer
+           @param layer: FIFE layer object exists in
+           @type attributes: Dictionary
+           @param attributes: Dictionary of all object attributes
+           @type instance: fife.Instance
+           @param instance: FIFE instance corresponding to the object
+           @return: None
         """
         # create the extra data
         extra = {}
@@ -127,12 +120,13 @@ class Engine:
 
     def addPC(self, layer, pc, instance):
         """Add the PC to the map
-            Inputs:
-                layer = FIFE layer object exists in
-                pc = PlayerCharacter object
-                instance = FIFE instance of PC
-            Returns:
-                Nothing
+           @type layer: fife.Layer
+           @param layer: FIFE layer object exists in
+           @type pc: PlayerCharacter
+           @param pc: PlayerCharacter object
+           @type instance: fife.Instance
+           @param instance: FIFE instance of PC
+           @return: None
         """
         # add to view data 
         self.view.activeMap.addObject(pc.ID, instance)          
@@ -146,12 +140,13 @@ class Engine:
 
     def addObject(self, layer, obj, instance):
         """Adds an object to the map.
-            Inputs:
-                layer = FIFE layer object exists in
-                obj = corresponding object class
-                instance = FIFE instance of object
-            Returns:
-                Nothing
+           @type layer: fife.Layer
+           @param layer: FIFE layer object exists in
+           @type obj: GameObject
+           @param obj: corresponding object class
+           @type instance: fife.Instance
+           @param instance: FIFE instance of object
+           @return: Nothing
         """
         
         ref = self.gameState.getObjectById(obj.ID) 
@@ -167,22 +162,13 @@ class Engine:
             
         # add it to the view
         self.view.activeMap.addObject(obj.ID, instance)          
-       
+
         if obj.trueAttr("NPC"):
             # create the agent
             obj.setup()
             
             # create the PC agent
             obj.start()
-
-    def addDoors(self, doors):
-        """Add all the doors to the map as well.
-           As an object they will have already been added.
-           @type doors: list
-           @param doors: List of doors
-           @return: None"""
-        for i in doors:
-            self.doors[str(i.id)] = MapDoor(i.id, i.destmap, (i.destx, i.desty))
 
     def objectActive(self, ident):
         """Given the objects ID, pass back the object if it is active,
@@ -194,7 +180,7 @@ class Engine:
         for i in self.gameState.getObjectsFromMap(self.gameState.currentMap):
             if (i.ID == ident):
                 # we found a match
-                return i         
+                return i
         # no match
         return False
 
@@ -212,22 +198,23 @@ class Engine:
             if obj.trueAttr("NPC"):
                 # keep it simple for now, None to be replaced by callbacks
                 actions.append(["Talk", "Talk", self.initTalk, obj])
-                actions.append(["Attack", "Attack", self.nullFunc, obj]) 
-            elif obj.trueAttr("Door"):
-                actions.append(["Change Map", "Change Map", \
-                       self.gameState.PC.approach, [obj.X, obj.Y], \
-                        ChangeMapAction(self, self.doors[str(i.ID)].map, [i.destx, i.desty])])
-                pass
+                actions.append(["Attack", "Attack", self.nullFunc, obj])
             else:
-                actions.append(["Examine", "Examine", self.gameState.PC.approach,  
+                actions.append(["Examine", "Examine", self.gameState.PC.approach, \
                                 [obj.X, obj.Y], ExamineBoxAction(self, obj.name, obj.text)])
+                # is it a Door?
+                if obj.trueAttr("door"):
+                    actions.append(["Change Map", "Change Map", \
+                       self.gameState.PC.approach, [obj.X, obj.Y], \
+                            ChangeMapAction(self, obj.target_map_name, \
+                                obj.target_map, obj.target_pos)])
                 # is it a container?
                 if obj.trueAttr("container"):
                     actions.append(["Open", "Open", self.gameState.PC.approach, [obj.X, obj.Y], OpenBoxAction(self, "Box")])
                 # can you pick it up?
                 if obj.trueAttr("carryable"):
-                    actions.append(["Pick Up", "Pick Up", self.nullFunc, obj])       
-                    
+                    actions.append(["Pick Up", "Pick Up", self.nullFunc, obj])
+
         return actions
     
     def nullFunc(self, userdata):
@@ -242,7 +229,8 @@ class Engine:
         self.gameState.PC.approach([npc.getLocation().getLayerCoordinates().x, npc.getLocation().getLayerCoordinates().y], TalkAction(self, npc))
 
     def loadMap(self, map_name, map_file):
-        """Load a new map. TODO: needs some error checking
+        """THIS FUNCTION IS BROKEN. DO NOT USE IT YET
+           Load a new map.
            @type map_name: string
            @param map_name: Name of the map to load
            @type map_file: string
@@ -253,8 +241,8 @@ class Engine:
         self.view.loadMap(map_name, str(map_file))
         self.view.setActiveMap(map_name)
 
-        self.reset()        
-        
+        self.reset()
+
         # create the PC agent
         self.view.activeMap.addPC(self.gameState.PC.behaviour.agent)
         self.gameState.PC.start()
@@ -269,30 +257,34 @@ class Engine:
             self.gameState.PC.run(position)
         else:
             self.gameState.PC.walk(position)
-        
-    def changeMap(self, map, targetPosition):
+
+    def changeMap(self, mapName, mapFile, targetPosition):
         """Registers for a mapchange on the next pump().
-           @type map: ???
-           @param map: Name of the target map.
-           @type targetPosition: ???
+           @type nameName: String
+           @param mapName: Id of the map to teleport to
+           @type mapFile: String
+           @param mapFile: Filename of the map to teleport to
+           @type targetPosition: Tuple
            @param targetPosition: Position of PC on target map.
-           @return: None"""
-        # save the postions
-        self.updateGameState()
-        # set the PC position
-        self.gameState.PC.posx = targetPosition[0]
-        self.gameState.PC.posy = targetPosition[1]
-        # set the parameters for the mapchange
-        self.targetMap = map
-        # issue the mapchange
-        self.mapchange = True
+           @return None"""
+        # set the parameters for the mapchange if moving to a new map
+        print self.gameState.currentMapName
+        if mapName != self.gameState.currentMapName:
+            self.gameState.currentMapName = mapName
+            self.gameState.currentMap = mapFile
+            self.targetPosition = targetPosition
+            # issue the mapchange
+            self.mapchange = True
+        else:
+            #set the player position on the current map
+            self.view.teleport(targetPosition)
 
     def handleCommands(self):
         if self.mapchange:
-            self.loadMap(self.targetMap)
+            self.loadMap(self.gameState.currentMapName, self.gameState.currentMap)
+            self.view.teleport(self.targetPosition)
             self.mapchange = False
 
     def pump(self):
         """Main loop in the engine."""
         self.handleCommands()
-

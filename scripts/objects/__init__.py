@@ -14,11 +14,11 @@
 
 #   You should have received a copy of the GNU General Public License
 #   along with PARPG.  If not, see <http://www.gnu.org/licenses/>.
-import containers
+import containers, doors
 import actors
 import sys
 
-object_modules = [containers, actors,]
+object_modules = [containers, actors, doors]
 
 def getAllObjects ():
     """Returns a dictionary with the names of the concrete game object classes
@@ -49,4 +49,5 @@ def createObject(info, extra = {}):
         for key, val in extra.items():
             info[key] = val
 
+        # this is for testing purposes
         return getAllObjects()[obj_type](ID, **info)

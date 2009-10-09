@@ -210,6 +210,20 @@ class World(EventListenerBase):
         self.hud.hideContainer()
         self.data.gameState.PC.run(click)
 
+    def teleport(self, position):
+        """Called when a door is used that moves a player to a new
+           location on the same map. the setting of position may want
+           to be created as its own method down the road.
+           
+           @type position: String Tuple
+           @param position: X,Y coordinates passed from enigine.changeMap
+           @return: fife.Location
+        """
+        coord = fife.DoublePoint3D(float(position[0]), float(position[1]), 0)
+        location = fife.Location(self.activeMap.agent_layer)
+        location.setMapCoordinates(coord)
+        self.data.gameState.PC.teleport(location)
+
     def mouseMoved(self, evt):
         """Called when the mouse is moved
            @type evt: fife.event

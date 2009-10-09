@@ -100,7 +100,7 @@ class PARPG(ApplicationBase):
         self.world.data = self.model
         self.listener = ApplicationListener(self.engine,self.world,self.model)
         self.world.quitFunction = self.listener.quitGame
-        self.model.loadMap("main_map", str(TDS.readSetting("MapFile")))   
+        self.model.loadMap("main-map", str(TDS.readSetting("MapFile")))
         pychan.init(self.engine, debug = True)
 
     def loadSettings(self):
