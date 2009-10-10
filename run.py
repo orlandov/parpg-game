@@ -36,8 +36,8 @@ TDS = Setting()
 
 """This folder holds the main meta-data for PARPG. This file should be
    minimal, since folding code into the controller with MVC is usually bad
-   All game and logic and data is held held and referenced in /scripts/engine.py
-   All fife stuff goes in /scripts/world.py"""
+   All game and logic and data is held held and referenced in 
+   /scripts/engine.py. All fife stuff goes in /scripts/world.py"""
 
 class ApplicationListener(eventlistenerbase.EventListenerBase):
     def __init__(self, engine, world, model):

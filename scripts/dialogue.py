@@ -21,19 +21,19 @@ import itertools
 
 class EndException(Exception):
     """EndException is used to bail out from a deeply nested
-       run_section/continue_with_response call stack and end the
+       runSection/continueWithResponse call stack and end the
        conversation"""
     pass
 
 class ResponseException(Exception):
     """ResponseException is used to bail out from a deeply nested
-       run_section/continue_with_response call stack and allow the user to
+       runSection/continueWithResponse call stack and allow the user to
        specify a response"""
     pass
 
 class BackException(Exception):
     """BackException is used to bail out from a deeply nested
-       run_section/continue_with_response call stack and rewind the section
+       runSection/continueWithResponse call stack and rewind the section
        stack"""
     pass
 
@@ -66,24 +66,25 @@ class DialogueEngine(object):
             npc_avatar_cb(self.state, self.tree['AVATAR'])
 
         try:
-            self.run_section(start_section)
+            self.runSection(start_section)
         except EndException:
             # we stopped talking to the NPC
             logging.debug("Reached the end")
             end_cb = self.callbacks.get('end')
-            if end_cb: end_cb()
+            if end_cb:
+                end_cb()
             return
         except ResponseException, e:
             return e.args[0]
         except BackException, e:
             self.section_stack.pop(-1)
             try:
-                self.run_section(self.section_stack[-1])
+                self.runSection(self.section_stack[-1])
                 return e
             except ResponseException, e:
                 return e.args[0]
 
-    def get_section(self, section_name):
+    def getSection(self, section_name):
         """Return a section object.
         @type section_name: string
         @param section_name: The section to get
@@ -100,9 +101,10 @@ class DialogueEngine(object):
         while True:
             try:
                 if response is not None:
-                    self.continue_with_response(self.section_stack[-1], response)
+                    self.continueWithResponse(self.section_stack[-1], \
+                                                response)
                 else:
-                    self.run_section(self.section_stack[-1])
+                    self.runSection(self.section_stack[-1])
             except ResponseException, e:
                 logging.debug("Got response exception %s" % (e.args, ))
                 return e.args[0]
@@ -123,12 +125,14 @@ class DialogueEngine(object):
                 continue
             except EndException:
                 end_cb = self.callbacks.get('end')
-                if end_cb: end_cb()
+                if end_cb:
+                    end_cb()
                 logging.debug("Reached the end")
                 return
 
-    def continue_with_response(self, section_name, response):
-        """Reply to a response in a section and continue executing dialogue script
+    def continueWithResponse(self, section_name, response):
+        """Reply to a response in a section and continue executing dialogue
+           script
            @type section_name: str
            @param section_name: the section to continue
            @type response: int
@@ -141,8 +145,9 @@ class DialogueEngine(object):
             if self.section_stack[-1] == self.section_stack[-2]:
                 self.section_stack.pop(-1)
 
-        for command in itertools.cycle(self.get_section(section_name)):
-            if not command.get('responses'): continue
+        for command in itertools.cycle(self.getSection(section_name)):
+            if not command.get('responses'):
+                continue
 
             responses = []
             for r in command.get('responses'):
@@ -160,9 +165,9 @@ class DialogueEngine(object):
             elif section == "end":
                 raise EndException()
 
-            self.run_section(section)
+            self.runSection(section)
 
-    def run_section(self, section_name):
+    def runSection(self, section_name):
         """Run a section
            @type section_name: string
            @param section_name: The section to run
@@ -178,8 +183,9 @@ class DialogueEngine(object):
             if self.section_stack[-1] == self.section_stack[-2]:
                 self.section_stack.pop(-1)
 
-        logging.debug("In run_section %s %s" % (section_name, self.section_stack,))
-        for command in itertools.cycle(self.get_section(section_name)):
+        logging.debug("In runSection %s %s" % (section_name, \
+                                               self.section_stack,))
+        for command in itertools.cycle(self.getSection(section_name)):
             if command.get("say"):
                 if self.callbacks.get('say'):
                     self.callbacks["say"](state, command["say"])
@@ -196,10 +202,12 @@ class DialogueEngine(object):
                 raise ResponseException(responses)
 
             elif command.get("start_quest"):
-                self.callbacks["start_quest"](state, command.get("start_quest"))
+                self.callbacks["start_quest"](state, \
+                                              command.get("start_quest"))
 
             elif command.get("complete_quest"):
-                self.callbacks["complete_quest"](state, command.get("complete_quest"))
+                self.callbacks["complete_quest"](state, \
+                                                 command.get("complete_quest"))
 
             elif command.get("dialogue"):
                 command = command.get("dialogue")

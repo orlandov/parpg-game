@@ -208,7 +208,7 @@ class World(EventListenerBase):
     def onWalk(self, click):
         """Callback sample for the context menu."""
         self.hud.hideContainer()
-        self.data.gameState.PC.run(click)
+        self.data.game_state.PC.run(click)
 
     def teleport(self, position):
         """Called when a door is used that moves a player to a new
@@ -222,7 +222,7 @@ class World(EventListenerBase):
         coord = fife.DoublePoint3D(float(position[0]), float(position[1]), 0)
         location = fife.Location(self.activeMap.agent_layer)
         location.setMapCoordinates(coord)
-        self.data.gameState.PC.teleport(location)
+        self.data.game_state.PC.teleport(location)
 
     def mouseMoved(self, evt):
         """Called when the mouse is moved

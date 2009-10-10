@@ -41,7 +41,7 @@ class ChangeMapAction(Action):
         self.targetmapfile = targetmapfile
 
     def execute(self):
-        """Executes the mapchange."""
+        """Executes the map change."""
         self.engine.changeMap(self.targetmapname, self.targetmapfile, self.targetpos)
        
 class OpenBoxAction(Action):
@@ -92,7 +92,7 @@ class TalkAction(Action):
         
     def execute(self):
         """Examine the box."""
-        pc = self.engine.gameState.PC
+        pc = self.engine.game_state.PC
         pc.behaviour.agent.act('stand', self.npc.getLocation())
         self.npc.talk(pc)
         self.engine.view.hud.showDialogue(self.npc)

@@ -149,14 +149,17 @@ class DialogueGUI(object):
                 max_size=(490,48),
                 position_technique='center:center'
             )
-            button.margins=(5,5)
-            button.background_color=fife.Color(0,0,0)
-            button.color=fife.Color(0,255,0)
+            button.margins = (5,5)
+            button.background_color = fife.Color(0,0,0)
+            button.color = fife.Color(0,255,0)
             button.border_size = 0
             button.wrap_text = 1
-            button.capture(lambda button=button: self.handleEntered(button), event_name='mouseEntered')
-            button.capture(lambda button=button: self.handleExited(button), event_name='mouseExited')
-            button.capture(lambda button=button: self.handleClicked(button), event_name='mouseClicked')
+            button.capture(lambda button=button: self.handleEntered(button), \
+                           event_name='mouseEntered')
+            button.capture(lambda button=button: self.handleExited(button), \
+                           event_name='mouseExited')
+            button.capture(lambda button=button: self.handleClicked(button), \
+                           event_name='mouseClicked')
             choices_list.addChild(button)
             self.dialogue_gui.adaptLayout(True)
 

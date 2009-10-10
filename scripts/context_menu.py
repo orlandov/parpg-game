@@ -15,7 +15,8 @@
 #   You should have received a copy of the GNU General Public License
 #   along with PARPG.  If not, see <http://www.gnu.org/licenses/>.
 
-import fife, pychan
+import fife
+import pychan
 
 class ContextMenu(object):
     def __init__(self, engine, menu_items, pos):
@@ -34,7 +35,7 @@ class ContextMenu(object):
         for item in menu_items:
             p = pychan.widgets.Button(name=item[0], text=unicode(item[1]))
             self.vbox.addChild(p)
-            events_to_map [item[0]] = self.action_decorator(*item[2:])
+            events_to_map [item[0]] = self.actionDecorator(*item[2:])
         self.vbox.mapEvents(events_to_map)
         self.show()
     
@@ -45,7 +46,7 @@ class ContextMenu(object):
         """Hides the context menu"""
         self.vbox.hide()
         
-    def action_decorator (self,func, *args, **kwargs):
+    def actionDecorator (self,func, *args, **kwargs):
         """This function is supposed to add some generic that should be
         executed before and/or after an action is fired through the
         context menu.
@@ -57,7 +58,7 @@ class ContextMenu(object):
         @return: A wrapped version of func
         """
         
-        def decorated_func ():
+        def decoratedFunc ():
             """ This is the actual wrapped version of func, that is returned.
             It takes no external arguments, so it can safely be passed around
             as a callback."""
@@ -69,5 +70,5 @@ class ContextMenu(object):
             pass        
             # return the value, as if the original function was called
             return ret_val
-        return decorated_func
+        return decoratedFunc
         

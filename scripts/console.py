@@ -16,24 +16,32 @@
 import re 
 
 class Console:
-    def __init__(self, appListener):
+    def __init__(self, app_listener):
         """ 
         Constructor
         @type appListener: ApplicationListener
         @param appListener: ApplicationListener object providing a link with
         the engine, the world and the model"""
+        exit_help = "Terminate application"
+        grid_help = "Toggle grid display"
+        run_help = "Toggle player run/walk"
+        help_help = "Show this help string"
+        load_help = "load directory file"
+        python_help = "Run some python code"
+        quit_help = "Terminate application"
+        save_help = "save directory file"
 
         self.commands = [
-            {"cmd":"exit"  ,"callback":self.handleQuit  ,"help":"Terminate application "},
-            {"cmd":"grid"  ,"callback":self.handleGrid  ,"help":"Toggle grid display   "},
-            {"cmd":"run"   ,"callback":self.handleRun   ,"help":"Toggle player run/walk"},
-            {"cmd":"help"  ,"callback":self.handleHelp  ,"help":"Show this help string "},
-            {"cmd":"load"  ,"callback":self.handleLoad  ,"help":"load directory file   "},
-            {"cmd":"python","callback":self.handlePython,"help":"Run some python code  "},
-            {"cmd":"quit"  ,"callback":self.handleQuit  ,"help":"Terminate application "},
-            {"cmd":"save"  ,"callback":self.handleSave  ,"help":"save directory file   "},
+            {"cmd":"exit"  ,"callback":self.handleQuit  ,"help": exit_help},
+            {"cmd":"grid"  ,"callback":self.handleGrid  ,"help": grid_help},
+            {"cmd":"run"   ,"callback":self.handleRun   ,"help": run_help},
+            {"cmd":"help"  ,"callback":self.handleHelp  ,"help": help_help},
+            {"cmd":"load"  ,"callback":self.handleLoad  ,"help": load_help},
+            {"cmd":"python","callback":self.handlePython,"help": python_help},
+            {"cmd":"quit"  ,"callback":self.handleQuit  ,"help": quit_help},
+            {"cmd":"save"  ,"callback":self.handleSave  ,"help": save_help},
         ]
-        self.appListener=appListener
+        self.app_listener=app_listener
 
     def handleQuit(self, command):
         """ 
@@ -42,7 +50,7 @@ class Console:
         @param command: The command to run
         @return: The resultstring"""
         
-        self.appListener.quitGame()
+        self.app_listener.quitGame()
         return "Terminating ..."
 
     def handleGrid(self, command):
@@ -52,7 +60,7 @@ class Console:
         @param command: The command to run
         @return: The resultstring"""
 
-        self.appListener.world.activeMap.toggle_renderer('GridRenderer')
+        self.app_listener.world.activeMap.toggle_renderer('GridRenderer')
         return "Grid toggled"
 
     def handleRun(self, command):
@@ -62,11 +70,11 @@ class Console:
         @param command: The command to run.
         @return: The response"""
         
-        if self.appListener.model.pc_run==1:
-            self.appListener.model.pc_run=0
+        if self.app_listener.model.pc_run == 1:
+            self.app_listener.model.pc_run = 0
             return "PC is now walking"
         else:
-            self.appListener.model.pc_run=1
+            self.app_listener.model.pc_run = 1
             return "PC is now running"
             
 
@@ -79,7 +87,7 @@ class Console:
 
         res=""
         for cmd in self.commands:
-            res+= "%10s: %s\n" % (cmd["cmd"], cmd["help"])
+            res += "%10s: %s\n" % (cmd["cmd"], cmd["help"])
 
         return res
 
@@ -90,11 +98,11 @@ class Console:
         @param command: The command to run
         @return: The resultstring"""
 
-        result=None
+        result = None
         python_regex = re.compile('^python')
         python_matches = python_regex.match(command.lower())
-        if (python_matches != None):
-            end_python = command[python_matches.end()+1:]
+        if (python_matches is not None):
+            end_python = command[python_matches.end() + 1:]
             try:
                 result = str(eval(end_python))
             except Exception, e:
@@ -109,19 +117,19 @@ class Console:
         @param command: The command to run
         @return: The resultstring"""
 
-        result=None
+        result = None
         load_regex = re.compile('^load')
         l_matches = load_regex.match(command.lower())
-        if (l_matches != None):
+        if (l_matches is not None):
             end_load = l_matches.end()
             try:
-                l_args = command.lower()[end_load+1:].strip()
+                l_args = command.lower()[end_load + 1:].strip()
                 l_path, l_filename = l_args.split(' ')
-                self.appListener.model.load(l_path, l_filename)
+                self.app_listener.model.load(l_path, l_filename)
                 result = "Loaded file: " + l_path + l_filename
 
             except Exception, l_error:
-                self.appListener.engine.getGuiManager().getConsole().println('Error: ' + str(l_error))
+                self.app_listener.engine.getGuiManager().getConsole().println('Error: ' + str(l_error))
                 result="Failed to load file"
 
         return result
@@ -140,11 +148,12 @@ class Console:
             try:
                 s_args = command.lower()[end_save+1:].strip()
                 s_path, s_filename = s_args.split(' ')
-                self.appListener.model.save(s_path, s_filename)
+                self.app_listener.model.save(s_path, s_filename)
                 result = "Saved to file: " + s_path + s_filename
 
             except Exception, s_error:
-                self.appListener.engine.getGuiManager().getConsole().println('Error: ' + str(s_error))
+                self.app_listener.engine.getGuiManager().getConsole(). \
+                    println('Error: ' + str(s_error))
                 result = "Failed to save file"
 
         return result 
@@ -163,7 +172,7 @@ class Console:
             if regex.match(command.lower()):
                 result=cmd["callback"](command)
 
-        if result==None:
+        if result is None:
             result = "Invalid command, enter help for more information"
 
         return result 
