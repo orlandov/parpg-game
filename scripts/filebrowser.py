@@ -23,21 +23,24 @@ def u2s(string):
 class FileBrowser(object):
     """
     FileBrowser displays directory and file listings from the vfs.
-    The fileSelected parameter is a callback invoked when a file selection has been made; its
-    signature must be fileSelected(path,filename). If selectdir is set, fileSelected's
-    filename parameter should be optional.
-    The savefile option provides a box for supplying a new filename that doesn't exist yet.
-    The selectdir option allows directories to be selected as well as files.
+    The file_selected parameter is a callback invoked when a file selection
+    has been made; its signature must be file_selected(path,filename). If
+    select_dir is set, file_selected's filename parameter should be optional.
+    The save_file option provides a box for supplying a new filename that
+    doesn't exist yet. The select_dir option allows directories to be
+    selected as well as files.
     """
-    def __init__(self, engine, fileSelected, savefile=False, selectdir=False, extensions=('.dat',), guixmlpath="gui/filebrowser.xml"):
+    def __init__(self, engine, file_selected, save_file=False, \
+                 select_dir=False, extensions=('.dat',), \
+                 gui_xml_path="gui/filebrowser.xml"):
         self.engine = engine
-        self.fileSelected = fileSelected
+        self.file_selected = file_selected
 
         self._widget = None
-        self.savefile = savefile
-        self.selectdir = selectdir
+        self.save_file = save_file
+        self.select_dir = select_dir
         
-        self.guixmlpath = guixmlpath
+        self.gui_xml_path = gui_xml_path
 
         self.extensions = extensions
         self.path = './saves/'
@@ -49,16 +52,17 @@ class FileBrowser(object):
         if self._widget:
             self._widget.show()
             return
-        self._widget = pychan.loadXML(self.guixmlpath)
+        self._widget = pychan.loadXML(self.gui_xml_path)
         self._widget.mapEvents({
             'dirList'       : self._setDirectory,
             'selectButton'  : self._selectFile,
             'closeButton'   : self._widget.hide
         })
         self._setDirectory()
-        if self.savefile:
+        if self.save_file:
             self._file_entry = widgets.TextField(name='saveField', text=u'')    
-            self._widget.findChild(name="fileColumn").addChild(self._file_entry)
+            self._widget.findChild(name="fileColumn").\
+                addChild(self._file_entry)
         self._widget.show()
 
     def _setDirectory(self):
@@ -77,21 +81,25 @@ class FileBrowser(object):
             fs_encoding = sys.getfilesystemencoding()
             if fs_encoding is None: fs_encoding = "ascii"
         
-            newList = []
+            new_list = []
             for i in list:
-                try: newList.append(unicode(i, fs_encoding))
+                try:
+                    new_list.append(unicode(i, fs_encoding))
                 except:
-                    newList.append(unicode(i, fs_encoding, 'replace'))
+                    new_list.append(unicode(i, fs_encoding, 'replace'))
                     print "WARNING: Could not decode item:", i
-            return newList
+            return new_list
             
         
 
         self.dir_list = []
         self.file_list = []
         
-        dir_list = ('..',) + filter(lambda d: not d.startswith('.'), self.engine.getVFS().listDirectories(self.path))
-        file_list = filter(lambda f: f.split('.')[-1] in self.extensions, self.engine.getVFS().listFiles(self.path))
+        dir_list = ('..',) + filter(lambda d: not d.startswith('.'), \
+                                    self.engine.getVFS().\
+                                    listDirectories(self.path))
+        file_list = filter(lambda f: f.split('.')[-1] in self.extensions, \
+                           self.engine.getVFS().listFiles(self.path))
                 
         self.dir_list = decodeList(dir_list)
         self.file_list = decodeList(file_list)
@@ -106,21 +114,22 @@ class FileBrowser(object):
         selection = self._widget.collectData('fileList')
         data = self._widget.collectData('saveField')
 
-        if self.savefile:
+        if self.save_file:
             if data:
                 if (data.split('.')[1] == 'dat'):
-                    self.fileSelected(self.path, u2s(self._widget.collectData('saveField')))
+                    self.file_selected(self.path, \
+                                u2s(self._widget.collectData('saveField')))
                 else:
                     self._warningMessage()
                 return
             
 
         if selection >= 0 and selection < len(self.file_list):
-            self.fileSelected(self.path, u2s(self.file_list[selection]))
+            self.file_selected(self.path, u2s(self.file_list[selection]))
             return
         
-        if self.selectdir:
-            self.fileSelected(self.path)
+        if self.select_dir:
+            self.file_selected(self.path)
             return
 
         print 'FileBrowser: error, no selection.'

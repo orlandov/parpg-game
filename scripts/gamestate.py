@@ -23,8 +23,8 @@ class GameState(object):
         """initialize attributes"""
         self.PC = None
         self.objects = {}
-        self.currentMap = None
-        self.currentMapName = None
+        self.current_map = None
+        self.current_map_name = None
         
     def getObjectsFromMap(self, map_id):
         """Gets all objects that are currently on the given map.

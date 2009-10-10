@@ -60,7 +60,7 @@ class Console:
         @param command: The command to run
         @return: The resultstring"""
 
-        self.app_listener.world.activeMap.toggle_renderer('GridRenderer')
+        self.app_listener.world.active_map.toggle_renderer('GridRenderer')
         return "Grid toggled"
 
     def handleRun(self, command):

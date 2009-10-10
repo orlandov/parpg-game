@@ -20,7 +20,6 @@ import pickle
 import sys
 from gamestate import GameState
 from objects import *
-from objectLoader import ObjectXMLParser
 from objects.action import *
 
 
@@ -81,7 +80,7 @@ class Engine:
     def load(self, path, filename):
         """Loads a saver from a file.
            @type path: string 
-           @param path: the path where the savefile is located
+           @param path: the path where the save file is located
            @type filename: string
            @param filename: the name of the file to load from
            @return: None"""
@@ -93,9 +92,9 @@ class Engine:
             return
         self.game_state = pickle.load(f)
         f.close()
-        if self.game_state.currentMap:
-            self.loadMap(self.game_state.currentMapName, \
-                         self.game_state.currentMap) 
+        if self.game_state.current_map:
+            self.loadMap(self.game_state.current_map_name, \
+                         self.game_state.current_map) 
 
     def createObject (self, layer, attributes, instance):
         """Create an object and add it to the current map.
@@ -132,7 +131,7 @@ class Engine:
            @return: None
         """
         # add to view data 
-        self.view.activeMap.addObject(pc.ID, instance)          
+        self.view.active_map.addObject(pc.ID, instance)          
         
         # sync with game data
         if self.game_state.PC is None:
@@ -155,7 +154,7 @@ class Engine:
         ref = self.game_state.getObjectById(obj.ID) 
         if ref is None:
             # no, add it to the game state
-            obj.map_id = self.game_state.currentMap
+            obj.map_id = self.game_state.current_map
             self.game_state.objects[obj.ID] = obj
         else:
             # yes, use the current game state data
@@ -164,7 +163,7 @@ class Engine:
             obj.gfx = ref.gfx  
             
         # add it to the view
-        self.view.activeMap.addObject(obj.ID, instance)          
+        self.view.active_map.addObject(obj.ID, instance)          
 
         if obj.trueAttr("NPC"):
             # create the agent
@@ -180,7 +179,7 @@ class Engine:
            @param ident: ID of object
            @rtype: boolean
            @return: Status of result (True/False)"""
-        for i in self.game_state.getObjectsFromMap(self.game_state.currentMap):
+        for i in self.game_state.getObjectsFromMap(self.game_state.current_map):
             if (i.ID == ident):
                 # we found a match
                 return i
@@ -247,15 +246,15 @@ class Engine:
            @type map_file: string
            @param map_file: Filename of map file to load
            @return: None"""
-        self.game_state.currentMap = map_file
-        self.game_state.currentMapName= map_name
+        self.game_state.current_map = map_file
+        self.game_state.current_map_name= map_name
         self.view.loadMap(map_name, str(map_file))
         self.view.setActiveMap(map_name)
 
         self.reset()
 
         # create the PC agent
-        self.view.activeMap.addPC(self.game_state.PC.behaviour.agent)
+        self.view.active_map.addPC(self.game_state.PC.behaviour.agent)
         self.game_state.PC.start()
 
 
@@ -269,20 +268,20 @@ class Engine:
         else:
             self.game_state.PC.walk(position)
 
-    def changeMap(self, mapName, mapFile, target_position):
+    def changeMap(self, map_name, mapFile, target_position):
         """Registers for a map change on the next pump().
            @type nameName: String
-           @param mapName: Id of the map to teleport to
+           @param map_name: Id of the map to teleport to
            @type mapFile: String
            @param mapFile: Filename of the map to teleport to
            @type target_position: Tuple
            @param target_position: Position of PC on target map.
            @return None"""
         # set the parameters for the map change if moving to a new map
-        print self.game_state.currentMapName
-        if mapName != self.game_state.currentMapName:
-            self.game_state.currentMapName = mapName
-            self.game_state.currentMap = mapFile
+        print self.game_state.current_map_name
+        if map_name != self.game_state.current_map_name:
+            self.game_state.current_map_name = map_name
+            self.game_state.current_map = mapFile
             self.target_position = target_position
             # issue the map change
             self.map_change = True
@@ -292,8 +291,8 @@ class Engine:
 
     def handleCommands(self):
         if self.map_change:
-            self.loadMap(self.game_state.currentMapName, \
-                         self.game_state.currentMap)
+            self.loadMap(self.game_state.current_map_name, \
+                         self.game_state.current_map)
             self.view.teleport(self.target_position)
             self.map_change = False
 

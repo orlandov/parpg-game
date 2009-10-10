@@ -15,7 +15,9 @@
 #   You should have received a copy of the GNU General Public License
 #   along with PARPG.  If not, see <http://www.gnu.org/licenses/>.
 
-import shutil, fife, pychan
+import shutil
+import fife
+import pychan
 import pychan.widgets as widgets
 from pychan.tools import callbackWithArguments as cbwa
 from scripts.filebrowser import FileBrowser
@@ -51,18 +53,19 @@ class Hud(object):
             'toggleInventoryButton': self.toggleInventoryButton,
         }
 
-        self.inventory = inventory.Inventory(self.engine, inv_model, inv_callbacks)
+        self.inventory = inventory.Inventory(self.engine, \
+                                             inv_model, inv_callbacks)
         self.refreshReadyImages()
 
-        self.saveGameCallback = callbacks['saveGame']
-        self.loadGameCallback = callbacks['loadGame']
-        self.quitCallback     = callbacks['quitGame']
+        self.save_game_callback = callbacks['saveGame']
+        self.load_game_callback = callbacks['loadGame']
+        self.quit_callback     = callbacks['quitGame']
 
         self.box_container = None
         self.examine_box = None
 
-        self.actionsBox = self.hud.findChild(name="actionsBox")
-        self.actionsText = []
+        self.actions_box = self.hud.findChild(name="actionsBox")
+        self.actions_text = []
         self.menu_displayed = False
         self.initializeHud()
         self.initializeMainMenu()
@@ -80,7 +83,8 @@ class Hud(object):
         # set HUD size accoriding to screen size
         screen_width = int(self.settings.readSetting('ScreenWidth'))
         self.hud.findChild(name="mainHudWindow").size = (screen_width, 65)
-        self.hud.findChild(name="inventoryButton").position = (screen_width-59, 7)
+        self.hud.findChild(name="inventoryButton").position = \
+                                                    (screen_width-59, 7)
         # add ready slots
         ready1 = self.hud.findChild(name='hudReady1')
         ready2 = self.hud.findChild(name='hudReady2')
@@ -108,16 +112,16 @@ class Hud(object):
 
     def refreshActionsBox(self):
         """Refresh the actions box so that it displays the contents of
-           self.actionsText
+           self.actions_text
            @return: None"""
-        self.actionsBox.items = self.actionsText
+        self.actions_box.items = self.actions_text
 
     def addAction(self, action):
         """Add an action to the actions box.
            @type action: string
            @param action: The text that you want to display in the actions box
            @return: None"""
-        self.actionsText.insert(0, action)
+        self.actions_text.insert(0, action)
         self.refreshActionsBox()
 
     def showHUD(self):
@@ -182,20 +186,22 @@ class Hud(object):
         help_events = {"closeButton":self.help_dialog.hide}
         self.help_dialog.mapEvents(help_events)
         main_help_text = u"Welcome to Post-Apocalyptic RPG or PARPG![br][br]"\
-        "This game is still in development, so please expect for there to be bugs"\
-        " and[br]feel free to tell us about them at http://www.forums.parpg.net.[br]"\
-        "This game uses a \"Point 'N' Click\" interface, which means that to move around,[br]"\
-        "just click where you would like to go and your character will move there.[br]"\
-        "PARPG also utilizes a context menu. To access this, just right click "\
-        "anywhere[br]on the screen and a menu will come up. This menu will change"\
-        " depending on[br]what you have clicked on, hence it's name \"context menu\".[br][br]"
+        "This game is still in development, so please expect for there to be "\
+        "bugs and[br]feel free to tell us about them at "\
+        "http://www.forums.parpg.net.[br]This game uses a "\
+        "\"Point 'N' Click\" interface, which means that to move around,[br]"\
+        "just click where you would like to go and your character will move "\
+        "there.[br]PARPG also utilizes a context menu. To access this, just "\
+        "right click anywhere[br]on the screen and a menu will come up. This "\
+        "menu will change depending on[br]what you have clicked on, hence "\
+        "it's name \"context menu\".[br][br]"
         
         k_text = u" Keybindings" 
-        k_text+="[br] A : Add a test action to the actions display"
-        k_text+="[br] I : Toggle the inventory screen"
-        k_text+="[br] F5 : Take a screenshot"
-        k_text+="[br]      (saves to <parpg>/screenshots/)"
-        k_text+="[br] Q : Quit the game"
+        k_text += "[br] A : Add a test action to the actions display"
+        k_text += "[br] I : Toggle the inventory screen"
+        k_text += "[br] F5 : Take a screenshot"
+        k_text += "[br]      (saves to <parpg>/screenshots/)"
+        k_text += "[br] Q : Quit the game"
         self.help_dialog.distributeInitialData({
                 "MainHelpText":main_help_text,
                 "KeybindText":k_text
@@ -218,53 +224,53 @@ class Hud(object):
         settings = self.engine.getSettings()
         current_fullscreen = settings.isFullScreen()
         settings.setFullScreen(True)
-        availableResolutions = settings.getPossibleResolutions()
+        available_resolutions = settings.getPossibleResolutions()
 
         # Filter too small resolutions
-        self.Resolutions=[]
-        for x in availableResolutions:
+        self.resolutions=[]
+        for x in available_resolutions:
             if x[0]>=1024 and x[1]>=768:
-                self.Resolutions.append(str(x[0])+'x'+str(x[1]))
+                self.resolutions.append(str(x[0])+'x'+str(x[1]))
 
         settings.setFullScreen(current_fullscreen)
-        self.RenderBackends = ['OpenGL', 'SDL']
-        self.renderNumber = 0
+        self.render_backends = ['OpenGL', 'SDL']
+        self.render_number = 0
         if (str(self.settings.readSetting('RenderBackend')) == "SDL"):
-            self.renderNumber = 1
-        initialVolume = float(self.settings.readSetting('InitialVolume'))
-        initialVolumeText = str('Initial Volume: %.0f%s' %
-                                (int(initialVolume*10), "%"))
+            self.render_number = 1
+        initial_volume = float(self.settings.readSetting('InitialVolume'))
+        initial_volume_text = str('Initial Volume: %.0f%s' %
+                                (int(initial_volume*10), "%"))
         self.options_menu.distributeInitialData({
-                'ResolutionBox': self.Resolutions,
-                'RenderBox': self.RenderBackends,
-                'InitialVolumeLabel' : initialVolumeText
+                'ResolutionBox': self.resolutions,
+                'RenderBox': self.render_backends,
+                'InitialVolumeLabel' : initial_volume_text
                 })
 
-        sFullscreen = self.settings.readSetting(name="FullScreen")
-        sSounds = self.settings.readSetting(name="PlaySounds")
-        sRender = self.renderNumber
-        sVolume = initialVolume
+        s_fullscreen = self.settings.readSetting(name="FullScreen")
+        s_sounds = self.settings.readSetting(name="PlaySounds")
+        s_render = self.render_number
+        s_volume = initial_volume
 
         screen_width = self.settings.readSetting(name="ScreenWidth")
         screen_height = self.settings.readSetting(name="ScreenHeight")
-        indexRes = str(screen_width + 'x' + screen_height)
+        index_res = str(screen_width + 'x' + screen_height)
         try:
-            sResolution = self.Resolutions.index(indexRes)
-            resolutionInList = True
+            s_resolution = self.resolutions.index(index_res)
+            resolution_in_list = True
         except:
-            resolutionInList = False
+            resolution_in_list = False
 
-        dataToDistribute = {
-                'FullscreenBox':int(sFullscreen), 
-                'SoundsBox':int(sSounds),
-                'RenderBox': sRender,
-                'InitialVolumeSlider':sVolume
+        data_to_distribute = {
+                'FullscreenBox':int(s_fullscreen), 
+                'SoundsBox':int(s_sounds),
+                'RenderBox': s_render,
+                'InitialVolumeSlider':s_volume
                 }
 
-        if (resolutionInList == True):
-            dataToDistribute['ResolutionBox'] = sResolution
+        if (resolution_in_list == True):
+            data_to_distribute['ResolutionBox'] = s_resolution
 
-        self.options_menu.distributeData(dataToDistribute)
+        self.options_menu.distributeData(data_to_distribute)
 
         self.options_menu.mapEvents(self.options_events)
 
@@ -272,9 +278,9 @@ class Hud(object):
         """ Called when the user wants to save the game.
             @return: None"""
         save_browser = FileBrowser(self.engine,
-                                   self.saveGameCallback,
-                                   savefile=True,
-                                   guixmlpath="gui/savebrowser.xml",
+                                   self.save_game_callback,
+                                   save_file=True,
+                                   gui_xml_path="gui/savebrowser.xml",
                                    extensions = ('.dat'))
         save_browser.showBrowser()
             
@@ -287,16 +293,17 @@ class Hud(object):
         """ Called when the user wants to load a game.
             @return: None"""
         load_browser = FileBrowser(self.engine,
-                                   self.loadGameCallback,
-                                   savefile=False,
-                                   guixmlpath='gui/loadbrowser.xml',
+                                   self.load_game_callback,
+                                   save_file=False,
+                                   gui_xml_path='gui/loadbrowser.xml',
                                    extensions=('.dat'))
         load_browser.showBrowser()
     
     def initializeQuitDialog(self):
         """Creates the quit confirmation dialog
            @return: None"""
-        self.quitWindow = pychan.widgets.Window(title=unicode("Quit?"),min_size=(200,0))
+        self.quit_window = pychan.widgets.Window(title=unicode("Quit?"), \
+                                                 min_size=(200,0))
 
         hbox = pychan.widgets.HBox()
         are_you_sure = "Are you sure you want to quit?"
@@ -310,22 +317,22 @@ class Hud(object):
                                           min_size=(90,20),
                                           max_size=(90,20))
 
-        self.quitWindow.addChild(label)
+        self.quit_window.addChild(label)
         hbox.addChild(yes_button)
         hbox.addChild(no_button)
-        self.quitWindow.addChild(hbox)
+        self.quit_window.addChild(hbox)
 
-        events_to_map = { "yes_button": self.quitCallback,
-                          "no_button":  self.quitWindow.hide }
+        events_to_map = { "yes_button": self.quit_callback,
+                          "no_button":  self.quit_window.hide }
         
-        self.quitWindow.mapEvents(events_to_map)
+        self.quit_window.mapEvents(events_to_map)
 
 
     def quitGame(self):
         """Called when user requests to quit game.
            @return: None"""
 
-        self.quitWindow.show()
+        self.quit_window.show()
 
     def toggleInventoryButton(self):
         """Manually toggles the inventory button.
@@ -376,10 +383,11 @@ class Hud(object):
 
         # when we click the toggle button don't change the image
         events_to_map["inventoryButton"] = cbwa(self.toggleInventory, False)
-        events_to_map["saveButton"] = self.saveGame
-        events_to_map["loadButton"] = self.loadGame
+        events_to_map["saveButton"] = self.save_game_callback
+        events_to_map["loadButton"] = self.load_game_callback
 
-        hud_ready_buttons = ["hudReady1", "hudReady2", "hudReady3", "hudReady4"]
+        hud_ready_buttons = ["hudReady1", "hudReady2", \
+                             "hudReady3", "hudReady4"]
 
         for item in hud_ready_buttons:
             events_to_map[item] = cbwa(self.readyAction, item)
@@ -389,8 +397,8 @@ class Hud(object):
         menu_events = {}
         menu_events["newButton"] = self.newGame
         menu_events["quitButton"] = self.quitGame
-        menu_events["saveButton"] = self.saveGame
-        menu_events["loadButton"] = self.loadGame
+        menu_events["saveButton"] = self.save_game_callback
+        menu_events["loadButton"] = self.load_game_callback
         self.main_menu.mapEvents(menu_events)
 
     def updateVolumeText(self):
@@ -407,20 +415,21 @@ class Hud(object):
            changes to take effect.
            @return: None"""
         require_restart_dialog = pychan.loadXML('gui/hud_require_restart.xml')
-        require_restart_dialog.mapEvents({'okButton':require_restart_dialog.hide})
+        require_restart_dialog.mapEvents(\
+                                {'okButton':require_restart_dialog.hide})
         require_restart_dialog.show()
 
     def applyOptions(self):
         """Apply the current options.
            @return: None"""
         # At first no restart is required
-        self.requireRestart = False
+        self.require_restart = False
 
         # get the current values of each setting from the options menu
         enable_fullscreen = self.options_menu.collectData('FullscreenBox')
         enable_sound = self.options_menu.collectData('SoundsBox')
         screen_resolution = self.options_menu.collectData('ResolutionBox')
-        partition = self.Resolutions[screen_resolution].partition('x')
+        partition = self.resolutions[screen_resolution].partition('x')
         screen_width = partition[0]
         screen_height = partition[2]
         render_backend = self.options_menu.collectData('RenderBox')
@@ -428,14 +437,14 @@ class Hud(object):
         initial_volume = "%.1f" % initial_volume
 
         # get the options that are being used right now from settings.xml
-        sFullscreen = self.settings.readSetting('FullScreen')
-        sSound = self.settings.readSetting('PlaySounds')
-        sRender = self.settings.readSetting('RenderBackend')
-        sVolume = self.settings.readSetting('InitialVolume')
+        s_fullscreen = self.settings.readSetting('FullScreen')
+        s_sounds = self.settings.readSetting('PlaySounds')
+        s_render = self.settings.readSetting('RenderBackend')
+        s_volume = self.settings.readSetting('InitialVolume')
 
-        sScreenHeight = self.settings.readSetting('ScreenHeight')
-        sScreenWidth = self.settings.readSetting('ScreenWidth')
-        sResolution = sScreenWidth + 'x' + sScreenHeight
+        s_screen_height = self.settings.readSetting('ScreenHeight')
+        s_screen_width = self.settings.readSetting('ScreenWidth')
+        s_resolution = s_screen_width + 'x' + s_screen_height
 
         # On each:
         # - Check to see whether the option within the xml matches the
@@ -444,18 +453,18 @@ class Hud(object):
         #   to be what is within the options menu
         # - Require a restart
 
-        if (int(enable_fullscreen) != int(sFullscreen)):
+        if (int(enable_fullscreen) != int(s_fullscreen)):
             self.setOption('FullScreen', int(enable_fullscreen))
-            self.requireRestart = True
+            self.require_restart = True
             
-        if (int(enable_sound) != int(sSound)):
+        if (int(enable_sound) != int(s_sounds)):
             self.setOption('PlaySounds', int(enable_sound))
-            self.requireRestart = True
+            self.require_restart = True
 
-        if (screen_resolution != sResolution):
+        if (screen_resolution != s_resolution):
             self.setOption('ScreenWidth', int(screen_width))
             self.setOption('ScreenHeight', int(screen_height))
-            self.requireRestart = True
+            self.require_restart = True
 
         # Convert the number from the list of render backends to
         # the string that FIFE wants for its settings.xml
@@ -464,20 +473,20 @@ class Hud(object):
         else:
             render_backend = 'SDL'
 
-        if (render_backend != str(sRender)):
+        if (render_backend != str(s_render)):
             self.setOption('RenderBackend', render_backend)
-            self.requireRestart = True
+            self.require_restart = True
 
-        if (initial_volume != float(sVolume)):
+        if (initial_volume != float(s_volume)):
             self.setOption('InitialVolume', initial_volume)
-            self.requireRestart = True
+            self.require_restart = True
         
         # Write all the settings to settings.xml
         self.settings.tree.write('settings.xml')
         
         # If the changes require a restart, popup the dialog telling
         # the user to do so
-        if (self.requireRestart):
+        if (self.require_restart):
             self.requireRestartDialog()
         # Once we are done, we close the options menu
         self.options_menu.hide()
@@ -525,11 +534,12 @@ class Hud(object):
             # otherwise create it then show it
             data = ["dagger01", "empty", "empty", "empty", "empty",
                     "empty", "empty", "empty", "empty"]
-            self.box_container = ContainerGUI(self.engine, unicode(title), data)
-            def close_and_delete():
+            self.box_container = ContainerGUI(self.engine, \
+                                              unicode(title), data)
+            def closeAndDelete():
                 self.hideContainer()
-            events = {'takeAllButton':close_and_delete,
-                      'closeButton':close_and_delete}
+            events = {'takeAllButton':closeAndDelete,
+                      'closeButton':closeAndDelete}
             self.box_container.container_gui.mapEvents(events)
             self.box_container.showContainer()
 
@@ -548,7 +558,7 @@ class Hud(object):
            @param desc: The main body of the examine box
            @return: None"""
 
-        if self.examine_box:
+        if self.examine_box is not None:
             self.examine_box.closePopUp()
         self.examine_box = ExaminePopup(self.engine, title, desc)
         self.examine_box.showPopUp()

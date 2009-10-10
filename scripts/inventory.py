@@ -15,7 +15,11 @@
 #   You should have received a copy of the GNU General Public License
 #   along with PARPG.  If not, see <http://www.gnu.org/licenses/>.
 
-import sys, os, fife, fifelog, pychan
+import sys
+import os
+import fife
+import fifelog
+import pychan
 from scripts import drag_drop_data as data_drag
 from pychan.tools import callbackWithArguments as cbwa
 from scripts.items import item_image_dict
@@ -27,8 +31,9 @@ class Inventory(object):
            @type engine: fife.Engine
            @param engine: An instance of the fife engine
            @type items: dict
-           @param items: A dictionary for every slot that goes '{slot:item, slot:item}'
-                         if a slot is not included in the dict, it is assumed to be empty
+           @param items: A dictionary for every slot that goes '{slot:item, 
+                         slot:item}' if a slot is not included in the dict,
+                         it is assumed to be empty
            @type callbacks: dict
            @param callbacks: a dict of callbacks
                refreshReadyImages:
@@ -44,7 +49,7 @@ class Inventory(object):
         self.original_cursor_id = self.engine.getCursor().getId()
         # TODO: remove hard-coded string?
         self.inventory = pychan.loadXML("gui/inventory.xml")
-        self.inventoryShown = False 
+        self.inventory_shown = False 
         self.events_to_map = {}
         # the images that should be used for the buttons when they are "empty"
         self.empty_images = {'A1':'gui/inv_images/inv_backpack.png',
@@ -111,7 +116,7 @@ class Inventory(object):
         for button in self.buttons:
             # make every button's callback be self.dragDrop
             self.events_to_map[button] = cbwa(self.dragDrop, button)
-            ch = self.inventory.findChild(name = button)
+            ch = self.inventory.findChild(name=button)
             # make every slot's item be none if it has not already been set
             if button not in items:
                 ch.item = ""
@@ -130,7 +135,7 @@ class Inventory(object):
            @return: None"""
         self.closeInventory()
         self.toggleInventoryButtonCallback()
-        self.inventoryShown = False
+        self.inventory_shown = False
 
     def toggleInventory(self, toggleImage=True):
         """Pause the game and enter the inventory screen, or close the
@@ -142,12 +147,12 @@ class Inventory(object):
                explicitly. Clicking on the Hud inventory button toggles the
                image implicitly, so we don't change it.
            @return: None"""
-        if not self.inventoryShown:
+        if not self.inventory_shown:
             self.showInventory()
-            self.inventoryShown = True
+            self.inventory_shown = True
         else:
             self.closeInventory()
-            self.inventoryShown = False
+            self.inventory_shown = False
 
         if toggleImage:
             self.toggleInventoryButtonCallback()
@@ -157,7 +162,7 @@ class Inventory(object):
            @return: None"""
         self.inventory.show()
 
-    def setMouseCursor(self, image, dummy_image, type = "native"): 
+    def setMouseCursor(self, image, dummy_image, type="native"): 
         """Set the mouse cursor to an image.
            @type image: string
            @param image: The image you want to set the cursor to
@@ -285,7 +290,8 @@ class Inventory(object):
 
     def getItems(self):
         """
-        Get the items in the inventory slots. If there is no item in the slot, it is skipped
+        Get the items in the inventory slots. If there is no item in the slot,
+        it is skipped
         
         @rtype: dict
         @return: The items in the inventory

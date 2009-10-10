@@ -47,26 +47,26 @@ class ContainerGUI():
         
         
         # Prepare slots 1 through 9
-        dataIsList = False
-        emptyImage = "gui/inv_images/inv_backpack.png"
-        slotCount = 9
+        data_is_list = False
+        empty_image = "gui/inv_images/inv_backpack.png"
+        slot_count = 9
         self.empty_images = dict()
         # Did this step because I'm unsure which is more costly , to check the
         # type of object or the value of boolean object. Change as you see fit.
         if type(data) == list:
-            dataIsList = True
-        for counter in range(1, slotCount):
-            slotName = "Slot%i" % counter
-            selectedData = None
+            data_is_list = True
+        for counter in range(1, slot_count):
+            slot_name = "Slot%i" % counter
+            selected_data = None
             
-            if dataIsList:
-                selectedData = data[counter-1]
+            if data_is_list:
+                selected_data = data[counter-1]
             else:
-                selectedData = data
+                selected_data = data
             
-            self.setContainerImage(slotName, item_image_dict[selectedData])
-            self.container_gui.findChild(name=slotName).item = selectedData
-            self.empty_images[slotName] = emptyImage
+            self.setContainerImage(slot_name, item_image_dict[selected_data])
+            self.container_gui.findChild(name=slot_name).item = selected_data
+            self.empty_images[slot_name] = empty_image
         
         
         self.events_to_map = {}
@@ -116,7 +116,7 @@ class ContainerGUI():
         if self.container_gui.isVisible():
             self.container_gui.hide()
         
-    def setMouseCursor(self, image, dummy_image, type = "native"): 
+    def setMouseCursor(self, image, dummy_image, type="native"): 
         """Set the mouse cursor to an image.
            @type image: string
            @param image: The image you want to set the cursor to
@@ -253,7 +253,8 @@ class ExaminePopup():
         @type engine: fife.Engine
         @param engine: an instance of the fife engine
         @type object_title: string
-        @param object_title: The title for the window, probably should just be the name of the object
+        @param object_title: The title for the window, probably should just be
+            the name of the object
         @type desc: string
         @param desc: The description of the object
         @return: None
@@ -261,24 +262,28 @@ class ExaminePopup():
         self.engine = engine
         pychan.init(self.engine, debug=True)
 
-        self.examineWindow = pychan.widgets.Window(title=unicode(object_title),
-                                                   position_technique="center:center",
-                                                   min_size=(175,175))
+        self.examine_window = pychan.widgets.\
+                                Window(title=unicode(object_title),
+                                       position_technique="center:center",
+                                       min_size=(175,175))
 
         self.scroll = pychan.widgets.ScrollArea(name='scroll', size=(150,150))
-        self.description = pychan.widgets.Label(name='descText', text=unicode(desc), wrap_text=True)
+        self.description = pychan.widgets.Label(name='descText',
+                                                text=unicode(desc),
+                                                wrap_text=True)
         self.description.max_width = 170
         self.scroll.addChild(self.description)
-        self.examineWindow.addChild(self.scroll)
+        self.examine_window.addChild(self.scroll)
         
-        self.close_button = pychan.widgets.Button(name='closeButton', text=unicode('Close'))
-        self.examineWindow.addChild(self.close_button)
+        self.close_button = pychan.widgets.Button(name='closeButton',
+                                                  text=unicode('Close'))
+        self.examine_window.addChild(self.close_button)
 
-        self.examineWindow.mapEvents({'closeButton':self.examineWindow.hide})
+        self.examine_window.mapEvents({'closeButton':self.examine_window.hide})
 
     def closePopUp(self):
-        if self.examineWindow.isVisible():
-            self.examineWindow.hide()
+        if self.examine_window.isVisible():
+            self.examine_window.hide()
     
     def showPopUp(self):
-        self.examineWindow.show()
+        self.examine_window.show()

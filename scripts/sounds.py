@@ -31,12 +31,12 @@ class SoundEngine:
         self.music_on = False
         self.music_init = False
     
-    def playMusic(self, sfile = None):
+    def playMusic(self, sfile=None):
         """Play music, with the given file if passed
            @type sfile: string
            @param sfile: Filename to play
            @return: None"""
-        if(sfile != None):
+        if(sfile is not None):
             # setup the new sound
             sound = self.engine.getSoundClipPool().addResourceFromFile(sfile)
             self.music.setSoundClip(sound)
@@ -65,5 +65,5 @@ class SoundEngine:
            @type volume: integer
            @param volume: The volume wanted, 0 to 100
            @return: None"""
-        self.sound_engine.setVolume(0.01*volume)
+        self.sound_engine.setVolume(0.01 * volume)
 

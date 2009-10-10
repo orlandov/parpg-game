@@ -15,7 +15,8 @@
 #   You should have received a copy of the GNU General Public License
 #   along with PARPG.  If not, see <http://www.gnu.org/licenses/>.
 
-import fife, time
+import time
+import fife
 import pychan
 from sounds import SoundEngine
 from datetime import date
@@ -46,10 +47,10 @@ class World(EventListenerBase):
            @type engine: fife.Engine
            @param engine: A fife.Engine instance
            @return: None"""
-        super(World, self).__init__(engine, regMouse = True, regKeys = True)
+        super(World, self).__init__(engine, regMouse=True, regKeys=True)
         # self.engine is a fife.Engine object, not an Engine object
         self.engine = engine
-        self.eventmanager = engine.getEventManager()
+        self.event_manager = engine.getEventManager()
         self.quitFunction = None
         
         # self.data is an engine.Engine object, but is set in run.py
@@ -58,7 +59,7 @@ class World(EventListenerBase):
         self.obj_hash={}
 
         # self.map is a Map object, set to none here
-        self.activeMap = None
+        self.active_map = None
         self.maps = {}
 
         # setup the inventory model
@@ -96,32 +97,32 @@ class World(EventListenerBase):
            @return: None"""
         self.data.load(*args, **kwargs)
 
-    def loadMap(self, mapname, filename):
+    def loadMap(self, map_name, filename):
         """Loads a map and stores it under the given name in the maps list.
-           @type mapname: text
-           @param mapname: The name of the map to load 
+           @type map_name: text
+           @param map_name: The name of the map to load 
            @type filename: text
            @param filename: File which contains the map to be loaded
            @return: None
         """
-        if not mapname in self.maps:
+        if not map_name in self.maps:
             """Need to set active map before we load it because the map 
             loader uses call backs that expect to find an active map. 
             This needs to be reworked.
             """
             map = Map(self.engine, self.data)
-            self.maps[mapname] = map        
-            self.setActiveMap(mapname)
+            self.maps[map_name] = map        
+            self.setActiveMap(map_name)
             map.load(filename)
     
-    def setActiveMap(self, mapname):
+    def setActiveMap(self, map_name):
         """Sets the active map that is to be rendered.
-           @type mapname: text
-           @param mapname: The name of the map to load 
+           @type map_name: text
+           @param map_name: The name of the map to load 
            @return: None
         """
-        self.activeMap = self.maps[mapname]
-        self.activeMap.makeActive()
+        self.active_map = self.maps[map_name]
+        self.active_map.makeActive()
 
     def displayObjectText(self, obj, text):
         """Display on screen the text of the object over the object.
@@ -139,43 +140,45 @@ class World(EventListenerBase):
            @param evt: The event that fife caught
            @return: None"""
         key = evt.getKey()
-        keyval = key.getValue()
+        key_val = key.getValue()
 
-        if(keyval == key.Q):
+        if(key_val == key.Q):
             # we need to quit the game
             self.hud.quitGame()
-        if(keyval == key.T):
-            self.activeMap.toggle_renderer('GridRenderer')
-        if(keyval == key.F1):
+        if(key_val == key.T):
+            self.active_map.toggle_renderer('GridRenderer')
+        if(key_val == key.F1):
             # display the help screen and pause the game
             self.hud.displayHelp()
-        if(keyval == key.F5):
+        if(key_val == key.F5):
             # logic would say we use similar code to above and toggle
             # logic here does not work, my friend :-(
             self.cord_render.setEnabled(not self.cord_render.isEnabled())
-        if(keyval == key.F7):
+        if(key_val == key.F7):
             # F7 saves a screenshot to fife/clients/parpg/screenshots
-            t = "screenshots/screen-%s-%s.png" % (date.today().strftime('%Y-%m-%d'),
-                                                  time.strftime('%H-%M-%S'))
+            t = "screenshots/screen-%s-%s.png" % \
+                    (date.today().strftime('%Y-%m-%d'),\
+                    time.strftime('%H-%M-%S'))
             print "PARPG: Saved:",t
             self.engine.getRenderBackend().captureScreen(t)
-        if(keyval == key.F10):
+        if(key_val == key.F10):
             # F10 shows/hides the console
             self.engine.getGuiManager().getConsole().toggleShowHide()
-        if(keyval == key.I):
+        if(key_val == key.I):
             # I opens and closes the inventory
             self.hud.toggleInventory()
-        if(keyval == key.A):
+        if(key_val == key.A):
             # A adds a test action to the action box
-            # The test actions will follow this format: Action 1, Action 2, etc.
+            # The test actions will follow this format: Action 1,
+            # Action 2, etc.
             self.hud.addAction("Action " + str(self.action_number))
             self.action_number += 1
-        if(keyval == key.ESCAPE):
+        if(key_val == key.ESCAPE):
             # Escape brings up the main menu
             self.hud.displayMenu()
             # Hide the quit menu 
-            self.hud.quitWindow.hide()
-        if(keyval == key.M):
+            self.hud.quit_window.hide()
+        if(key_val == key.M):
             self.sounds.toggleMusic()
 
     def mouseReleased(self, evt):
@@ -185,13 +188,15 @@ class World(EventListenerBase):
            @type evt: fife.event
            @param evt: The event that fife caught
            @return: None"""
-        self.hud.hideContextMenu() # hide the context menu in case it is displayed
+        self.hud.hideContextMenu()
         scr_point = fife.ScreenPoint(evt.getX(), evt.getY())
         if(evt.getButton() == fife.MouseEvent.LEFT):
             self.data.handleMouseClick(self.getCoords(scr_point))      
         elif(evt.getButton() == fife.MouseEvent.RIGHT):
             # is there an object here?
-            instances = self.activeMap.cameras['main'].getMatchingInstances(scr_point, self.activeMap.agent_layer)
+            instances = self.active_map.cameras['main'].\
+                            getMatchingInstances(scr_point, \
+                                                 self.active_map.agent_layer)
             info = None
             for inst in instances:
                 # check to see if this is an active item
@@ -200,8 +205,10 @@ class World(EventListenerBase):
                     info = self.data.getItemActions(inst.getId())
                     break
                 
-            # take the menu items returned by the engine or show a default menu if no items    
-            data = info or [["Walk", "Walk here", self.onWalk, self.getCoords(scr_point)]]
+            # take the menu items returned by the engine or show a
+            # default menu if no items    
+            data = info or \
+                [["Walk", "Walk here", self.onWalk, self.getCoords(scr_point)]]
             # show the menu
             self.hud.showContextMenu(data, (scr_point.x, scr_point.y))
 
@@ -220,7 +227,7 @@ class World(EventListenerBase):
            @return: fife.Location
         """
         coord = fife.DoublePoint3D(float(position[0]), float(position[1]), 0)
-        location = fife.Location(self.activeMap.agent_layer)
+        location = fife.Location(self.active_map.agent_layer)
         location.setMapCoordinates(coord)
         self.data.game_state.PC.teleport(location)
 
@@ -230,21 +237,23 @@ class World(EventListenerBase):
            @param evt: The event that fife caught
            @return: None"""
         click = fife.ScreenPoint(evt.getX(), evt.getY())
-        i=self.activeMap.cameras['main'].getMatchingInstances(click, self.activeMap.agent_layer)
+        i=self.active_map.cameras['main'].getMatchingInstances(click, \
+                                                self.active_map.agent_layer)
         # no object returns an empty tuple
         if(i != ()):
             for obj in i:
                 # check to see if this in our list at all
                 if(self.data.objectActive(obj.getId())):
                     # yes, so outline 
-                    self.activeMap.outline_render.addOutlined(obj, 0, 137, 255, 2)
+                    self.active_map.outline_render.addOutlined(obj, 0, \
+                                                               137, 255, 2)
                     # get the text
                     item = self.data.objectActive(obj.getId())
-                    if(item):
+                    if(item is not None):
                         self.displayObjectText(obj, item.name)
         else:
             # erase the outline
-            self.activeMap.outline_render.removeAllOutlines()
+            self.active_map.outline_render.removeAllOutlines()
 
     def getCoords(self, click):
         """Get the map location x, y cords from the screen co-ords
@@ -252,9 +261,9 @@ class World(EventListenerBase):
            @param click: Screen co-ords
            @rtype: fife.Location
            @return: The map co-ords"""
-        coord = self.activeMap.cameras["main"].toMapCoordinates(click, False)
+        coord = self.active_map.cameras["main"].toMapCoordinates(click, False)
         coord.z = 0
-        location = fife.Location(self.activeMap.agent_layer)
+        location = fife.Location(self.active_map.agent_layer)
         location.setMapCoordinates(coord)
         return location
 
