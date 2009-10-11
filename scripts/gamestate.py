@@ -23,7 +23,7 @@ class GameState(object):
         """initialize attributes"""
         self.PC = None
         self.objects = {}
-        self.current_map = None
+        self.current_map_file = None
         self.current_map_name = None
         
     def getObjectsFromMap(self, map_id):
@@ -31,13 +31,17 @@ class GameState(object):
            @type map: String
            @param map: The map name.
            @returns: The list of objects on this map."""
-        return [i for i in self.objects.values() if i.map_id == map_id]
+        return [i for i in self.objects[map_id].values() if map_id in self.objects]
     
-    def getObjectById(self, id):
-        """Gets an object by it's id
-           @type id: String
-           @param id: The id of the object.
+    def getObjectById(self, obj_id, map_id):
+        """Gets an object by its object id and map id
+           @type obj_id: String
+           @param obj_id: The id of the object.
+           @type map_id: String
+           @param map_id: It id of the map containing the object.
            @returns: The object or None."""
-        if id in self.objects:
-            return self.objects[id]
+        if not map_id in self.objects:
+            self.objects[map_id] = {}
+        if obj_id in self.objects[map_id]:
+            return self.objects[map_id][obj_id]
 

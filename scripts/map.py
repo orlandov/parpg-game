@@ -112,8 +112,10 @@ class Map(fife.MapChangeListener):
            @type agent: Fife.instance of PC
            @return: None"""
         # actually this is real easy, we just have to
-        # attach the main camera to the PC
-        self.cameras['main'].attach(agent)
+        # attach the main camera to the PC, if a camera
+        # was already used, we simply recycle it. 
+        if self.cameras['main'].getAttached() == None:
+            self.cameras['main'].attach(agent)
 
     def addObject(self, name, obj):
         """Add an object to this map0
@@ -131,3 +133,4 @@ class Map(fife.MapChangeListener):
            @return: None"""
         renderer = self.cameras['main'].getRenderer(str(r_name))
         renderer.setEnabled(not renderer.isEnabled())
+

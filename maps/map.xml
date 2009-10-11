@@ -1974,7 +1974,7 @@
 
 			<!-- A sample door -->
 			<i x="-2.0" o="shanty-door" z="0.0" y="6.0" r="0" id="shanty-door01" object_type="ShantyDoor" is_open="False"
-				name="Shanty Door" text="Looks like the entrance to the building." target_map_name="main-map" target_map="maps/map.xml"
+				name="Shanty Door" text="Looks like the entrance to the building." target_map_name="map2" target_map="maps/map2.xml"
 				target_x="10.0" target_y="10.0"></i>
 
 		</instances>

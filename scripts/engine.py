@@ -31,7 +31,7 @@ class Engine:
        function heavy controller."""
     
     def __init__(self, view):
-        """Initialise the instance.
+        """Initialize the instance.
            @type view: world
            @param view: A world instance
            @return: None"""
@@ -41,6 +41,8 @@ class Engine:
         self.game_state = GameState()
         self.pc_run = 1
         self.target_position = None
+        self.target_map_name = None
+        self.target_map_file = None
     def reset(self):
         """Clears the data on a map reload so we don't have objects/npcs from
            other maps hanging around.
@@ -94,7 +96,7 @@ class Engine:
         f.close()
         if self.game_state.current_map:
             self.loadMap(self.game_state.current_map_name, \
-                         self.game_state.current_map) 
+                         self.game_state.current_map_file) 
 
     def createObject (self, layer, attributes, instance):
         """Create an object and add it to the current map.
@@ -130,15 +132,14 @@ class Engine:
            @param instance: FIFE instance of PC
            @return: None
         """
-        # add to view data 
+        # If this map has already a PC
         self.view.active_map.addObject(pc.ID, instance)          
         
-        # sync with game data
-        if self.game_state.PC is None:
-            self.game_state.PC = pc
+        # For now we copy the PC, in the future we will need to copy
+        # PC specifics between the different PC's
+        self.game_state.PC = pc
             
         self.game_state.PC.setup()
-
 
     def addObject(self, layer, obj, instance):
         """Adds an object to the map.
@@ -148,14 +149,14 @@ class Engine:
            @param obj: corresponding object class
            @type instance: fife.Instance
            @param instance: FIFE instance of object
-           @return: Nothing
+           @return: None
         """
-        
-        ref = self.game_state.getObjectById(obj.ID) 
+
+        ref = self.game_state.getObjectById(obj.ID, \
+                                            self.game_state.current_map_name) 
         if ref is None:
             # no, add it to the game state
-            obj.map_id = self.game_state.current_map
-            self.game_state.objects[obj.ID] = obj
+            self.game_state.objects[self.game_state.current_map_name][obj.ID] = obj
         else:
             # yes, use the current game state data
             obj.X = ref.X
@@ -179,7 +180,7 @@ class Engine:
            @param ident: ID of object
            @rtype: boolean
            @return: Status of result (True/False)"""
-        for i in self.game_state.getObjectsFromMap(self.game_state.current_map):
+        for i in self.game_state.getObjectsFromMap(self.game_state.current_map_name):
             if (i.ID == ident):
                 # we found a match
                 return i
@@ -194,7 +195,8 @@ class Engine:
            @return: List of text and callbacks"""
         actions=[]
         # note: ALWAYS check NPC's first!
-        obj = self.game_state.getObjectById(obj_id)
+        obj = self.game_state.getObjectById(obj_id, \
+                                            self.game_state.current_map_name)
         
         if obj is not None:
             if obj.trueAttr("NPC"):
@@ -231,7 +233,8 @@ class Engine:
         """ Starts the PC talking to an NPC. """
         # TODO: work more on this when we get NPCData and HeroData straightened
         # out
-        npc = self.game_state.getObjectById(npcInfo.ID)
+        npc = self.game_state.getObjectById(npcInfo.ID, \
+                                            self.game_state.current_map_name)
         self.game_state.PC.approach([npc.getLocation().\
                                      getLayerCoordinates().x, \
                                      npc.getLocation().\
@@ -239,24 +242,21 @@ class Engine:
                                      TalkAction(self, npc))
 
     def loadMap(self, map_name, map_file):
-        """THIS FUNCTION IS BROKEN. DO NOT USE IT YET
-           Load a new map.
+        """Load a new map.
            @type map_name: string
            @param map_name: Name of the map to load
            @type map_file: string
            @param map_file: Filename of map file to load
            @return: None"""
-        self.game_state.current_map = map_file
-        self.game_state.current_map_name= map_name
+        self.game_state.current_map_file = map_file
+        self.game_state.current_map_name = map_name
         self.view.loadMap(map_name, str(map_file))
         self.view.setActiveMap(map_name)
-
         self.reset()
 
         # create the PC agent
         self.view.active_map.addPC(self.game_state.PC.behaviour.agent)
         self.game_state.PC.start()
-
 
     def handleMouseClick(self,position):
         """Code called when user left clicks the screen.
@@ -268,20 +268,19 @@ class Engine:
         else:
             self.game_state.PC.walk(position)
 
-    def changeMap(self, map_name, mapFile, target_position):
+    def changeMap(self, map_name, map_file, target_position):
         """Registers for a map change on the next pump().
-           @type nameName: String
+           @type name_name: String
            @param map_name: Id of the map to teleport to
-           @type mapFile: String
-           @param mapFile: Filename of the map to teleport to
+           @type map_file: String
+           @param map_file: Filename of the map to teleport to
            @type target_position: Tuple
            @param target_position: Position of PC on target map.
            @return None"""
         # set the parameters for the map change if moving to a new map
-        print self.game_state.current_map_name
         if map_name != self.game_state.current_map_name:
-            self.game_state.current_map_name = map_name
-            self.game_state.current_map = mapFile
+            self.target_map_name = map_name
+            self.target_map_file = map_file
             self.target_position = target_position
             # issue the map change
             self.map_change = True
@@ -291,8 +290,7 @@ class Engine:
 
     def handleCommands(self):
         if self.map_change:
-            self.loadMap(self.game_state.current_map_name, \
-                         self.game_state.current_map)
+            self.loadMap(self.target_map_name, self.target_map_file)
             self.view.teleport(self.target_position)
             self.map_change = False
 
