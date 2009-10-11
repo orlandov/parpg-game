@@ -49,10 +49,10 @@ class ApplicationListener(eventlistenerbase.EventListenerBase):
            @type model: engine.Engine
            @param model: an instance of PARPG's engine"""
         super(ApplicationListener, self).__init__(engine,
-                                                  regKeys=True,regCmd=True,
-                                                  regMouse=False, 
-                                                  regConsole=True,
-                                                  regWidget=True)
+                                                  reg_keys=True,reg_cmd=True,
+                                                  reg_mouse=False, 
+                                                  reg_console=True,
+                                                  reg_widget=True)
         self.engine = engine
         self.world = world
         self.model = model
@@ -109,25 +109,25 @@ class PARPG(ApplicationBase):
            @return: None"""
         import settings
         self.settings = settings
-        eSet=self.engine.getSettings()
-        eSet.setDefaultFontGlyphs(str(TDS.readSetting("FontGlyphs",
+        e_set = self.engine.getSettings()
+        e_set.setDefaultFontGlyphs(str(TDS.readSetting("FontGlyphs",
                                                       strip=False)))
-        eSet.setDefaultFontPath(str(TDS.readSetting("Font")))
-        eSet.setDefaultFontSize(int(TDS.readSetting("FontSize", default=12)))
-        eSet.setBitsPerPixel(int(TDS.readSetting("BitsPerPixel")))
-        eSet.setInitialVolume(float(TDS.readSetting("InitialVolume")))
-        eSet.setSDLRemoveFakeAlpha(int(TDS.readSetting("SDLRemoveFakeAlpha")))
-        eSet.setScreenWidth(int(TDS.readSetting("ScreenWidth")))
-        eSet.setScreenHeight(int(TDS.readSetting("ScreenHeight")))
-        eSet.setRenderBackend(str(TDS.readSetting("RenderBackend")))
-        eSet.setFullScreen(int(TDS.readSetting("FullScreen")))
+        e_set.setDefaultFontPath(str(TDS.readSetting("Font")))
+        e_set.setDefaultFontSize(int(TDS.readSetting("FontSize", default=12)))
+        e_set.setBitsPerPixel(int(TDS.readSetting("BitsPerPixel")))
+        e_set.setInitialVolume(float(TDS.readSetting("InitialVolume")))
+        e_set.setSDLRemoveFakeAlpha(int(TDS.readSetting("SDLRemoveFakeAlpha")))
+        e_set.setScreenWidth(int(TDS.readSetting("ScreenWidth")))
+        e_set.setScreenHeight(int(TDS.readSetting("ScreenHeight")))
+        e_set.setRenderBackend(str(TDS.readSetting("RenderBackend")))
+        e_set.setFullScreen(int(TDS.readSetting("FullScreen")))
         try:
-            eSet.setWindowTitle(str(TDS.readSetting("WindowTitle")))
-            eSet.setWindowIcon(str(TDS.readSetting("WindowIcon")))
+            e_set.setWindowTitle(str(TDS.readSetting("WindowTitle")))
+            e_set.setWindowIcon(str(TDS.readSetting("WindowIcon")))
         except:
             pass            
         try:
-            eSet.setImageChunkingSize(int(TDS.readSetting("ImageChunkSize")))
+            e_set.setImageChunkingSize(int(TDS.readSetting("ImageChunkSize")))
         except:
             pass
 

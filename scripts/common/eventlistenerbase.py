@@ -18,21 +18,21 @@
 import fife
 
 class EventListenerBase(fife.IKeyListener, fife.ICommandListener, fife.IMouseListener, fife.ConsoleExecuter):
-    def __init__(self, engine, regKeys=False, regCmd=False, regMouse=False, regConsole=False, regWidget=False):
+    def __init__(self, engine, reg_keys=False, reg_cmd=False, reg_mouse=False, reg_console=False, reg_widget=False):
         """Initialise the instance"""
         self.event_manager = engine.getEventManager()
 
         fife.IKeyListener.__init__(self)
-        if regKeys:
+        if reg_keys:
             self.event_manager.addKeyListener(self)
         fife.ICommandListener.__init__(self)
-        if regCmd:
+        if reg_cmd:
             self.event_manager.addCommandListener(self)
         fife.IMouseListener.__init__(self)
-        if regMouse:
+        if reg_mouse:
             self.event_manager.addMouseListener(self)
         fife.ConsoleExecuter.__init__(self)
-        if regConsole:
+        if reg_console:
             engine.getGuiManager().getConsole().setConsoleExecuter(self)
 
     def mousePressed(self, evt):

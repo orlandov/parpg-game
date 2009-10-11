@@ -67,7 +67,7 @@ class GameObject (object):
            @param gfx: Dictionary with graphics for the different contexts       
            @type coords 2-item tuple
            @param coords: Initial coordinates of the object.
-           @type map_id: ???
+           @type map_id: String
            @param map_id: Identifier of the map where the object is located
            @type blocking: Boolean
            @param blocking: Whether the object blocks character movement
@@ -136,6 +136,7 @@ class Openable(object):
                 self.runScript('onClose')
         except AttributeError :
             pass
+        
 class Lockable (Openable):
     """Allows objects to be locked"""
     def __init__ (self, locked = False, is_open=True, **kwargs):
@@ -246,7 +247,7 @@ class CharStats (object):
         
 class Wearable (object):
     def __init__ (self, **kwargs):
-        """Allows the object to be weared somewhere on the body (e.g. pants)"""
+        """Allows the object to be worn somewhere on the body (e.g. pants)"""
         self.is_wearable = True
     
 class Usable (object):

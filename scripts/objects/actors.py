@@ -28,13 +28,17 @@ _AGENT_STATE_NONE, _AGENT_STATE_IDLE, _AGENT_STATE_APPROACH, _AGENT_STATE_RUN, _
 class ActorBehaviour (fife.InstanceActionListener):
     """Fife agent listener
     """
-    def __init__(self, Layer):
+    def __init__(self, layer):
         fife.InstanceActionListener.__init__(self)
-        self.layer = Layer
+        self.layer = layer
     
-    def attachToLayer(self, agentID):
-        # init listener
-        self.agent = self.layer.getInstance(agentID)
+    def attachToLayer(self, agent_ID):
+        """ Attaches to a certain layer
+            @type agent_ID: String
+            @param agent_ID: ID of the layer to attach to.
+            @return: None
+        """
+        self.agent = self.layer.getInstance(agent_ID)
         self.agent.addActionListener(self)
         self.state = _AGENT_STATE_NONE
         self.speed = float(TDS.readSetting("PCSpeed"))-1 # TODO: rework/improve
@@ -56,11 +60,11 @@ class ActorBehaviour (fife.InstanceActionListener):
 
     
 class PCBehaviour (ActorBehaviour):
-    def __init__(self, Parent = None, Layer = None):
-        super(PCBehaviour, self).__init__(Layer)
+    def __init__(self, parent = None, layer = None):
+        super(PCBehaviour, self).__init__(layer)
         
-        self.parent = Parent
-        self.idlecounter = 1
+        self.parent = parent
+        self.idle_counter = 1
         self.speed = float(TDS.readSetting("PCSpeed")) # TODO: rework/improve
         self.nextAction = None
         
@@ -78,9 +82,9 @@ class PCBehaviour (ActorBehaviour):
             self.idle()
             
         if(action.getId() != 'stand'):
-            self.idlecounter = 1
+            self.idle_counter = 1
         else:
-            self.idlecounter += 1
+            self.idle_counter += 1
             
     def onNewMap(self, layer):
         """Sets the agent onto the new layer.
@@ -88,7 +92,7 @@ class PCBehaviour (ActorBehaviour):
         self.agent = layer.getInstance(self.parent.name)
         self.agent.addActionListener(self)
         self.state = _AGENT_STATE_NONE
-        self.idlecounter = 1
+        self.idle_counter = 1
     
     def idle(self):
         """@return: None"""
@@ -200,7 +204,7 @@ class NPCBehaviour(ActorBehaviour):
            @param action: ???
            @return: None"""
         if self.state == _AGENT_STATE_WANDER:
-            self.targetLoc = self.getTargetLocation()
+            self.target_loc = self.getTargetLocation()
         self.idle()
         
     
@@ -212,11 +216,11 @@ class NPCBehaviour(ActorBehaviour):
             self.state = _AGENT_STATE_IDLE
             self.agent.act('stand', self.agent.getFacingLocation())
         elif self.state == _AGENT_STATE_IDLE:
-            self.targetLoc = self.getTargetLocation()
+            self.target_loc = self.getTargetLocation()
             self.state = _AGENT_STATE_WANDER
             self.agent.act('stand', self.agent.getFacingLocation())
         elif self.state == _AGENT_STATE_WANDER:
-            self.parent.wander(self.targetLoc)
+            self.parent.wander(self.target_loc)
             self.state = _AGENT_STATE_NONE
         elif self.state == _AGENT_STATE_TALK:
             self.agent.act('stand', self.pc.getLocation())

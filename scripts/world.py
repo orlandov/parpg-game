@@ -47,7 +47,7 @@ class World(EventListenerBase):
            @type engine: fife.Engine
            @param engine: A fife.Engine instance
            @return: None"""
-        super(World, self).__init__(engine, regMouse=True, regKeys=True)
+        super(World, self).__init__(engine, reg_mouse=True, reg_keys=True)
         # self.engine is a fife.Engine object, not an Engine object
         self.engine = engine
         self.event_manager = engine.getEventManager()

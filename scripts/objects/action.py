@@ -23,75 +23,75 @@ class Action(object):
 
 class ChangeMapAction(Action):
     """A change map scheduled"""
-    def __init__(self, engine, targetmapname, targetmapfile , targetpos):
+    def __init__(self, engine, target_map_name, target_map_file , target_pos):
         """Initiates a change of the position of the character
            possibly flagging a new map to be loaded.
            @type engine: Engine reference
            @param engine: A reference to the engine.
-           @type targetmapname: String
-           @param targetmapname: Target map id 
-           @type targetmapfile: String
-           @param targetmapfile: Target map filename
-           @type targetpos: Tuple
-           @param targetpos: (X, Y) coordinates on the target map.
+           @type target_map_name: String
+           @param target_map_name: Target map id 
+           @type target_map_file: String
+           @param target_map_file: Target map filename
+           @type target_pos: Tuple
+           @param target_pos: (X, Y) coordinates on the target map.
            @return: None"""
         self.engine = engine
-        self.targetpos = targetpos
-        self.targetmapname = targetmapname
-        self.targetmapfile = targetmapfile
+        self.target_pos = target_pos
+        self.target_map_name = target_map_name
+        self.target_map_file = target_map_file
 
     def execute(self):
         """Executes the map change."""
-        self.engine.changeMap(self.targetmapname, self.targetmapfile, self.targetpos)
+        self.engine.changeMap(self.target_map_name, self.target_map_file,\
+                              self.target_pos)
        
 class OpenBoxAction(Action):
     """Open a box. Needs to be more generic, but will do for now."""
-    def __init__(self, engine, boxTitle):
+    def __init__(self, engine, box_title):
         """@type engine: Engine reference
            @param engine: A reference to the engine.
-           @type boxTitle: String
-           @param boxTitle: Box title.
+           @type box_title: String
+           @param box_title: Box title.
            """
         self.engine = engine
-        self.boxTitle = boxTitle
+        self.box_title = box_title
     
     def execute(self):
         """Open the box."""
-        self.engine.view.hud.createBoxGUI(self.boxTitle)
+        self.engine.view.hud.createBoxGUI(self.box_title)
         
 class ExamineBoxAction(Action):
     """Examine a box. Needs to be more generic, but will do for now."""
-    def __init__(self, engine, examineName, examineDesc):
+    def __init__(self, engine, examine_name, examine_desc):
         """@type engine: Engine reference
            @param engine: A reference to the engine.
-           @type examineName: String
-           @param examineName: Name of the object to be examined.
-           @type examineName: String
-           @param examineName: Description of the object to be examined.
+           @type examine_name: String
+           @param examine_name: Name of the object to be examined.
+           @type examine_name: String
+           @param examine_name: Description of the object to be examined.
            """
         self.engine = engine
-        self.examineName = examineName
-        self.examineDesc = examineDesc
+        self.examine_name = examine_name
+        self.examine_desc = examine_desc
         
     def execute(self):
         """Examine the box."""
-        self.engine.view.hud.createExamineBox(self.examineName, self.examineDesc)
+        self.engine.view.hud.createExamineBox(self.examine_name, \
+                                              self.examine_desc)
 
 class TalkAction(Action):
     """An action to represent starting a dialogue"""
     def __init__(self, engine, npc):
         """@type engine: Engine reference
            @param engine: A reference to the engine.
-           @type examineName: String
-           @param examineName: Name of the object to be examined.
-           @type examineName: String
-           @param examineName: Description of the object to be examined.
+           @type examineName: NonPlayerCharacter
+           @param examineName: NPC to interact with.
            """
         self.engine = engine
         self.npc = npc
         
     def execute(self):
-        """Examine the box."""
+        """Talk with the NPC."""
         pc = self.engine.game_state.PC
         pc.behaviour.agent.act('stand', self.npc.getLocation())
         self.npc.talk(pc)
