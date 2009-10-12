@@ -241,6 +241,7 @@ class NonPlayerCharacter(GameObject, Living, Scriptable, CharStats):
         self.inventory = None
         
         self.behaviour = NPCBehaviour(self, agent_layer)
+        self.dialogue = kwargs.get('dialogue')
 
     def getLocation(self):
         """ Get the NPC's position as a fife.Location object. Basically a

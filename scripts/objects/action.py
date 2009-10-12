@@ -94,5 +94,9 @@ class TalkAction(Action):
         """Talk with the NPC."""
         pc = self.engine.game_state.PC
         pc.behaviour.agent.act('stand', self.npc.getLocation())
-        self.npc.talk(pc)
-        self.engine.view.hud.showDialogue(self.npc)
+
+        if self.npc.dialogue is not None:
+            self.npc.talk(pc)
+            self.engine.view.hud.showDialogue(self.npc)
+        else:
+            self.npc.behaviour.agent.say("Leave me alone!", 1000)

@@ -63,7 +63,7 @@ class DialogueGUI(object):
         state = {
             'pc': pc
         }
-        self.dialogue_engine = DialogueEngine('dialogue/sample.yaml',
+        self.dialogue_engine = DialogueEngine(npc.dialogue,
                                               dialogue_callbacks, state)
         self.dialogue_gui = pychan.loadXML("gui/dialogue.xml")
 

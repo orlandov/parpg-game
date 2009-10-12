@@ -288,7 +288,7 @@ class XMLMapLoader(fife.ResourceLoader):
                 
             #Check for PARPG specific object attributes
             object_type = instance.get('object_type')
-            if ( object_type ):
+            if object_type:
                 inst_dict = {}
                 inst_dict["type"] = object_type
                 inst_dict["id"] = id
@@ -299,10 +299,12 @@ class XMLMapLoader(fife.ResourceLoader):
                 inst_dict["locked"] = instance.get('locked')
                 inst_dict["name"] = instance.get('name')
                 inst_dict["text"] = instance.get('text')
+                if instance.get('dialogue'):
+                    inst_dict['dialogue'] = instance.get('dialogue')
                 inst_dict["target_map_name"] = instance.get('target_map_name')
                 inst_dict["target_map"] = instance.get('target_map')
                 inst_dict["target_pos"] = (instance.get('target_x'), instance.get('target_y'))
-                self.data.createObject( layer, inst_dict, inst )
+                self.data.createObject(layer, inst_dict, inst)
                 
     def parseCameras(self, map_elt, map):
         if self.callback:        
@@ -344,4 +346,3 @@ class XMLMapLoader(fife.ResourceLoader):
             if self.callback:
                 i += 1
                 self.callback('loaded camera: ' +  str(id), float( i / len(tmplist) * 0.25 + 0.75 ) )    
-            
