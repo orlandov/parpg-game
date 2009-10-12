@@ -1,4 +1,5 @@
-<animation delay="100" namespace="PAPRG" id="PC:run:225" x_offset="0" y_offset="-40">
+<animation delay="100" namespace="PAPRG" id="player:walk:225" x_offset="0" y_offset="-40">
+	<frame source="walk_0.png" />
 	<frame source="walk_1.png" />
 	<frame source="walk_2.png" />
 	<frame source="walk_3.png" />

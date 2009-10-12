@@ -1944,7 +1944,7 @@
       <i x="8" o="block" z="0.0" y="-4" r="0"/>
       <i x="8" o="block" z="0.0" y="-3" r="0"/>
       <!-- There must be one and one only PC character -->
-      <i x="0.0" o="PC" z="0.0" y="0.0" r="0" id="PC" object_type="PlayerCharacter"/>
+      <i x="0.0" o="player" z="0.0" y="0.0" r="0" id="PC" object_type="PlayerCharacter"/>
       <!-- There can be any number of NPC characters -->
       <i x="-5.0" o="long_coat_female" z="0.0" y="-3.0" r="0" id="long_coat_female0" object_type="NonPlayerCharacter" text="A woman wearing a large coat"/>
       <i x="-5.0" o="long_coat_male" z="0.0" y="-4.0" r="0" id="long_coat_male0" object_type="NonPlayerCharacter" text="A man wearing a large coat"/>
