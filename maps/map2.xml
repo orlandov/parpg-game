@@ -1033,7 +1033,7 @@
             <i x="1" o="shantyi" z="0.0" y="6" r="0"></i>
 
             <!-- There must be one and one only PC character -->
-            <i x="0.0" o="PC" z="0.0" y="0.0" r="0" id="PC" object_type="PlayerCharacter"></i>
+            <i x="0.0" o="player" z="0.0" y="0.0" r="0" id="PC" object_type="PlayerCharacter"></i>
 
             <!-- A sample door -->
             <i x="-2.0" o="shanty-door" z="0.0" y="6.0" r="0" id="shanty-door01" object_type="ShantyDoor" is_open="False"
