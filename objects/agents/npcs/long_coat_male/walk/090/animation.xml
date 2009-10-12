@@ -1,4 +1,4 @@
-<animation delay="125" namespace="PAPRG" id="long_coat_male:walk:090" x_offset="0" y_offset="-40">
+<animation delay="100" namespace="PAPRG" id="long_coat_male:walk:090" x_offset="0" y_offset="-40">
 	<frame source="walk_0.png" />
 	<frame source="walk_1.png" />
 	<frame source="walk_2.png" />

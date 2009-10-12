@@ -38,7 +38,7 @@ def generateAgent(path, delay, xoff, yoff):
     f = open(os.path.join(path,name + ".xml"), 'w')            
     log.debug("Opened " + os.path.join(path,name + ".xml"))
     f.write('<?fife type="object"?>\n')
-    f.write('<object id="long_coat_female" namespace="PARPG" blocking="1" static="0">\n')
+    f.write('<object id="%s" namespace="PARPG" blocking="1" static="0">\n' % (name,))
 
     # Iterate the animations 
     anims = os.listdir(path)
