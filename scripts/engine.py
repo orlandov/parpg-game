@@ -62,22 +62,29 @@ class Engine:
         
         # can't pickle SwigPyObjects
         behaviours = {}
-        behaviours[self.game_state.PC.ID] = self.game_state.PC.behaviour;
+        behaviour_player = self.game_state.PC.behaviour;
         self.game_state.PC.behaviour = None;
         
-        npcs = [npc for npc in self.game_state.objects.values() \
-                if npc.trueAttr("NPC")]
-        for npc in npcs:
-            behaviours[npc.ID] = npc.behaviour;
-            npc.behaviour = None;
-        
+        # Backup the behaviours 
+        for map_id in self.game_state.objects:
+            behaviours[map_id]={}
+            for (object_id, npc) in self.game_state.objects[map_id].items():
+                print object_id
+                if npc.trueAttr("NPC"):
+                    behaviours[map_id][object_id]=npc.behaviour
+                    npc.behaviour = None;
+        print behaviours 
+        # Pickle it 
         pickle.dump(self.game_state, f)
         f.close()
         
-        # restore behaviours
-        for npc in npcs:
-            npc.behaviour = behaviours[npc.ID];
-        self.game_state.PC.behaviour = behaviours[self.game_state.PC.ID]
+        # Restore behaviours
+        for map_id in behaviours:
+            for (object_id,behaviour) in behaviours[map_id].items():
+                self.game_state.objects[map_id][object_id].behaviour = \
+                    behaviours[map_id][object_id]
+                
+        self.game_state.PC.behaviour = behaviour_player
 
     def load(self, path, filename):
         """Loads a saver from a file.
@@ -94,7 +101,7 @@ class Engine:
             return
         self.game_state = pickle.load(f)
         f.close()
-        if self.game_state.current_map:
+        if self.game_state.current_map_file:
             self.loadMap(self.game_state.current_map_name, \
                          self.game_state.current_map_file) 
 
