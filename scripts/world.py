@@ -56,7 +56,6 @@ class World(EventListenerBase):
         # self.data is an engine.Engine object, but is set in run.py
         self.data = None
         self.mouseCallback = None
-        self.obj_hash={}
 
         # self.map is a Map object, set to none here
         self.active_map = None
@@ -95,8 +94,9 @@ class World(EventListenerBase):
     def loadGame(self, *args, **kwargs):
         """Loads the game state
            @return: None"""
+        print self.data
         self.data.load(*args, **kwargs)
-
+        
     def loadMap(self, map_name, filename):
         """Loads a map and stores it under the given name in the maps list.
            @type map_name: text

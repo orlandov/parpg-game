@@ -14,6 +14,7 @@
 #   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import re 
+import os
 
 class Console:
     def __init__(self, app_listener):
@@ -125,8 +126,9 @@ class Console:
             try:
                 l_args = command.lower()[end_load + 1:].strip()
                 l_path, l_filename = l_args.split(' ')
-                self.app_listener.model.load(l_path, l_filename)
-                result = "Loaded file: " + l_path + l_filename
+                self.app_listener.model.load_save = True
+                self.app_listener.model.savegame = os.path.join(l_path, l_filename)
+                result = "Load triggered"
 
             except Exception, l_error:
                 self.app_listener.engine.getGuiManager().getConsole().println('Error: ' + str(l_error))

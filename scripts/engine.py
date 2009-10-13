@@ -38,11 +38,14 @@ class Engine:
         # a World object (the fife stuff, essentially)
         self.view = view
         self.map_change = False
+        self.load_saver = False
+        self.savegame = None
         self.game_state = GameState()
         self.pc_run = 1
         self.target_position = None
         self.target_map_name = None
         self.target_map_file = None
+        
     def reset(self):
         """Clears the data on a map reload so we don't have objects/npcs from
            other maps hanging around.
@@ -67,13 +70,12 @@ class Engine:
         
         # Backup the behaviours 
         for map_id in self.game_state.objects:
-            behaviours[map_id]={}
+            behaviours[map_id] = {}
             for (object_id, npc) in self.game_state.objects[map_id].items():
-                print object_id
                 if npc.trueAttr("NPC"):
-                    behaviours[map_id][object_id]=npc.behaviour
+                    behaviours[map_id][object_id] = npc.behaviour
                     npc.behaviour = None;
-        print behaviours 
+        
         # Pickle it 
         pickle.dump(self.game_state, f)
         f.close()
@@ -86,21 +88,27 @@ class Engine:
                 
         self.game_state.PC.behaviour = behaviour_player
 
-    def load(self, path, filename):
+    def load(self, filename):
         """Loads a saver from a file.
-           @type path: string 
-           @param path: the path where the save file is located
            @type filename: string
-           @param filename: the name of the file to load from
+           @param filename: the name of the file (including path) to load from
            @return: None"""
-        fname = '/'.join([path, filename])
+        
+        # TODO
+        # Remove what we are currently working with 
+        print "TODO: load"
+        self.view.active_map.view.clearCameras()
+        self.view.active_map.model.deleteMaps()
+        
         try:
-            f = open(fname, 'r')
+            f = open(filename, 'r')
         except(IOError):
             sys.stderr.write("Error: Can't find save game file\n")
             return
         self.game_state = pickle.load(f)
         f.close()
+        
+        # Make sure we're on the right map
         if self.game_state.current_map_file:
             self.loadMap(self.game_state.current_map_name, \
                          self.game_state.current_map_file) 
@@ -139,13 +147,9 @@ class Engine:
            @param instance: FIFE instance of PC
            @return: None
         """
-        # If this map has already a PC
-        self.view.active_map.addObject(pc.ID, instance)          
-        
         # For now we copy the PC, in the future we will need to copy
         # PC specifics between the different PC's
         self.game_state.PC = pc
-            
         self.game_state.PC.setup()
 
     def addObject(self, layer, obj, instance):
@@ -169,10 +173,7 @@ class Engine:
             obj.X = ref.X
             obj.Y = ref.Y
             obj.gfx = ref.gfx  
-            
-        # add it to the view
-        self.view.active_map.addObject(obj.ID, instance)          
-
+             
         if obj.trueAttr("NPC"):
             # create the agent
             obj.setup()
@@ -260,6 +261,17 @@ class Engine:
         self.view.loadMap(map_name, str(map_file))
         self.view.setActiveMap(map_name)
         self.reset()
+        
+        # If the map has been loaded, we might need to add some
+        # agents to the PC and NPS
+        for map_id in self.game_state.objects:
+            for (object_id, npc) in self.game_state.objects[map_id].items():
+                if npc.trueAttr("NPC") and npc.behaviour == None:
+                    npc.createBehaviour(self.view.active_map.agent_layer)
+
+        # Fix the player behaviour
+        if self.game_state.PC.behaviour == None:
+            self.game_state.PC.createBehaviour(self.view.active_map.agent_layer)
 
         # create the PC agent
         self.view.active_map.addPC(self.game_state.PC.behaviour.agent)
@@ -300,6 +312,10 @@ class Engine:
             self.loadMap(self.target_map_name, self.target_map_file)
             self.view.teleport(self.target_position)
             self.map_change = False
+        
+        if self.load_saver:
+            self.load(self.savegame)
+            self.load_saver = False
 
     def pump(self):
         """Main loop in the engine."""

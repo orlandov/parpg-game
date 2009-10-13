@@ -114,7 +114,13 @@ class PlayerCharacter (GameObject, Living, CharStats):
         self.inventory = None
         
         self.state = _AGENT_STATE_NONE
-        self.behaviour = PCBehaviour(self, agent_layer)
+        self.layer_id = agent_layer.getId()
+        self.createBehaviour(agent_layer)
+    
+    def createBehaviour(self, layer):
+        """ Creates the behaviour for this actor.
+            @return None """
+        self.behaviour = PCBehaviour(self, layer)
     
     def setup(self):
         """@return: None"""
@@ -239,9 +245,14 @@ class NonPlayerCharacter(GameObject, Living, Scriptable, CharStats):
 
         self.is_NPC = True
         self.inventory = None
-        
-        self.behaviour = NPCBehaviour(self, agent_layer)
+        self.layer_id = agent_layer.getId()
+        self.createBehaviour(agent_layer)        
         self.dialogue = kwargs.get('dialogue')
+
+    def createBehaviour(self, layer):
+        """ Creates the behaviour for this actor.
+            @return None """
+        self.behaviour = NPCBehaviour(self, layer)
 
     def getLocation(self):
         """ Get the NPC's position as a fife.Location object. Basically a

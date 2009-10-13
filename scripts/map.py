@@ -38,7 +38,6 @@ class Map(fife.MapChangeListener):
         self.model = engine.getModel()
         self.view = engine.getView()
         self.transitions = []
-        self.obj_hash = {}
         self.cur_cam2_x = 0
         self.initial_cam2_x = 0
         self.cam2_scrolling_right = True
@@ -54,7 +53,6 @@ class Map(fife.MapChangeListener):
             self.model.deleteObjects()
             self.model.deleteMap(self.map)
         self.transitions = []
-        self.obj_hash = {}
         self.map = None
         self.agent_layer = None
         # We have to clear the cameras in the view as well, or we can't reuse
@@ -117,16 +115,6 @@ class Map(fife.MapChangeListener):
         if self.cameras['main'].getAttached() == None:
             self.cameras['main'].attach(agent)
 
-    def addObject(self, name, obj):
-        """Add an object to this map0
-            Inputs:
-                name - ID of object
-                obj - FIFE instance of object
-            Return:
-                Nothing
-        """
-        # save it for later use
-        self.obj_hash[name]=obj
         
     def toggle_renderer(self, r_name):
         """Enable or disable a renderer.
