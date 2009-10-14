@@ -1946,11 +1946,11 @@
       <!-- There must be one and one only PC character -->
       <i x="0.0" o="player" z="0.0" y="0.0" r="0" id="PC" object_type="PlayerCharacter"/>
       <!-- There can be any number of NPC characters -->
-      <i x="-5.0" o="long_coat_female" z="0.0" y="-3.0" r="0" id="long_coat_female0" object_type="NonPlayerCharacter" text="A woman wearing a large coat"/>
-      <i x="-5.0" o="long_coat_male" z="0.0" y="-4.0" r="0" id="long_coat_male0" object_type="NonPlayerCharacter" text="A man wearing a large coat"/>
-      <i x="-5.0" o="male_farmer_1" z="0.0" y="-5.0" r="0" dialogue="dialogue/farmer.yaml" id="male_farmer0" object_type="NonPlayerCharacter" text="A grimy looking farmer"/>
-      <i x="-5.0" o="male_traveler_1" z="0.0" y="-6.0" r="0" id="male_traveler0" object_type="NonPlayerCharacter" text="A wandering traveler"/>
-      <i x="-5.0" o="npc_woman" z="0.0" y="-7.0" r="0" id="woman01" dialogue="dialogue/sample.yaml" object_type="NonPlayerCharacter" text="A friendly woman"/>
+      <i x="-5.0" o="long_coat_female" z="0.0" y="-3.0" r="0"  name="Aeon" id="long_coat_female0" object_type="NonPlayerCharacter" text="A woman wearing a large coat"/>
+      <i x="-5.0" o="long_coat_male" z="0.0" y="-4.0" r="0" name="The Judge" id="long_coat_male0" object_type="NonPlayerCharacter" text="A man wearing a large coat"/>
+      <i x="-5.0" o="male_farmer_1" z="0.0" y="-5.0" r="0" name="Manslow" dialogue="dialogue/farmer.yaml" id="male_farmer0" object_type="NonPlayerCharacter" text="A grimy looking farmer"/>
+      <i x="-5.0" o="male_traveler_1" z="0.0" y="-6.0" r="0" name="Gregor" id="male_traveler0" object_type="NonPlayerCharacter" text="A wandering traveler"/>
+      <i x="-5.0" o="npc_woman" z="0.0" y="-7.0" r="0" name="Loranda" id="woman01" dialogue="dialogue/sample.yaml" object_type="NonPlayerCharacter" text="A friendly woman"/>
       <i x="-3.0" o="crate" z="0.0" y="-4.0" r="0" id="crate01" object_type="WoodenCrate" is_open="False" locked="False" name="asdf" text="A crate that is covered in grime and dirt. There doesn't seem to be anything remarkable about it"/>
       <!-- There can be any number of objects -->
       <!-- Object blocking is set in the objects own xml file -->

@@ -235,13 +235,13 @@ class NonPlayerCharacter(GameObject, Living, Scriptable, CharStats):
     """
     NPC class
     """
-    def __init__(self, ID, agent_layer = None, name = 'NPC', \
+    def __init__(self, ID, agent_layer=None, name='NPC', \
                  text = 'A nonplayer character', **kwargs):
         # init game object
-        GameObject.__init__( self, ID, **kwargs )
-        Living.__init__( self, **kwargs )
-        Scriptable.__init__( self, **kwargs )
-        CharStats.__init__( self, **kwargs )
+        GameObject.__init__(self, ID, name=name, **kwargs)
+        Living.__init__(self, **kwargs)
+        Scriptable.__init__(self, **kwargs)
+        CharStats.__init__(self, **kwargs)
 
         self.is_NPC = True
         self.inventory = None
