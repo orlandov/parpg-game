@@ -59,7 +59,7 @@ class Hud(object):
 
         self.save_game_callback = callbacks['saveGame']
         self.load_game_callback = callbacks['loadGame']
-        self.quit_callback     = callbacks['quitGame']
+        self.quit_callback      = callbacks['quitGame']
 
         self.box_container = None
         self.examine_box = None
@@ -383,8 +383,8 @@ class Hud(object):
 
         # when we click the toggle button don't change the image
         events_to_map["inventoryButton"] = cbwa(self.toggleInventory, False)
-        events_to_map["saveButton"] = self.save_game_callback
-        events_to_map["loadButton"] = self.load_game_callback
+        events_to_map["saveButton"] = self.saveGame
+        events_to_map["loadButton"] = self.loadGame
 
         hud_ready_buttons = ["hudReady1", "hudReady2", \
                              "hudReady3", "hudReady4"]
@@ -397,8 +397,8 @@ class Hud(object):
         menu_events = {}
         menu_events["newButton"] = self.newGame
         menu_events["quitButton"] = self.quitGame
-        menu_events["saveButton"] = self.save_game_callback
-        menu_events["loadButton"] = self.load_game_callback
+        menu_events["saveButton"] = self.saveGame
+        menu_events["loadButton"] = self.loadGame
         self.main_menu.mapEvents(menu_events)
 
     def updateVolumeText(self):

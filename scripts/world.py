@@ -89,6 +89,8 @@ class World(EventListenerBase):
     def saveGame(self, *args, **kwargs):
         """Saves the game state
            @return: None"""
+        print args
+        print kwargs 
         self.data.save(*args, **kwargs)
 
     def loadGame(self, *args, **kwargs):
