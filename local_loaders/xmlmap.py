@@ -156,6 +156,7 @@ class XMLMapLoader(fife.ResourceLoader):
             x_offset = layer.get('x_offset')
             y_offset = layer.get('y_offset')
             pathing = layer.get('pathing')
+	    transparency = layer.get('transparency')
 
             if not x_scale: x_scale = 1.0
             if not y_scale: y_scale = 1.0
@@ -163,6 +164,11 @@ class XMLMapLoader(fife.ResourceLoader):
             if not x_offset: x_offset = 0.0
             if not y_offset: y_offset = 0.0
             if not pathing: pathing = "cell_edges_only"
+	    if not transparency:
+		    transparency = 0
+	    else:
+		    transparency = int(transparency)
+	    
 
             if not id: self._err('<layer> declared with no id attribute.')
             if not grid_type: self._err(''.join(['Layer ', str(id), ' has no grid_type attribute.']))
@@ -191,6 +197,8 @@ class XMLMapLoader(fife.ResourceLoader):
             if pathing == "freeform":
                 strgy = fife.FREEFORM
             layer_obj.setPathingStrategy(strgy)
+
+	    layer_obj.setLayerTransparency(transparency)
 
             self.parseInstances(layer, layer_obj)
 
