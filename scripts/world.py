@@ -35,7 +35,7 @@ TDS = Setting()
 # engine.py handles is our data model, whilst this is our view
 # in order to not replicate data, some of our data model will naturally
 # reside on this side of the fence (PC xpos and ypos, for example).
-# we should aim to never replicate any data as this leads to maintainance
+# we should aim to never replicate any data as this leads to maintenance
 # issues (and just looks plain bad).
 # however, any logic needed to resolve this should sit in engine.py
 
@@ -87,16 +87,13 @@ class World(EventListenerBase):
         self.quitFunction()
 
     def saveGame(self, *args, **kwargs):
-        """Saves the game state
+        """Saves the game state, delegates call to engine.Engine
            @return: None"""
-        print args
-        print kwargs 
         self.data.save(*args, **kwargs)
 
     def loadGame(self, *args, **kwargs):
-        """Loads the game state
+        """Loads the game state, delegates call to engine.Engine
            @return: None"""
-        print self.data
         self.data.load(*args, **kwargs)
         
     def loadMap(self, map_name, filename):
@@ -135,7 +132,6 @@ class World(EventListenerBase):
            @return: None"""
         obj.say(str(text), 1000)
 
-    # all key / mouse event handling routines go here
     def keyPressed(self, evt):
         """Whenever a key is pressed, fife calls this routine.
            @type evt: fife.event
@@ -223,9 +219,8 @@ class World(EventListenerBase):
         """Called when a door is used that moves a player to a new
            location on the same map. the setting of position may want
            to be created as its own method down the road.
-           
            @type position: String Tuple
-           @param position: X,Y coordinates passed from enigine.changeMap
+           @param position: X,Y coordinates passed from engine.changeMap
            @return: fife.Location
         """
         coord = fife.DoublePoint3D(float(position[0]), float(position[1]), 0)
@@ -258,11 +253,11 @@ class World(EventListenerBase):
             self.active_map.outline_render.removeAllOutlines()
 
     def getCoords(self, click):
-        """Get the map location x, y cords from the screen co-ords
+        """Get the map location x, y coordinates from the screen coordinates
            @type click: fife.ScreenPoint
-           @param click: Screen co-ords
+           @param click: Screen coordinates
            @rtype: fife.Location
-           @return: The map co-ords"""
+           @return: The map coordinates"""
         coord = self.active_map.cameras["main"].toMapCoordinates(click, False)
         coord.z = 0
         location = fife.Location(self.active_map.agent_layer)
