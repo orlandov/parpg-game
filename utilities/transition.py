@@ -102,7 +102,7 @@ class LocalXMLParser(ContentHandler):
                 sys.stderr.write("Error: Layer information invalid")
                 sys.exit(False)
             # start a new layer
-            self.layers.append(XMLLayerData(x,y,name))
+            self.layers.append(XMLLayerData(x, y, name))
             self.current_layer = True
         elif(name == "i"):
             # have a current layer?
@@ -129,7 +129,7 @@ class LocalXMLParser(ContentHandler):
             # now we have the tile data, save it for later
             self.layers[-1].tiles.append(XMLTileData(x, y, z, o, i))
 
-    def endElement(self,name):
+    def endElement(self, name):
         if(name == "layer"):
             # end of current layer
             self.current_layer=False
@@ -144,15 +144,15 @@ class LocalMap:
         self.min_y = 0
         self.max_y = 0
 
-    def OutputTransLayer(self, l_file, l_count):
+    def outputTransLayer(self, l_file, l_count):
         if(len(self.render_tiles) == 0):
             return True
         try:
-            layer_name="TransitionLayer"+str(l_count)
+            layer_name = "TransitionLayer" + str(l_count)
             l_file.write('''    <layer x_offset="0.0" pathing="''')
             l_file.write('''cell_edges_and_diagonals" y_offset="0.0"''')
             l_file.write(''' grid_type="square" id="''')
-            l_file.write(layer_name+'''"''')
+            l_file.write(layer_name + '''"''')
             l_file.write(''' x_scale="1" y_scale="1" rotation="0.0">\n''')
             l_file.write('        <instances>\n')
             for tile in self.render_tiles:
@@ -169,30 +169,30 @@ class LocalMap:
             return False
         return True
 
-    def GetSurroundings(self,x,y,search):
-        """Function called by BuildTransLayer to see if a tile needs to
+    def GetSurroundings(self, x, y, search):
+        """Function called by buildTransLayer to see if a tile needs to
            display transition graphics over it (drawn on another layer)"""
         # check all of the tiles around the current tile
         value=0
-        if(self.PMatchSearch(x,y+1,search) == True):
+        if(self.pMatchSearch(x,y+1,search) == True):
             value += RIGHT
-        if(self.PMatchSearch(x-1,y+1,search) == True):
+        if(self.pMatchSearch(x-1,y+1,search) == True):
             value += BOTTOM_RIGHT
-        if(self.PMatchSearch(x-1,y,search) == True):
+        if(self.pMatchSearch(x-1,y,search) == True):
             value += BOTTOM
-        if(self.PMatchSearch(x-1,y-1,search) == True):
+        if(self.pMatchSearch(x-1,y-1,search) == True):
             value += BOTTOM_LEFT
-        if(self.PMatchSearch(x,y-1,search) == True):
+        if(self.pMatchSearch(x,y-1,search) == True):
             value += LEFT
-        if(self.PMatchSearch(x+1,y-1,search) == True):
+        if(self.pMatchSearch(x+1,y-1,search) == True):
             value += TOP_LEFT
-        if(self.PMatchSearch(x+1,y,search) == True):
+        if(self.pMatchSearch(x+1,y,search) == True):
             value += TOP
-        if(self.PMatchSearch(x+1,y+1,search) == True):
+        if(self.pMatchSearch(x+1,y+1,search) == True):
             value += TOP_RIGHT
         return value
 
-    def GetTransitionTiles(self, search):
+    def getTransitionTiles(self, search):
         """Build up and return a list of the tiles that might
            need a transition tiles layed over them"""
         size = len(search)
@@ -203,27 +203,27 @@ class LocalMap:
             if(t.object != None and t.object[:size] != search):
                 # whereas now we we need to check all the tiles around
                 # this tile
-                trans_value = self.GetSurroundings(t.x,t.y,search)
+                trans_value = self.GetSurroundings(t.x, t.y, search)
                 if(trans_value != 0):
                     # we found an actual real transition
                     tiles.append([t.x, t.y, trans_value])
         return tiles
 
-    def GetTransitionName(self, base, value, corner=False):
+    def getTransitionName(self, base, value, corner=False):
         if(corner == False):
-            name = base+"-ts"
+            name = base + "-ts"
         else:
-            name = base+"-tc"
+            name = base + "-tc"
         if(value < 10):
             name += "0"
-        name+=str(value)
+        name += str(value)
         return name
 
-    def BuildTransLayer(self, search):
+    def buildTransLayer(self, search):
         """Build up the data for a transition layer
            search is the string that matches the start of the name of
            each tile that we are looking for"""
-        transition_tiles = self.GetTransitionTiles(search)       
+        transition_tiles = self.getTransitionTiles(search)       
         # now we have all the possible tiles, lets see what they
         # actually need to have rendered
         for t in transition_tiles:
@@ -236,10 +236,10 @@ class LocalMap:
                 if(corners != 0):
                     # we must add a corner piece as well
                     corners = corners/16
-                    name = self.GetTransitionName(search, corners, True)
+                    name = self.getTransitionName(search, corners, True)
                     self.ttiles.append(XMLTileData(t[0], t[1], 0, name))
                 # add the side tile pieces
-                name = self.GetTransitionName(search, sides, False)
+                name = self.getTransitionName(search, sides, False)
                 self.ttiles.append(XMLTileData(t[0], t[1], 0, name))
             else:
                 # there are no side tiles, so let's just look at
@@ -247,10 +247,10 @@ class LocalMap:
                 corners = (t[2]&240)/16
                 if(corners != 0):
                     # there is a corner piece needed
-                    name = self.GetTransitionName(search, corners, True)
+                    name = self.getTransitionName(search, corners, True)
                     self.ttiles.append(XMLTileData(t[0], t[1], 0, name))
 
-    def LoadFromXML(self, filename):
+    def loadFromXML(self, filename):
         """Load a map from the XML file used in Fife
            Returns True if it worked, False otherwise"""
         try:
@@ -260,16 +260,16 @@ class LocalMap:
             return(False)
         # now open and read the XML file
         parser = make_parser()
-        curHandler = LocalXMLParser()
-        parser.setContentHandler(curHandler)
+        cur_handler = LocalXMLParser()
+        parser.setContentHandler(cur_handler)
         parser.parse(map_file)
         map_file.close()
         # make a copy of the layer data
-        self.layers = curHandler.layers
+        self.layers = cur_handler.layers
         return True
     
-    def GetSize(self):
-        """GetSize stores the size of the grid"""
+    def getSize(self):
+        """getSize stores the size of the grid"""
         for t in self.layers[0].tiles:
             if t.x > self.max_x:
                 self.max_x = t.x
@@ -280,35 +280,35 @@ class LocalMap:
             if t.y < self.min_y:
                 self.min_y = t.y
     
-    def CheckRange(self, x, y):
+    def checkRange(self, x, y):
         """Grid co-ords in range?"""
-        if((x < self.min_x)or(x > self.max_x)or
-           (y < self.min_y)or(y > self.max_y)):
+        if((x < self.min_x) or (x > self.max_x) or
+           (y < self.min_y) or (y > self.max_y)):
            return False
         return True
 
-    def PMatchSearch(self, x, y, search):
+    def pMatchSearch(self, x, y, search):
         """Brute force method used for matching grid"""
         # is the tile even in range?
-        if(self.CheckRange(x,y) == False):
+        if(self.checkRange(x, y) == False):
             return False
         size = len(search)
         for t in self.layers[0].tiles:
-            if((t.x == x)and(t.y == y)and(t.object[:size] == search)):
+            if((t.x == x) and (t.y == y) and (t.object[:size] == search)):
                 return(True)
         # no match
         return False
 
-    def CoordsMatch(self, x, y, tiles):
+    def coordsMatch(self, x, y, tiles):
         """Helper routine to check wether the list of tiles
            in tiles has any contain the coords x,y"""
         for t in tiles:
-            if((t.x == x)and(t.y == y)):
+            if((t.x == x) and (t.y == y)):
                 return True
         # obviously no match
         return False
 
-    def SaveMap(self, filename):
+    def saveMap(self, filename):
         """Save the new map"""
         # open the new files for writing
         try:
@@ -324,42 +324,43 @@ class LocalMap:
             recycled_tiles = []
             self.render_tiles = []
             for t in self.ttiles:
-                if(self.CoordsMatch(t.x, t.y, self.render_tiles) == False):
+                if(self.coordsMatch(t.x, t.y, self.render_tiles) == False):
                     # no matching tile in the grid so far, so add it
                     self.render_tiles.append(t)
                 else:
                     # we must save this for another layer
                     recycled_tiles.append(t)
             # render this layer
-            if(self.OutputTransLayer(map_file,layer_count) == False):
+            if(self.outputTransLayer(map_file, layer_count) == False):
                 return False
             layer_count += 1
-            self.ttiles=recycled_tiles
+            self.ttiles = recycled_tiles
         # phew, that was it
         map_file.close()
         print "Output new file as new.xml"
-        print "Had to render",layer_count,"layers"
+        print "Had to render", layer_count, "layers"
         return True
     
-    def PrintDetails(self):
+    def printDetails(self):
         """Debugging routine to output some details about the map
            Used to check the map loaded ok"""
         # display each layer name, then the details
         print "Layer ID's:",
         for l in self.layers:
             print l.name,
-        print "\nMap Dimensions: X=",(self.max_x-self.min_x) + 1,
-        print " Y=",(self.max_y-self.min_y) + 1
+        print "\nMap Dimensions: X=", (self.max_x-self.min_x) + 1,
+        print " Y=", (self.max_y-self.min_y) + 1
 
 if __name__=="__main__":
     # pass a map name as the first argument
     if(len(sys.argv) < 2):
         sys.stderr.write("Error: No map given!\n")
         sys.exit(False)
-    new_map=LocalMap()
-    if(new_map.LoadFromXML(sys.argv[1]) == True):
-        new_map.GetSize()
-        new_map.BuildTransLayer("grass")
-        new_map.SaveMap("new.xml")
-        new_map.PrintDetails()
+        
+    new_map = LocalMap()
+    if(new_map.loadFromXML(sys.argv[1]) == True):
+        new_map.getSize()
+        new_map.buildTransLayer("grass")
+        new_map.saveMap("new.xml")
+        new_map.printDetails()
 

@@ -15,7 +15,8 @@
 #   You should have received a copy of the GNU General Public License
 #   along with PARPG.  If not, see <http://www.gnu.org/licenses/>
 
-import sys, pygame
+import sys
+import pygame
 
 # place defines here
 
@@ -27,12 +28,12 @@ STITCH      =   False
 # this is very much a simple routine, but we still have a simple class
 
 class TileImage:
-    def __init__(self, picture, name, yoff):
+    def __init__(self, picture, name, y_off):
         self.image = picture
         self.filename = name
-        self.y_offset = yoff
+        self.y_offset = y_off
 
-def writeXML(name, yoff):
+def writeXML(name, y_off):
     """Write the XML file as well
        Always the same small file so we do it automatically"""
     # we need to strip off the entire path up to the last
@@ -50,7 +51,7 @@ def writeXML(name, yoff):
     x_file.write(filename)
     x_file.write('''" direction="0"''')
     x_file.write(''' y_offset="''')
-    x_file.write(yoff)
+    x_file.write(y_off)
     x_file.write('''" />\n''')
     # the \n\n is ESSENTIAL otherwise the XML parser in FIFE craps out!
     x_file.write('''</object>\n\n''')
@@ -58,12 +59,12 @@ def writeXML(name, yoff):
 
 def stitchImages(files, width, height):
     """Put the images together and output them to stitched.png"""
-    new_image=pygame.Surface((width, height), pygame.SRCALPHA, 32)
-    xpos = 0
+    new_image = pygame.Surface((width, height), pygame.SRCALPHA, 32)
+    x_pos = 0
     for i in files:
-        new_image.blit(i.image, (xpos, 0))
-        xpos += i.image.get_width()
-    pygame.image.save(new_image,"stitched.png")
+        new_image.blit(i.image, (x_pos, 0))
+        x_pos += i.image.get_width()
+    pygame.image.save(new_image, "stitched.png")
     
 def saveFiles(files):
     """Given a list of TileImages, output them as seperate files
@@ -102,30 +103,30 @@ def splitImage(image, filename, data):
        by one and the y value staying the same (on the grid map)"""
     # the starting point for the grab is always the middle of the image
     height = (image.get_height() / 2) + (TILE_HEIGHT / 2)
-    xpos = 0
+    x_pos = 0
     file_counter = 0
     tiles = []
     height_adjust = 0
-    yoff_next = -((height - TILE_HEIGHT) / 2)
+    y_off_next = -((height - TILE_HEIGHT) / 2)
     for t in data:
-        yoff = yoff_next
+        y_off = y_off_next
         if(t == 'm'):
             # switchback, so this tile must fill the whole width
             width += TILE_WIDTH / 2
             height_adjust = TILE_HEIGHT / 2
-            yoff_next += (TILE_HEIGHT / 4) + (TILE_HEIGHT / 2)
+            y_off_next += (TILE_HEIGHT / 4) + (TILE_HEIGHT / 2)
             xoff = 0
         elif(t == 'r'):
             # moving forward on the y axis
             width = TILE_WIDTH / 2
             height_adjust = - (TILE_HEIGHT / 2)
-            yoff_next += TILE_HEIGHT / 4
+            y_off_next += TILE_HEIGHT / 4
             xoff = TILE_WIDTH / 2
         elif(t == 'l'):
             # moving forward on the x axis
             width = TILE_WIDTH / 2
             height_adjust = TILE_HEIGHT / 2
-            yoff_next -= TILE_HEIGHT / 4
+            y_off_next -= TILE_HEIGHT / 4
             xoff = 0
         else:
             # TODO: Handle integer moves (i.e. > 1 tile up down)
@@ -136,15 +137,17 @@ def splitImage(image, filename, data):
         if(height == 256):
             height += 1
         # build the new surface
-        new_surface = pygame.Surface((TILE_WIDTH, height), pygame.SRCALPHA, 32)
+        new_surface = pygame.Surface((TILE_WIDTH, height), \
+                                     pygame.SRCALPHA, 32)
         # now blit a strip of the image across
-        new_surface.blit(image, (0+xoff, 0), pygame.Rect(xpos, 0, width, height))
+        new_surface.blit(image, (0+xoff, 0), pygame.Rect(x_pos, 0, \
+                                                         width, height))
         # store the image for later
-        tiles.append(TileImage(new_surface,
-            filename + chr(ord('a')+file_counter) + ".png",yoff))
+        tiles.append(TileImage(new_surface, \
+            filename + chr(ord('a')+file_counter) + ".png",y_off))
         file_counter += 1
         # amend variables
-        xpos += width
+        x_pos += width
         height += height_adjust
     return tiles
             
@@ -163,7 +166,7 @@ def convertFiles(filename, txt_data):
         return False
     # validate each data statement
     for i in data:
-        if((i != 'l')and(i != 'r')and(i != 'm')and(i.isdigit()==False)):
+        if((i != 'l')and(i != 'r')and(i != 'm')and(i.isdigit() == False)):
             # some issue
             print "Error: Can't decode tile string structure"
             return False
@@ -171,7 +174,7 @@ def convertFiles(filename, txt_data):
     try:
         image = pygame.image.load(filename)
     except(pygame.error):
-        print "Error: Couldn't load",filename
+        print "Error: Couldn't load", filename
         return False        
     # split into seperate files
     # the [:-4] is used to split off the .png from the filename

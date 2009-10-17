@@ -58,7 +58,7 @@ class XMLMapLoader(fife.ResourceLoader):
         self.source = None
         self.time_to_load = 0
 
-        self.nspace = None
+        self.n_space = None
 
     def _err(self, msg):
         raise SyntaxError(''.join(['File: ', self.source, ' . ', msg]))
@@ -77,19 +77,25 @@ class XMLMapLoader(fife.ResourceLoader):
 
     def parseMap(self, map_elt):
         if not map_elt:
-            self._err('No <map> element found at top level of map file definition.')
+            self._err(\
+                'No <map> element found at top level of map file definition.')
         id,format = map_elt.get('id'),map_elt.get('format')
 
-        if not format == FORMAT: self._err(''.join(['This file has format ', format, ' but this loader has format ', FORMAT]))
+        if not format == FORMAT: self._err(''.join(['This file has format ', \
+                                            format, \
+                                            ' but this loader has format ', \
+                                            FORMAT]))
         if not id: self._err('Map declared without an identifier.')
 
         map = None
         try:
             self.map = self.model.createMap(str(id))
             self.map.setResourceFile(self.source)
-        except fife.Exception, e: # NameClash appears as general fife.Exception; any ideas?
+        # NameClash appears as general fife.Exception; any ideas?
+        except fife.Exception, e: 
             print e.getMessage()
-            print ''.join(['File: ', self.source, '. The map ', str(id), ' already exists! Ignoring map definition.'])
+            print ''.join(['File: ', self.source, '. The map ', str(id), \
+                           ' already exists! Ignoring map definition.'])
             return None
 
         # xml-specific directory imports. This is used by xml savers.
@@ -110,7 +116,7 @@ class XMLMapLoader(fife.ResourceLoader):
         parsedImports = {}
 
         if self.callback:        
-            tmplist = map_elt.findall('import')
+            tmp_list = map_elt.findall('import')
             i = float(0)
         
         for item in map_elt.findall('import'):
@@ -139,12 +145,13 @@ class XMLMapLoader(fife.ResourceLoader):
                 
             if self.callback:
                 i += 1                
-                self.callback('loaded imports', float( i / float(len(tmplist)) * 0.25 + 0.25 ) )
+                self.callback('loaded imports', \
+                              float( i / float(len(tmp_list)) * 0.25 + 0.25 ))
 
 
     def parseLayers(self, map_elt, map):
         if self.callback is not None:        
-            tmplist = map_elt.findall('layer')
+            tmp_list = map_elt.findall('layer')
             i = float(0)
 
         for layer in map_elt.findall('layer'):
@@ -156,7 +163,7 @@ class XMLMapLoader(fife.ResourceLoader):
             x_offset = layer.get('x_offset')
             y_offset = layer.get('y_offset')
             pathing = layer.get('pathing')
-	    transparency = layer.get('transparency')
+            transparency = layer.get('transparency')
 
             if not x_scale: x_scale = 1.0
             if not y_scale: y_scale = 1.0
@@ -171,24 +178,27 @@ class XMLMapLoader(fife.ResourceLoader):
 	    
 
             if not id: self._err('<layer> declared with no id attribute.')
-            if not grid_type: self._err(''.join(['Layer ', str(id), ' has no grid_type attribute.']))
+            if not grid_type: self._err(''.join(['Layer ', str(id), \
+                                            ' has no grid_type attribute.']))
 
             allow_diagonals = pathing == "cell_edges_and_diagonals"
-            cellgrid = self.model.getCellGrid(grid_type)
-            if not cellgrid: self._err('<layer> declared with invalid cellgrid type. (%s)' % grid_type)
+            cell_grid = self.model.getCellGrid(grid_type)
+            if not cell_grid: self._err('<layer> declared with invalid '\
+                                       'cell grid type. (%s)' % grid_type)
 
-            cellgrid.setRotation(float(rotation))
-            cellgrid.setXScale(float(x_scale))
-            cellgrid.setYScale(float(y_scale))
-            cellgrid.setXShift(float(x_offset))
-            cellgrid.setYShift(float(y_offset))
+            cell_grid.setRotation(float(rotation))
+            cell_grid.setXScale(float(x_scale))
+            cell_grid.setYScale(float(y_scale))
+            cell_grid.setXShift(float(x_offset))
+            cell_grid.setYShift(float(y_offset))
 
             layer_obj = None
             try:
-                layer_obj = map.createLayer(str(id), cellgrid)
+                layer_obj = map.createLayer(str(id), cell_grid)
             except fife.Exception, e:
                 print e.getMessage()
-                print 'The layer ' + str(id) + ' already exists! Ignoring this layer.'
+                print 'The layer ' + str(id) + \
+                        ' already exists! Ignoring this layer.'
                 continue
 
             strgy = fife.CELL_EDGES_ONLY
@@ -204,48 +214,55 @@ class XMLMapLoader(fife.ResourceLoader):
 
             if self.callback is not None:
                 i += 1
-                self.callback('loaded layer :' + str(id), float( i / float(len(tmplist)) * 0.25 + 0.5 ) )
+                self.callback('loaded layer :' + \
+                              str(id), float( i / float(len(tmp_list)) * \
+                                              0.25 + 0.5 ) )
 
         # cleanup
         if self.callback is not None:
-            del tmplist
+            del tmp_list
             del i
 
-    def parseInstances(self, layerelt, layer):
-        instelt = layerelt.find('instances')
+    def parseInstances(self, layer_elt, layer):
+        inst_elt = layer_elt.find('instances')
 
-        instances = instelt.findall('i')
-        instances.extend(instelt.findall('inst'))
-        instances.extend(instelt.findall('instance'))
+        instances = inst_elt.findall('i')
+        instances.extend(inst_elt.findall('inst'))
+        instances.extend(inst_elt.findall('instance'))
         for instance in instances:
 
-            objectID = instance.get('object')
-            if not objectID:
-                objectID = instance.get('obj')
-            if not objectID:
-                objectID = instance.get('o')
+            object_id = instance.get('object')
+            if not object_id:
+                object_id = instance.get('obj')
+            if not object_id:
+                object_id = instance.get('o')
 
-            if not objectID: self._err('<instance> does not specify an object attribute.')
+            if not object_id: self._err('<instance> does not specify an '\
+                                        'object attribute.')
 
-            nspace = instance.get('namespace')
-            if not nspace:
-                nspace = instance.get('ns')
-            if not nspace:
-                nspace = self.nspace
+            n_space = instance.get('namespace')
+            if not n_space:
+                n_space = instance.get('ns')
+            if not n_space:
+                n_space = self.n_space
 
-            if not nspace: self._err('<instance> %s does not specify an object namespace, and no default is available.' % str(objectID))
+            if not n_space: self._err('<instance> %s does not specify an '\
+                                      'object namespace, and no default is '\
+                                      'available.' % str(object_id))
 
-            self.nspace = nspace
+            self.n_space = n_space
 
-            object = self.model.getObject(str(objectID), str(nspace))
+            object = self.model.getObject(str(object_id), str(n_space))
             if not object:
-                print ''.join(['Object with id=', str(objectID), ' ns=', str(nspace), ' could not be found. Omitting...'])
+                print ''.join(['Object with id=', str(object_id), ' ns=', \
+                               str(n_space), \
+                               ' could not be found. Omitting...'])
                 continue
 
             x = instance.get('x')
             y = instance.get('y')
             z = instance.get('z')
-            stackpos = instance.get('stackpos')
+            stack_pos = instance.get('stackpos')
             id = instance.get('id')
 
             if x:
@@ -271,7 +288,9 @@ class XMLMapLoader(fife.ResourceLoader):
             else:
                 id = str(id)
 
-            inst = layer.createInstance(object, fife.ExactModelCoordinate(x,y,z), str(id))
+            inst = layer.createInstance(object, \
+                                        fife.ExactModelCoordinate(x,y,z), \
+                                        str(id))
 
             rotation = instance.get('r')
             if not rotation:
@@ -287,8 +306,8 @@ class XMLMapLoader(fife.ResourceLoader):
             inst.setRotation(rotation)
 
             fife.InstanceVisual.create(inst)
-            if (stackpos):
-                inst.get2dGfxVisual().setStackPosition(int(stackpos))
+            if (stack_pos):
+                inst.get2dGfxVisual().setStackPosition(int(stack_pos))
 
             if (object.getAction('default')):
                 target = fife.Location(layer)
@@ -302,7 +321,7 @@ class XMLMapLoader(fife.ResourceLoader):
                 inst_dict["id"] = id
                 inst_dict["xpos"] = x
                 inst_dict["ypos"] = y
-                inst_dict["gfx"] = objectID
+                inst_dict["gfx"] = object_id
                 inst_dict["is_open"] = instance.get('is_open')
                 inst_dict["locked"] = instance.get('locked')
                 inst_dict["name"] = instance.get('name')
@@ -311,12 +330,13 @@ class XMLMapLoader(fife.ResourceLoader):
                     inst_dict['dialogue'] = instance.get('dialogue')
                 inst_dict["target_map_name"] = instance.get('target_map_name')
                 inst_dict["target_map"] = instance.get('target_map')
-                inst_dict["target_pos"] = (instance.get('target_x'), instance.get('target_y'))
+                inst_dict["target_pos"] = (instance.get('target_x'), \
+                                           instance.get('target_y'))
                 self.data.createObject(layer, inst_dict, inst)
                 
     def parseCameras(self, map_elt, map):
         if self.callback:        
-            tmplist = map_elt.findall('camera')
+            tmp_list = map_elt.findall('camera')
             i = float(0)
 
         for camera in map_elt.findall('camera'):
@@ -327,24 +347,39 @@ class XMLMapLoader(fife.ResourceLoader):
             ref_layer_id = camera.get('ref_layer_id')
             ref_cell_width = camera.get('ref_cell_width')
             ref_cell_height = camera.get('ref_cell_height')
-            viewport = camera.get('viewport')
+            view_port = camera.get('viewport')
 
             if not zoom: zoom = 1
             if not tilt: tilt = 0
             if not rotation: rotation = 0
 
             if not id: self._err('Camera declared without an id.')
-            if not ref_layer_id: self._err(''.join(['Camera ', str(id), ' declared with no reference layer.']))
-            if not (ref_cell_width and ref_cell_height): self._err(''.join(['Camera ', str(id), ' declared without reference cell dimensions.']))
+            if not ref_layer_id: self._err(''.join(['Camera ', str(id), \
+                                                    ' declared with no '\
+                                                    'reference layer.']))
+            if not (ref_cell_width and ref_cell_height):
+                self._err(''.join(['Camera ', str(id), \
+                                   ' declared without reference cell '\
+                                   'dimensions.']))
 
             try:
-                if viewport:
-                    cam = self.engine.getView().addCamera(str(id), map.getLayer(str(ref_layer_id)),fife.Rect(*[int(c) for c in viewport.split(',')]),fife.ExactModelCoordinate(0,0,0))
+                if view_port:
+                    cam = self.engine.getView().addCamera(str(id), \
+                                    map.getLayer(str(ref_layer_id)), \
+                                    fife.Rect(\
+                                    *[int(c) for c in view_port.split(',')]),\
+                                    fife.ExactModelCoordinate(0,0,0))
                 else:
                     screen = self.engine.getRenderBackend()
-                    cam = self.engine.getView().addCamera(str(id), map.getLayer(str(ref_layer_id)),fife.Rect(0,0,screen.getScreenWidth(),screen.getScreenHeight()),fife.ExactModelCoordinate(0,0,0))
+                    cam = self.engine.getView().addCamera(str(id), \
+                                    map.getLayer(str(ref_layer_id)), \
+                                    fife.Rect(0, 0, screen.getScreenWidth(), \
+                                              screen.getScreenHeight()), \
+                                              fife.ExactModelCoordinate(0, 0,\
+                                                                        0))
 
-                cam.setCellImageDimensions(int(ref_cell_width), int(ref_cell_height))
+                cam.setCellImageDimensions(int(ref_cell_width), \
+                                           int(ref_cell_height))
                 cam.setRotation(float(rotation))
                 cam.setTilt(float(tilt))
                 cam.setZoom(float(zoom))
@@ -353,4 +388,5 @@ class XMLMapLoader(fife.ResourceLoader):
                 
             if self.callback:
                 i += 1
-                self.callback('loaded camera: ' +  str(id), float( i / len(tmplist) * 0.25 + 0.75 ) )    
+                self.callback('loaded camera: ' +  str(id), \
+                              float( i / len(tmp_list) * 0.25 + 0.75 ) )    

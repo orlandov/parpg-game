@@ -26,7 +26,8 @@ from serializers.xmlobject import XMLObjectLoader
 fileExtensions = ('xml',)
 
 def loadMapFile(path, engine, data, callback=None):
-    """     load map file and get (an optional) callback if major stuff is done:
+    """     load map file and get (an optional) callback if major stuff 
+            is done:
     - map creation
     - parsed impor0ts
     - parsed layers 
@@ -47,7 +48,9 @@ def loadMapFile(path, engine, data, callback=None):
     return map
 
 def loadImportFile(path, engine):
-    object_loader = XMLObjectLoader(engine.getImagePool(), engine.getAnimationPool(), engine.getModel(), engine.getVFS())
+    object_loader = XMLObjectLoader(engine.getImagePool(), \
+                                    engine.getAnimationPool(), \
+                                    engine.getModel(), engine.getVFS())
     res = None
     try:
         res = object_loader.loadResource(fife.ResourceLocation(path))
