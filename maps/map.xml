@@ -33,11 +33,7 @@
   <import file="../objects/buildings/shanty/shantyi.xml"/>
   <import file="../objects/buildings/shanty/shanty-shadow.xml"/>
   <import file="../objects/buildings/shanty/shanty-door.xml"/>
-  <import file="../objects/buildings/windmill/windmilla.xml"/>
-  <import file="../objects/buildings/windmill/windmillb.xml"/>
-  <import file="../objects/buildings/windmill/windmillc.xml"/>
-  <import file="../objects/buildings/windmill/windmilld.xml"/>
-  <import file="../objects/buildings/windmill/windmille.xml"/>
+  <import file="../objects/buildings/guard_tower/guard_tower.xml"/>
   <!-- Import the purely visual objects -->
   <import file="../objects/ground/walls/wall_rear/wall-up.xml"/>
   <!-- Import the tile transition tiles -->
@@ -71,7 +67,7 @@
   <import file="../objects/ground/grass/transition/grass-ts13.xml"/>
   <import file="../objects/ground/grass/transition/grass-ts14.xml"/>
   <import file="../objects/ground/grass/transition/grass-ts15.xml"/>
-  <layer grid_type="square" id="GroundLayer" x_scale="1.0" pathing="cell_edges_only" y_scale="1.0" rotation="0.0" x_offset="0.0" y_offset="0.0">
+  <layer grid_type="square" id="GroundLayer" x_scale="1.0" pathing="cell_edges_only" y_scale="1.0" rotation="0.0" x_offset="0.0" y_offset="0.0" transparency="0">
     <instances>
       <i r="0" z="0.0" x="1.0" o="snow02" y="-1.0" ns="PARPG"/>
       <i x="2.0" o="snow02" z="0.0" y="-1.0" r="0"/>
@@ -1914,12 +1910,12 @@
     </instances>
   </layer>
   <!-- Layer for on ground overlays -->
-  <layer x_offset="0.0" pathing="cell_edges_and_diagonals" y_offset="0.0" grid_type="square" id="OverlayLayer" x_scale="1" y_scale="1" rotation="0.0">
+  <layer x_offset="0.0" pathing="cell_edges_and_diagonals" y_offset="0.0" grid_type="square" id="OverlayLayer" x_scale="1" y_scale="1" rotation="0.0" transparency="0">
     <instances>
       <i x="-4" o="shanty-shadow" z="0.0" y="3" r="0"/>
     </instances>
   </layer>
-  <layer x_offset="0.0" pathing="cell_edges_and_diagonals" y_offset="0.0" grid_type="square" id="ObjectLayer" x_scale="1" y_scale="1" rotation="0.0">
+  <layer x_offset="0.0" pathing="cell_edges_and_diagonals" y_offset="0.0" grid_type="square" id="ObjectLayer" x_scale="1" y_scale="1" rotation="0.0" transparency="0">
     <instances>
       <i x="-4" o="shantya" z="0.0" y="3" r="0"/>
       <i x="-4" o="shantyb" z="0.0" y="4" r="0"/>
@@ -1957,6 +1953,7 @@
       <i x="-4.0" o="crate" z="0.0" y="-6.0" r="0" id="crate02" object_type="WoodenCrate" is_open="False" locked="False" name="A dirty old crate" text="A crate that is covered in grime and dirt. There doesn't seem to be anything remarkable about it"/>
       <!-- A sample door -->
       <i x="-2.0" o="shanty-door" z="0.0" y="6.0" r="0" id="shanty-door01" object_type="ShantyDoor" is_open="False" name="Shanty Door" text="Looks like the entrance to the building." target_map_name="map2" target_map="maps/map2.xml" target_x="10.0" target_y="10.0"/>
+      <i x="17.0" o="guard_tower" z="0.0" y="-14.0" r="0"></i>
     </instances>
   </layer>
   <camera ref_cell_width="72" zoom="1.0" tilt="-60.0" id="main" ref_layer_id="ObjectLayer" ref_cell_height="38" rotation="45.0"/>
