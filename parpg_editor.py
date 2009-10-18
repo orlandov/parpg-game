@@ -44,7 +44,7 @@ if __name__ == '__main__':
     fife_editor_path = os.path.join(parpg_path, '..', 'editor')
     os.chdir(fife_editor_path)
     env = os.environ.copy()
-    env['PYTHONPATH'] = ":".join([
+    env['PYTHONPATH'] = os.pathsep.join([
         os.path.join('..', parpg_path, 'editor'),
         os.path.join('..', parpg_path, 'local_loaders')
     ])
