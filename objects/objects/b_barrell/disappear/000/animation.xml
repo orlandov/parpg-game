@@ -1,0 +1,13 @@
+<animation delay="100" namespace="PAPRG" id="b_barrel:disappear:000" x_offset="0" y_offset="-15">
+	<frame source="b_barrell_0.png" />
+	<frame source="b_barrell_1.png" />
+	<frame source="b_barrell_2.png" />
+	<frame source="b_barrell_3.png" />
+	<frame source="b_barrell_4.png" />
+	<frame source="b_barrell_5.png" />
+	<frame source="b_barrell_6.png" />
+	<frame source="b_barrell_7.png" />
+	<frame source="b_barrell_8.png" />
+	<frame source="b_barrell_9.png" />
+	<frame source="b_barrell_10.png" />
+</animation>
