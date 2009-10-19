@@ -238,16 +238,31 @@ class World(EventListenerBase):
                                                 self.active_map.agent_layer)
         # no object returns an empty tuple
         if(i != ()):
+            front_y = 0
+            front_obj = None
+
             for obj in i:
                 # check to see if this in our list at all
                 if(self.data.objectActive(obj.getId())):
-                    # yes, so outline 
-                    self.active_map.outline_render.addOutlined(obj, 0, \
+                    # check if the object is on the foreground 
+                    obj_map_coords = \
+                                      obj.getLocation().getMapCoordinates()
+                    obj_screen_coords = self.active_map.cameras["main"]\
+                                    .toScreenCoordinates(obj_map_coords)
+                    
+                    if obj_screen_coords.y > front_y:
+                        #Object on the foreground
+                        front_y = obj_screen_coords.y
+                        front_obj = obj
+
+            if front_obj:                    
+                self.active_map.outline_render.removeAllOutlines() 
+                self.active_map.outline_render.addOutlined(front_obj, 0, \
                                                                137, 255, 2)
-                    # get the text
-                    item = self.data.objectActive(obj.getId())
-                    if(item is not None):
-                        self.displayObjectText(obj, item.name)
+                # get the text
+                item = self.data.objectActive(front_obj.getId())
+                if(item is not None):
+                    self.displayObjectText(front_obj, item.name)
         else:
             # erase the outline
             self.active_map.outline_render.removeAllOutlines()
