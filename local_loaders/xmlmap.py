@@ -330,8 +330,9 @@ class XMLMapLoader(fife.ResourceLoader):
                     inst_dict['dialogue'] = instance.get('dialogue')
                 inst_dict["target_map_name"] = instance.get('target_map_name')
                 inst_dict["target_map"] = instance.get('target_map')
-                inst_dict["target_pos"] = (instance.get('target_x'), \
-                                           instance.get('target_y'))
+                inst_dict["target_x"] = instance.get('target_x')
+                inst_dict["target_y"] = instance.get('target_y')
+
                 self.data.createObject(layer, inst_dict, inst)
                 
     def parseCameras(self, map_elt, map):
