@@ -168,6 +168,8 @@
 			<i o="snow02" r="0" x="5.0" y="-8.0" z="0.0" />
 			<i o="snow02" r="0" x="6.0" y="-8.0" z="0.0" />
 			<i o="snow02" r="0" x="7.0" y="-8.0" z="0.0" />
+			<i o="snow02" r="0" x="8.0" y="-8.0" z="0.0" />
+			<i o="snow02" r="0" x="9.0" y="-8.0" z="0.0" />
 			<i o="snow02" r="0" x="-4.0" y="-7.0" z="0.0" />
 			<i o="snow02" r="0" x="-3.0" y="-7.0" z="0.0" />
 			<i o="snow02" r="0" x="-2.0" y="-7.0" z="0.0" />
@@ -221,6 +223,9 @@
 			<i o="snow02" r="0" x="6.0" y="-7.0" z="0.0" />
 			<i o="snow02" r="0" x="7.0" y="-7.0" z="0.0" />
 			<i o="snow02" r="0" x="8.0" y="-7.0" z="0.0" />
+			<i o="snow02" r="0" x="13.0" y="-8.0" z="0.0" />
+			<i o="snow02" r="0" x="14.0" y="-8.0" z="0.0" />
+			<i o="snow02" r="0" x="15.0" y="-8.0" z="0.0" />
 			<i o="snow02" r="0" x="15.0" y="-7.0" z="0.0" />
 			<i o="snow02" r="0" x="15.0" y="-6.0" z="0.0" />
 			<i o="snow02" r="0" x="15.0" y="-5.0" z="0.0" />
@@ -393,6 +398,9 @@
 			<i o="snow02" r="0" x="12.0" y="7.0" z="0.0" />
 			<i o="snow02" r="0" x="11.0" y="7.0" z="0.0" />
 			<i o="snow02" r="0" x="12.0" y="6.0" z="0.0" />
+			<i o="snow02" r="0" x="15.0" y="-9.0" z="0.0" />
+			<i o="snow02" r="0" x="15.0" y="-10.0" z="0.0" />
+			<i o="snow02" r="0" x="15.0" y="-11.0" z="0.0" />
 			<i o="snow02" r="0" x="14.0" y="-11.0" z="0.0" />
 			<i o="snow02" r="0" x="13.0" y="-11.0" z="0.0" />
 			<i o="snow02" r="0" x="7.0" y="-11.0" z="0.0" />
@@ -536,7 +544,9 @@
 			<i o="snow02" r="0" x="5.0" y="-10.0" z="0.0" />
 			<i o="snow02" r="0" x="6.0" y="-10.0" z="0.0" />
 			<i o="snow02" r="0" x="7.0" y="-10.0" z="0.0" />
+			<i o="snow02" r="0" x="8.0" y="-10.0" z="0.0" />
 			<i o="snow02" r="0" x="9.0" y="-10.0" z="0.0" />
+			<i o="snow02" r="0" x="8.0" y="-9.0" z="0.0" />
 			<i o="snow02" r="0" x="7.0" y="-9.0" z="0.0" />
 			<i o="snow02" r="0" x="6.0" y="-9.0" z="0.0" />
 			<i o="snow02" r="0" x="5.0" y="-9.0" z="0.0" />
@@ -545,6 +555,8 @@
 			<i o="snow02" r="0" x="14.0" y="-9.0" z="0.0" />
 			<i o="snow02" r="0" x="14.0" y="-10.0" z="0.0" />
 			<i o="snow02" r="0" x="13.0" y="-10.0" z="0.0" />
+			<i o="snow02" r="0" x="15.0" y="-12.0" z="0.0" />
+			<i o="snow02" r="0" x="15.0" y="-13.0" z="0.0" />
 			<i o="snow02" r="0" x="15.0" y="-14.0" z="0.0" />
 			<i o="snow02" r="0" x="15.0" y="-15.0" z="0.0" />
 			<i o="snow02" r="0" x="15.0" y="-16.0" z="0.0" />
@@ -782,8 +794,10 @@
 			<i o="snow02" r="0" x="14.0" y="-16.0" z="0.0" />
 			<i o="snow02" r="0" x="14.0" y="-15.0" z="0.0" />
 			<i o="snow02" r="0" x="14.0" y="-14.0" z="0.0" />
+			<i o="snow02" r="0" x="14.0" y="-13.0" z="0.0" />
 			<i o="snow02" r="0" x="14.0" y="-12.0" z="0.0" />
 			<i o="snow02" r="0" x="13.0" y="-12.0" z="0.0" />
+			<i o="snow02" r="0" x="13.0" y="-13.0" z="0.0" />
 			<i o="snow02" r="0" x="12.0" y="-14.0" z="0.0" />
 			<i o="snow02" r="0" x="13.0" y="-14.0" z="0.0" />
 			<i o="snow02" r="0" x="11.0" y="-14.0" z="0.0" />
@@ -1135,7 +1149,12 @@
 			<i o="snow02" r="0" x="-10.0" y="-23.0" z="0.0" />
 			<i o="snow02" r="0" x="-7.0" y="-23.0" z="0.0" />
 			<i o="snow02" r="0" x="-6.0" y="-23.0" z="0.0" />
+			<i o="snow02" r="0" x="16.0" y="-23.0" z="0.0" />
 			<i o="snow02" r="0" x="17.0" y="-23.0" z="0.0" />
+			<i o="snow02" r="0" x="18.0" y="-23.0" z="0.0" />
+			<i o="snow02" r="0" x="19.0" y="-23.0" z="0.0" />
+			<i o="snow02" r="0" x="20.0" y="-23.0" z="0.0" />
+			<i o="snow02" r="0" x="21.0" y="-23.0" z="0.0" />
 			<i o="snow02" r="0" x="16.0" y="-2.0" z="0.0" />
 			<i o="snow02" r="0" x="17.0" y="-2.0" z="0.0" />
 			<i o="snow02" r="0" x="18.0" y="-2.0" z="0.0" />
@@ -1173,30 +1192,63 @@
 			<i o="snow02" r="0" x="21.0" y="-8.0" z="0.0" />
 			<i o="snow02" r="0" x="21.0" y="-9.0" z="0.0" />
 			<i o="snow02" r="0" x="20.0" y="-10.0" z="0.0" />
+			<i o="snow02" r="0" x="20.0" y="-11.0" z="0.0" />
+			<i o="snow02" r="0" x="20.0" y="-12.0" z="0.0" />
+			<i o="snow02" r="0" x="20.0" y="-13.0" z="0.0" />
+			<i o="snow02" r="0" x="20.0" y="-14.0" z="0.0" />
+			<i o="snow02" r="0" x="20.0" y="-15.0" z="0.0" />
 			<i o="snow02" r="0" x="20.0" y="-16.0" z="0.0" />
 			<i o="snow02" r="0" x="20.0" y="-17.0" z="0.0" />
+			<i o="snow02" r="0" x="20.0" y="-18.0" z="0.0" />
 			<i o="snow02" r="0" x="20.0" y="-19.0" z="0.0" />
+			<i o="snow02" r="0" x="20.0" y="-20.0" z="0.0" />
 			<i o="snow02" r="0" x="21.0" y="-10.0" z="0.0" />
+			<i o="snow02" r="0" x="21.0" y="-11.0" z="0.0" />
 			<i o="snow02" r="0" x="21.0" y="-18.0" z="0.0" />
 			<i o="snow02" r="0" x="21.0" y="-19.0" z="0.0" />
 			<i o="snow02" r="0" x="21.0" y="-20.0" z="0.0" />
 			<i o="snow02" r="0" x="21.0" y="-21.0" z="0.0" />
+			<i o="snow02" r="0" x="21.0" y="-22.0" z="0.0" />
+			<i o="snow02" r="0" x="21.0" y="-12.0" z="0.0" />
+			<i o="snow02" r="0" x="21.0" y="-13.0" z="0.0" />
+			<i o="snow02" r="0" x="21.0" y="-14.0" z="0.0" />
 			<i o="snow02" r="0" x="21.0" y="-15.0" z="0.0" />
 			<i o="snow02" r="0" x="21.0" y="-16.0" z="0.0" />
 			<i o="snow02" r="0" x="21.0" y="-17.0" z="0.0" />
 			<i o="snow02" r="0" x="19.0" y="-15.0" z="0.0" />
+			<i o="snow02" r="0" x="18.0" y="-15.0" z="0.0" />
+			<i o="snow02" r="0" x="17.0" y="-16.0" z="0.0" />
+			<i o="snow02" r="0" x="17.0" y="-17.0" z="0.0" />
+			<i o="snow02" r="0" x="17.0" y="-18.0" z="0.0" />
+			<i o="snow02" r="0" x="18.0" y="-19.0" z="0.0" />
 			<i o="snow02" r="0" x="19.0" y="-18.0" z="0.0" />
 			<i o="snow02" r="0" x="19.0" y="-17.0" z="0.0" />
 			<i o="snow02" r="0" x="18.0" y="-17.0" z="0.0" />
+			<i o="snow02" r="0" x="18.0" y="-18.0" z="0.0" />
 			<i o="snow02" r="0" x="19.0" y="-16.0" z="0.0" />
+			<i o="snow02" r="0" x="18.0" y="-16.0" z="0.0" />
+			<i o="snow02" r="0" x="16.0" y="-18.0" z="0.0" />
+			<i o="snow02" r="0" x="16.0" y="-17.0" z="0.0" />
 			<i o="snow02" r="0" x="19.0" y="-19.0" z="0.0" />
 			<i o="snow02" r="0" x="17.0" y="-19.0" z="0.0" />
+			<i o="snow02" r="0" x="16.0" y="-19.0" z="0.0" />
+			<i o="snow02" r="0" x="16.0" y="-20.0" z="0.0" />
+			<i o="snow02" r="0" x="17.0" y="-20.0" z="0.0" />
+			<i o="snow02" r="0" x="18.0" y="-20.0" z="0.0" />
+			<i o="snow02" r="0" x="17.0" y="-21.0" z="0.0" />
+			<i o="snow02" r="0" x="17.0" y="-22.0" z="0.0" />
+			<i o="snow02" r="0" x="16.0" y="-22.0" z="0.0" />
 			<i o="snow02" r="0" x="16.0" y="-21.0" z="0.0" />
 			<i o="snow02" r="0" x="19.0" y="-20.0" z="0.0" />
 			<i o="snow02" r="0" x="19.0" y="-21.0" z="0.0" />
 			<i o="snow02" r="0" x="19.0" y="-22.0" z="0.0" />
 			<i o="snow02" r="0" x="20.0" y="-21.0" z="0.0" />
 			<i o="snow02" r="0" x="20.0" y="-22.0" z="0.0" />
+			<i o="snow02" r="0" x="18.0" y="-21.0" z="0.0" />
+			<i o="snow02" r="0" x="18.0" y="-22.0" z="0.0" />
+			<i o="snow02" r="0" x="16.0" y="-16.0" z="0.0" />
+			<i o="snow02" r="0" x="16.0" y="-15.0" z="0.0" />
+			<i o="snow02" r="0" x="16.0" y="-11.0" z="0.0" />
 			<i o="snow02" r="0" x="16.0" y="-10.0" z="0.0" />
 			<i o="snow02" r="0" x="17.0" y="-4.0" z="0.0" />
 			<i o="snow02" r="0" x="16.0" y="-4.0" z="0.0" />
@@ -1222,6 +1274,20 @@
 			<i o="snow02" r="0" x="17.0" y="-10.0" z="0.0" />
 			<i o="snow02" r="0" x="17.0" y="-9.0" z="0.0" />
 			<i o="snow02" r="0" x="18.0" y="-10.0" z="0.0" />
+			<i o="snow02" r="0" x="18.0" y="-11.0" z="0.0" />
+			<i o="snow02" r="0" x="17.0" y="-11.0" z="0.0" />
+			<i o="snow02" r="0" x="17.0" y="-12.0" z="0.0" />
+			<i o="snow02" r="0" x="18.0" y="-12.0" z="0.0" />
+			<i o="snow02" r="0" x="17.0" y="-13.0" z="0.0" />
+			<i o="snow02" r="0" x="17.0" y="-14.0" z="0.0" />
+			<i o="snow02" r="0" x="16.0" y="-14.0" z="0.0" />
+			<i o="snow02" r="0" x="17.0" y="-15.0" z="0.0" />
+			<i o="snow02" r="0" x="16.0" y="-13.0" z="0.0" />
+			<i o="snow02" r="0" x="16.0" y="-12.0" z="0.0" />
+			<i o="snow02" r="0" x="18.0" y="-13.0" z="0.0" />
+			<i o="snow02" r="0" x="18.0" y="-14.0" z="0.0" />
+			<i o="snow02" r="0" x="19.0" y="-13.0" z="0.0" />
+			<i o="snow02" r="0" x="19.0" y="-12.0" z="0.0" />
 			<i o="snow02" r="0" x="18.0" y="-9.0" z="0.0" />
 			<i o="snow02" r="0" x="18.0" y="-8.0" z="0.0" />
 			<i o="snow02" r="0" x="19.0" y="-8.0" z="0.0" />
@@ -1229,6 +1295,8 @@
 			<i o="snow02" r="0" x="19.0" y="-6.0" z="0.0" />
 			<i o="snow02" r="0" x="19.0" y="-9.0" z="0.0" />
 			<i o="snow02" r="0" x="19.0" y="-10.0" z="0.0" />
+			<i o="snow02" r="0" x="19.0" y="-11.0" z="0.0" />
+			<i o="snow02" r="0" x="19.0" y="-14.0" z="0.0" />
 			<i o="snow02" r="0" x="16.0" y="-9.0" z="0.0" />
 			<i o="snow02" r="0" x="18.0" y="-7.0" z="0.0" />
 			<i o="snow02" r="0" x="17.0" y="-8.0" z="0.0" />
@@ -1742,101 +1810,32 @@
 			<i o="gravel" r="0" x="-19.0" y="-4.0" z="0.0" />
 			<i o="gravel" r="0" x="-20.0" y="-4.0" z="0.0" />
 			<i o="snow02" r="0" x="9.0" y="-11.0" z="0.0" />
-			<i o="snow02" r="0" x="10.0" y="-12.0" z="0.0" />
-			<i o="snow02" r="0" x="9.0" y="-12.0" z="0.0" />
-			<i o="snow02" r="0" x="11.0" y="-12.0" z="0.0" />
-			<i o="snow02" r="0" x="12.0" y="-12.0" z="0.0" />
-			<i o="snow02" r="0" x="12.0" y="-11.0" z="0.0" />
-			<i o="snow02" r="0" x="11.0" y="-11.0" z="0.0" />
-			<i o="snow02" r="0" x="11.0" y="-10.0" z="0.0" />
-			<i o="snow02" r="0" x="11.0" y="-9.0" z="0.0" />
-			<i o="snow02" r="0" x="11.0" y="-7.0" z="0.0" />
-			<i o="snow02" r="0" x="12.0" y="-7.0" z="0.0" />
-			<i o="snow02" r="0" x="12.0" y="-9.0" z="0.0" />
-			<i o="snow02" r="0" x="12.0" y="-10.0" z="0.0" />
-			<i o="snow02" r="0" x="10.0" y="-11.0" z="0.0" />
-			<i o="snow02" r="0" x="10.0" y="-10.0" z="0.0" />
-			<i o="snow02" r="0" x="10.0" y="-9.0" z="0.0" />
-			<i o="snow02" r="0" x="10.0" y="-7.0" z="0.0" />
-			<i o="snow02" r="0" x="8.0" y="-8.0" z="0.0" />
-			<i o="snow02" r="0" x="8.0" y="-9.0" z="0.0" />
-			<i o="snow02" r="0" x="9.0" y="-9.0" z="0.0" />
 			<i o="snow02" r="0" x="8.0" y="-11.0" z="0.0" />
 			<i o="snow02" r="0" x="8.0" y="-12.0" z="0.0" />
 			<i o="snow02" r="0" x="8.0" y="-13.0" z="0.0" />
 			<i o="snow02" r="0" x="9.0" y="-13.0" z="0.0" />
+			<i o="snow02" r="0" x="9.0" y="-12.0" z="0.0" />
+			<i o="snow02" r="0" x="10.0" y="-12.0" z="0.0" />
 			<i o="snow02" r="0" x="10.0" y="-13.0" z="0.0" />
 			<i o="snow02" r="0" x="11.0" y="-13.0" z="0.0" />
 			<i o="snow02" r="0" x="12.0" y="-13.0" z="0.0" />
-			<i o="snow02" r="0" x="13.0" y="-13.0" z="0.0" />
-			<i o="snow02" r="0" x="14.0" y="-13.0" z="0.0" />
-			<i o="snow02" r="0" x="15.0" y="-13.0" z="0.0" />
-			<i o="snow02" r="0" x="15.0" y="-12.0" z="0.0" />
-			<i o="snow02" r="0" x="15.0" y="-11.0" z="0.0" />
-			<i o="snow02" r="0" x="15.0" y="-10.0" z="0.0" />
-			<i o="snow02" r="0" x="15.0" y="-9.0" z="0.0" />
-			<i o="snow02" r="0" x="15.0" y="-8.0" z="0.0" />
-			<i o="snow02" r="0" x="14.0" y="-8.0" z="0.0" />
-			<i o="snow02" r="0" x="13.0" y="-8.0" z="0.0" />
-			<i o="snow02" r="0" x="12.0" y="-8.0" z="0.0" />
+			<i o="snow02" r="0" x="11.0" y="-12.0" z="0.0" />
+			<i o="snow02" r="0" x="11.0" y="-11.0" z="0.0" />
+			<i o="snow02" r="0" x="11.0" y="-10.0" z="0.0" />
+			<i o="snow02" r="0" x="11.0" y="-9.0" z="0.0" />
 			<i o="snow02" r="0" x="11.0" y="-8.0" z="0.0" />
+			<i o="snow02" r="0" x="12.0" y="-8.0" z="0.0" />
+			<i o="snow02" r="0" x="12.0" y="-9.0" z="0.0" />
+			<i o="snow02" r="0" x="12.0" y="-10.0" z="0.0" />
+			<i o="snow02" r="0" x="12.0" y="-11.0" z="0.0" />
+			<i o="snow02" r="0" x="12.0" y="-7.0" z="0.0" />
+			<i o="snow02" r="0" x="10.0" y="-7.0" z="0.0" />
 			<i o="snow02" r="0" x="10.0" y="-8.0" z="0.0" />
-			<i o="snow02" r="0" x="9.0" y="-8.0" z="0.0" />
-			<i o="snow02" r="0" x="17.0" y="-16.0" z="0.0" />
-			<i o="snow02" r="0" x="17.0" y="-17.0" z="0.0" />
-			<i o="snow02" r="0" x="17.0" y="-18.0" z="0.0" />
-			<i o="snow02" r="0" x="18.0" y="-18.0" z="0.0" />
-			<i o="snow02" r="0" x="18.0" y="-19.0" z="0.0" />
-			<i o="snow02" r="0" x="18.0" y="-20.0" z="0.0" />
-			<i o="snow02" r="0" x="18.0" y="-21.0" z="0.0" />
-			<i o="snow02" r="0" x="16.0" y="-23.0" z="0.0" />
-			<i o="snow02" r="0" x="16.0" y="-22.0" z="0.0" />
-			<i o="snow02" r="0" x="17.0" y="-22.0" z="0.0" />
-			<i o="snow02" r="0" x="17.0" y="-21.0" z="0.0" />
-			<i o="snow02" r="0" x="17.0" y="-20.0" z="0.0" />
-			<i o="snow02" r="0" x="16.0" y="-20.0" z="0.0" />
-			<i o="snow02" r="0" x="16.0" y="-19.0" z="0.0" />
-			<i o="snow02" r="0" x="16.0" y="-18.0" z="0.0" />
-			<i o="snow02" r="0" x="16.0" y="-17.0" z="0.0" />
-			<i o="snow02" r="0" x="16.0" y="-16.0" z="0.0" />
-			<i o="snow02" r="0" x="16.0" y="-15.0" z="0.0" />
-			<i o="snow02" r="0" x="17.0" y="-14.0" z="0.0" />
-			<i o="snow02" r="0" x="18.0" y="-16.0" z="0.0" />
-			<i o="snow02" r="0" x="18.0" y="-15.0" z="0.0" />
-			<i o="snow02" r="0" x="17.0" y="-15.0" z="0.0" />
-			<i o="snow02" r="0" x="16.0" y="-14.0" z="0.0" />
-			<i o="snow02" r="0" x="19.0" y="-14.0" z="0.0" />
-			<i o="snow02" r="0" x="20.0" y="-14.0" z="0.0" />
-			<i o="snow02" r="0" x="21.0" y="-14.0" z="0.0" />
-			<i o="snow02" r="0" x="17.0" y="-12.0" z="0.0" />
-			<i o="snow02" r="0" x="18.0" y="-13.0" z="0.0" />
-			<i o="snow02" r="0" x="19.0" y="-13.0" z="0.0" />
-			<i o="snow02" r="0" x="18.0" y="-14.0" z="0.0" />
-			<i o="snow02" r="0" x="17.0" y="-13.0" z="0.0" />
-			<i o="snow02" r="0" x="16.0" y="-13.0" z="0.0" />
-			<i o="snow02" r="0" x="16.0" y="-12.0" z="0.0" />
-			<i o="snow02" r="0" x="16.0" y="-11.0" z="0.0" />
-			<i o="snow02" r="0" x="19.0" y="-11.0" z="0.0" />
-			<i o="snow02" r="0" x="20.0" y="-11.0" z="0.0" />
-			<i o="snow02" r="0" x="17.0" y="-11.0" z="0.0" />
-			<i o="snow02" r="0" x="18.0" y="-11.0" z="0.0" />
-			<i o="snow02" r="0" x="18.0" y="-12.0" z="0.0" />
-			<i o="snow02" r="0" x="19.0" y="-12.0" z="0.0" />
-			<i o="snow02" r="0" x="21.0" y="-13.0" z="0.0" />
-			<i o="snow02" r="0" x="21.0" y="-12.0" z="0.0" />
-			<i o="snow02" r="0" x="21.0" y="-11.0" z="0.0" />
-			<i o="snow02" r="0" x="20.0" y="-12.0" z="0.0" />
-			<i o="snow02" r="0" x="20.0" y="-13.0" z="0.0" />
-			<i o="snow02" r="0" x="20.0" y="-15.0" z="0.0" />
-			<i o="snow02" r="0" x="20.0" y="-18.0" z="0.0" />
-			<i o="snow02" r="0" x="20.0" y="-20.0" z="0.0" />
-			<i o="snow02" r="0" x="21.0" y="-22.0" z="0.0" />
-			<i o="snow02" r="0" x="21.0" y="-23.0" z="0.0" />
-			<i o="snow02" r="0" x="20.0" y="-23.0" z="0.0" />
-			<i o="snow02" r="0" x="19.0" y="-23.0" z="0.0" />
-			<i o="snow02" r="0" x="18.0" y="-23.0" z="0.0" />
-			<i o="snow02" r="0" x="18.0" y="-22.0" z="0.0" />
-			<i o="snow02" r="0" x="8.0" y="-10.0" z="0.0" />
+			<i o="snow02" r="0" x="10.0" y="-9.0" z="0.0" />
+			<i o="snow02" r="0" x="10.0" y="-10.0" z="0.0" />
+			<i o="snow02" r="0" x="10.0" y="-11.0" z="0.0" />
+			<i o="snow02" r="0" x="12.0" y="-12.0" z="0.0" />
+			<i o="snow02" r="0" x="11.0" y="-7.0" z="0.0" />
 			</instances>
 	</layer>
 
@@ -1868,44 +1867,43 @@
 			<i o="block" r="0" x="7.0" y="-3.0" z="0.0" />
 			<i o="block" r="0" x="8.0" y="-4.0" z="0.0" />
 			<i o="block" r="0" x="8.0" y="-3.0" z="0.0" />
-			<i gfx="player" id="PC" o="player" object_type="PlayerCharacter" r="0" target_pos="(None, None)" x="0.0" y="0.0" z="0.0" />
-			<i gfx="long_coat_female" id="long_coat_female0" name="Aeon" o="long_coat_female" object_type="NonPlayerCharacter" r="0" target_pos="(None, None)" text="A woman wearing a large coat" x="-5.0" xpos="-5.0" y="-3.0" ypos="-3.0" z="0.0" />
-			<i gfx="long_coat_male" id="long_coat_male0" name="The Judge" o="long_coat_male" object_type="NonPlayerCharacter" r="0" target_pos="(None, None)" text="A man wearing a large coat" x="-5.0" xpos="-5.0" y="-4.0" ypos="-4.0" z="0.0" />
-			<i dialogue="dialogue/farmer.yaml" gfx="male_farmer_1" id="male_farmer0" name="Manslow" o="male_farmer_1" object_type="NonPlayerCharacter" r="0" target_pos="(None, None)" text="A grimy looking farmer" x="-5.0" xpos="-5.0" y="-5.0" ypos="-5.0" z="0.0" />
-			<i gfx="male_traveler_1" id="male_traveler0" name="Gregor" o="male_traveler_1" object_type="NonPlayerCharacter" r="0" target_pos="(None, None)" text="A wandering traveler" x="-5.0" xpos="-5.0" y="-6.0" ypos="-6.0" z="0.0" />
-			<i dialogue="dialogue/sample.yaml" gfx="npc_woman" id="woman01" name="Loranda" o="npc_woman" object_type="NonPlayerCharacter" r="0" target_pos="(None, None)" text="A friendly woman" x="-5.0" xpos="-5.0" y="-7.0" ypos="-7.0" z="0.0" />
-			<i gfx="crate" id="crate01" is_open="False" locked="False" name="asdf" o="crate" object_type="WoodenCrate" r="0" target_pos="(None, None)" text="A crate that is covered in grime and dirt. There doesn&apos;t seem to be anything remarkable about it" x="-3.0" xpos="-3.0" y="-4.0" ypos="-4.0" z="0.0" />
-			<i gfx="crate" id="crate02" is_open="False" locked="False" name="A dirty old crate" o="crate" object_type="WoodenCrate" r="0" target_pos="(None, None)" text="A crate that is covered in grime and dirt. There doesn&apos;t seem to be anything remarkable about it" x="-4.0" xpos="-4.0" y="-6.0" ypos="-6.0" z="0.0" />
-			<i gfx="shanty-door" id="shanty-door01" is_open="False" name="Shanty Door" o="shanty-door" object_type="ShantyDoor" r="0" target_map="maps/map2.xml" target_map_name="map2" target_pos="(None, None)" text="Looks like the entrance to the building." x="-2.0" xpos="-2.0" y="6.0" ypos="6.0" z="0.0" />
+			<i gfx="player" id="PC" o="player" object_type="PlayerCharacter" r="0" x="0.0" y="0.0" z="0.0" />
+			<i gfx="long_coat_female" id="long_coat_female0" name="Aeon" o="long_coat_female" object_type="NonPlayerCharacter" r="0" text="A woman wearing a large coat" x="-5.0" xpos="-5.0" y="-3.0" ypos="-3.0" z="0.0" />
+			<i gfx="long_coat_male" id="long_coat_male0" name="The Judge" o="long_coat_male" object_type="NonPlayerCharacter" r="0" text="A man wearing a large coat" x="-5.0" xpos="-5.0" y="-4.0" ypos="-4.0" z="0.0" />
+			<i dialogue="dialogue/farmer.yaml" gfx="male_farmer_1" id="male_farmer0" name="Manslow" o="male_farmer_1" object_type="NonPlayerCharacter" r="0" text="A grimy looking farmer" x="-5.0" xpos="-5.0" y="-5.0" ypos="-5.0" z="0.0" />
+			<i gfx="male_traveler_1" id="male_traveler0" name="Gregor" o="male_traveler_1" object_type="NonPlayerCharacter" r="0" text="A wandering traveler" x="-5.0" xpos="-5.0" y="-6.0" ypos="-6.0" z="0.0" />
+			<i dialogue="dialogue/sample.yaml" gfx="npc_woman" id="woman01" name="Loranda" o="npc_woman" object_type="NonPlayerCharacter" r="0" text="A friendly woman" x="-5.0" xpos="-5.0" y="-7.0" ypos="-7.0" z="0.0" />
+			<i gfx="crate" id="crate01" is_open="False" locked="False" name="asdf" o="crate" object_type="WoodenCrate" r="0" text="A crate that is covered in grime and dirt. There doesn&apos;t seem to be anything remarkable about it" x="-3.0" xpos="-3.0" y="-4.0" ypos="-4.0" z="0.0" />
+			<i gfx="crate" id="crate02" is_open="False" locked="False" name="A dirty old crate" o="crate" object_type="WoodenCrate" r="0" text="A crate that is covered in grime and dirt. There doesn&apos;t seem to be anything remarkable about it" x="-4.0" xpos="-4.0" y="-6.0" ypos="-6.0" z="0.0" />
+			<i gfx="shanty-door" id="shanty-door01" is_open="False" name="Shanty Door" o="shanty-door" object_type="ShantyDoor" r="0" target_map="maps/map2.xml" target_map_name="map2" target_x="10.0" target_y="10.0" text="Looks like the entrance to the building." x="-2.0" xpos="-2.0" y="6.0" ypos="6.0" z="0.0" />
 			<i o="guard_tower" r="0" x="11.0" y="-12.0" z="0.0" />
-			<i o="burning_barrel" r="0" x="8.0" y="-5.0" z="0.0" />
-			<i o="block" r="0" x="8.0" y="-8.0" z="0.0" />
-			<i o="block" r="0" x="9.0" y="-8.0" z="0.0" />
-			<i o="block" r="0" x="10.0" y="-8.0" z="0.0" />
-			<i o="block" r="0" x="11.0" y="-8.0" z="0.0" />
-			<i o="block" r="0" x="12.0" y="-8.0" z="0.0" />
-			<i o="block" r="0" x="13.0" y="-8.0" z="0.0" />
-			<i o="block" r="0" x="14.0" y="-8.0" z="0.0" />
-			<i o="block" r="0" x="15.0" y="-8.0" z="0.0" />
 			<i o="block" r="0" x="8.0" y="-9.0" z="0.0" />
-			<i o="block" r="0" x="11.0" y="-12.0" z="0.0" />
+			<i o="block" r="0" x="8.0" y="-10.0" z="0.0" />
 			<i o="block" r="0" x="8.0" y="-11.0" z="0.0" />
 			<i o="block" r="0" x="8.0" y="-12.0" z="0.0" />
 			<i o="block" r="0" x="8.0" y="-13.0" z="0.0" />
-			<i o="block" r="0" x="15.0" y="-9.0" z="0.0" />
-			<i o="block" r="0" x="15.0" y="-10.0" z="0.0" />
-			<i o="block" r="0" x="15.0" y="-11.0" z="0.0" />
-			<i o="block" r="0" x="15.0" y="-12.0" z="0.0" />
-			<i o="block" r="0" x="15.0" y="-13.0" z="0.0" />
 			<i o="block" r="0" x="8.0" y="-14.0" z="0.0" />
+			<i o="block" r="0" x="9.0" y="-9.0" z="0.0" />
+			<i o="block" r="0" x="10.0" y="-9.0" z="0.0" />
+			<i o="block" r="0" x="11.0" y="-9.0" z="0.0" />
+			<i o="block" r="0" x="12.0" y="-9.0" z="0.0" />
+			<i o="block" r="0" x="13.0" y="-9.0" z="0.0" />
+			<i o="block" r="0" x="14.0" y="-9.0" z="0.0" />
+			<i o="block" r="0" x="15.0" y="-9.0" z="0.0" />
+			<i o="block" r="0" x="16.0" y="-9.0" z="0.0" />
 			<i o="block" r="0" x="9.0" y="-14.0" z="0.0" />
 			<i o="block" r="0" x="10.0" y="-14.0" z="0.0" />
 			<i o="block" r="0" x="11.0" y="-14.0" z="0.0" />
 			<i o="block" r="0" x="12.0" y="-14.0" z="0.0" />
 			<i o="block" r="0" x="13.0" y="-14.0" z="0.0" />
 			<i o="block" r="0" x="14.0" y="-14.0" z="0.0" />
+			<i o="block" r="0" x="16.0" y="-10.0" z="0.0" />
+			<i o="block" r="0" x="16.0" y="-11.0" z="0.0" />
+			<i o="block" r="0" x="16.0" y="-12.0" z="0.0" />
+			<i o="block" r="0" x="16.0" y="-13.0" z="0.0" />
+			<i o="block" r="0" x="16.0" y="-14.0" z="0.0" />
 			<i o="block" r="0" x="15.0" y="-14.0" z="0.0" />
-			<i o="block" r="0" x="8.0" y="-10.0" z="0.0" />
+			<i o="burning_barrel" r="0" x="8.0" y="-10.0" z="0.0" />
 			</instances>
 	</layer>
 
