@@ -37,15 +37,19 @@ class Saver(object):
             'format': "1.0"
         }
         self.map_element = Element('map', attrib)
-
+        self.map_element.text = "\n\t"
+        self.map_element.tail = "\n"
         # serialize FIFE details
         self.write_imports(import_list)
         self.write_layers()
         self.write_cameras()
 
+        # add newlines to the elements
+#        for subElement in self.map_element:
+#            subElement.tail = "\n"
         # finally write out the XML file
         file(self.filepath, 'w').write(
-            """<?xml version="1.0" encoding="ascii"?>%s\n"""
+            """<?xml version="1.0" encoding="ascii"?>\n%s"""
                 % (tostring(self.map_element),))
 
     def write_imports(self, import_list):
@@ -78,11 +82,15 @@ class Saver(object):
 
     def write_import(self, filename):
         """Write an import filename"""
-        self.map_element.append(Element('import', { 'file': filename }))
+        import_element = Element('import', { 'file': filename })
+        import_element.tail = "\n\t"
+        self.map_element.append(import_element)
 
     def write_import_dir(import_dir):
         """Write an import dir"""
-        self.map_element.append(Element('import', { 'dir': import_dir }))
+        import_dir_element = Element('import', { 'dir': import_dir })
+        import_dir_element.tail = "\n"
+        self.map_element.append(import_dir_element)
 
     def write_layers(self):
         """Write a layer"""
@@ -100,11 +108,15 @@ class Saver(object):
                 'transparency': str(layer.getLayerTransparency()),
             }
             layer_element = SubElement(self.map_element, 'layer', attrib)
+            layer_element.text = "\n\t\t"
+            layer_element.tail = "\n\n\t"
             self.write_instances(layer_element, layer)
 
     def write_instances(self, layer_element, layer):
         """Write out the instances in a layer"""
         instances_element = SubElement(layer_element, 'instances')
+        instances_element.text = "\n\t\t\t"
+        instances_element.tail = "\n\t"
         for inst in layer.getInstances():
             position = inst.getLocationRef().getExactLayerCoordinates()
             attrib = {
@@ -135,7 +147,9 @@ class Saver(object):
                 attrib['object_type'] = attrib['type']
                 del attrib['type']
 
-            instances_element.append(Element('i', attrib))
+            inst_element = Element('i', attrib)
+            inst_element.tail = "\n\t\t\t"
+            instances_element.append(inst_element)
 
     def write_cameras(self):
         """Write out the cameras specified in a map"""
@@ -158,7 +172,10 @@ class Saver(object):
 
             if viewport != self.engine.getRenderBackend().getArea():
                 attrib['viewport'] = '%d,%d,%d,%d' % (viewport.x, viewport.y, viewport.w, viewport.h)
-            self.map_element.append(Element('camera', attrib))
+                
+            camera_element = Element('camera', attrib)
+            camera_element.tail = "\n"
+            self.map_element.append(camera_element)
 
     def pathing_val_to_str(self, val):
         """Convert a pathing value to a string"""
