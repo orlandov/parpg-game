@@ -209,6 +209,18 @@ class DialogueEngine(object):
                 self.callbacks["complete_quest"](state, \
                                                  command.get("complete_quest"))
 
+            elif command.get("meet"):
+                self.callbacks["meet"](state, \
+                                                 command.get("meet"))
+
+            elif command.get("get_stuff"):
+                self.callbacks["get_stuff"](state, \
+                                                 command.get("get_stuff"))
+
+            elif command.get("take_stuff"):
+                self.callbacks["take_stuff"](state, \
+                                                 command.get("take_stuff"))
+                
             elif command.get("dialogue"):
                 command = command.get("dialogue")
                 if command == "end":

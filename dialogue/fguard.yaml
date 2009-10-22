@@ -1,0 +1,279 @@
+#   This file is part of PARPG.
+
+#   PARPG is free software: you can redistribute it and/or modify
+#   it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation, either version 3 of the License, or
+#   (at your option) any later version.
+
+#   PARPG is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
+
+#   You should have received a copy of the GNU General Public License
+#   along with PARPG.  If not, see <http://www.gnu.org/licenses/>.
+
+---
+NPC: Janie
+AVATAR: gui/icons/fguard.png
+START: main_dialog
+
+SECTIONS:
+    main_dialog:
+        - say: "Halt, identify yourself!"
+        - responses:
+            -
+              - "Whoa, easy with that weapon, sister"
+              - first_impression
+              - not pc.met('janie')
+            - 
+              - "I'm the beer savior, remember?"
+              - gratitude
+              - pc.hasSatisfiedQuest('beer') 
+            - 
+              - "It's me - don't you remember?"
+              - old_pals
+              - pc.met('janie')
+            # The 'end' section ends the conversation
+            -
+              - "Sorry, didn't mean to startle you. I'll just be moving along now."
+              - end
+
+    first_impression:
+        - say: "Hey Stranger.  You're new around here, I don't recognize your face..."
+        - meet: janie
+        - responses:
+            -
+              - "Yeah, just blew in with the last storm."
+              - elaborate_fedex
+              - pc.canAcceptQuest('fedex')
+            # above should always be true since there is no other way to get the quest  
+            -
+              - "But one night with me, babe, and you'll never forget it"
+              - rude_comeon
+ 
+    elaborate_fedex:
+        - say: "Well, maybe you can do me a favor.   I have this package I need delivered
+        to Pekko.  But you gotta be casual about it.  No one can know you why you are looking for him."
+        - responses: 
+            - 
+              - "Me?  Why Me?"
+              - why_me
+            -  
+              - "Why the secrecy?"
+              - why_secret
+            -
+              - "What's in it for me?"
+              - what_do_i_get
+            -
+              - "Whatever, I need an excuse to wander around anyway."
+              - quest_fedex
+            - 
+              - "Find another errand boy."
+              - end
+ 
+    why_me:
+        - say: "No one knows you.  You're new here.  You can be expected to be wandering around being nosy."
+        - responses:
+           -
+             - "I'm still not convinced."
+             - back
+           - 
+             - "Beats watching nuthin' on TV."
+             - quest_fedex
+ 
+    why_secret:
+        - say: "Look buddy, it's no questions asked.  You think you are the only frozen bum to come wandering in here?"
+        - responses:
+           -
+             - "Bum?  You don't even know who I am."
+             - why_me
+           - 
+             - "Really.  I remain unswayed by your logic, but you are pleasing to the eye so keep talking."
+             - back 
+           -
+             - "No need to get testy, I'll do it."
+             - quest_fedex
+ 
+    what_do_i_get:
+        - say:  "Everybody wants something, huh.  I suppose my undying gratitude won't cut it?  How about a beaver pelt?  They make great hats..."
+        - responses:
+           - 
+             - "Naw, it's OK, your gratitude's enough for me."
+             - quest_fedex
+           - 
+             - "A beaver pelt it is, then!"
+             - quest_fedex
+             # perhaps assign this agreed upon payment to the quest object?
+           - 
+             - "I already gotta hat.  Deliver your own package."
+             - end
+        
+    quest_fedex:           
+         # Need some way of triggering the change in game state; package moving from Janie's inventory to yours]
+         - say:  "You should be able to find Pekko in the main compound area.  If anyone asks you why you are looking for him, 'say that he promised you something'.  Pekko's always making promises.  Oh, and don't open the box. [ Janie hands you the package ]"
+         - start_quest: fedex
+         - get_stuff: box
+         - responses:
+           - 
+             - "Why can't I open the box?"
+             - why_no_open
+           - 
+             - "You got it, boss."
+             - old_pals
+ 
+    why_no_open:
+        - say: "You are the nosiest little mailman anywhere, ain'tcha?  How about 'it's private.'?  If I wanted you to know what it was, I wouldn't have wasted a perfectly good box it, now would I?"
+        - responses:
+           -
+             - "I guess not."
+             - old_pals        
+
+    old_pals:
+        - say: "So what can I do for you?"
+        - responses:
+           -
+             - "I'm trying to make beer, can you help me find some stuff?"
+             - help_beer
+             - pc.questIsCurrent("beer")
+           -
+             - "I guess I'll see if I can't find this Pekko character for you."
+             - end
+             - pc.questIsCurrent("fedex")
+           -
+             - "Uh, I opened the box."
+             - open_box
+             #- pc.questIsCurrent('fedex') and 'box' in pc.inventory and box.isOpen
+             - box.state == "open"
+           -
+             - "I have some bad news.  I found your friend, Pekko.  In the water tank.  Dead."
+             - dead_delivery_target
+             - pc.questIsCurrent('fedex') 
+             # for this last conditional, we need some way of checking "partial" state of the 
+             # quest - that the PC has found the dead Pekko, but for now we'll assume it's true
+
+    help_beer:
+        - say: "Well, what do you need?"
+        - responses:
+           -
+             - "Some kind of grain, or fruit or something."
+             - help_grain
+           -
+             - "I'm really looking for some brewer's yeast."
+             - help_yeast
+           -
+             - "I need a pot to cook the mash in."
+             - help_pot
+           -
+             - "It would be great if I had some bottles to put the brew in!"
+             - help_bottles
+           - 
+             - "I think I can handle it from here."
+             - back
+
+    help_grain:
+        - say: "You could try the farm, and there should be some food in the storerooms"
+        - responses:
+           -
+             - "Thanks, I'll try that."
+             - back
+
+    help_yeast:
+        - say: "You got me.  I wonder if there is even any left at all."
+        - responses:
+           -
+             - "Someone must have some!"
+             - back
+
+    help_pot:
+        - say: "Did you try the kitchen?  Or the storerooms?"
+        - responses:
+           -
+             - "Uh, yeah.  I guess that was obvious."
+             - back
+
+    help_bottles:
+        - say: "All the random junk is downstairs in old parking lot.  We have our own little junkyard."
+        - responses:
+           -
+             - "Oooh... there is probably lots of good stuff down there."
+             - back
+
+    open_box:
+        - say: "What!  You little worm!  Why did you do that!"
+        - responses:
+           -
+             - "Well, I figured since Pekko was dead and all..."
+             - dead_delivery_target
+             - pc.questIsCurrent('fedex') 
+             # pc.hasQuest("fedex") == "deadPekko" again might be tested here
+           -
+             - "I'm sorry, I was just curious."
+             - rewrap_box
+             
+    dead_delivery_target:
+       - say: "He's dead?  Well, I'm too late then. I guess you can keep the boots, then."
+       - responses:
+          -
+            - "What boots?"
+            - boot_gift
+            - box.state == 'closed'
+          -
+            - "Yeah, I figured he wouldn't need them.  Why did you send him boots, anyway?"
+            - explain_boots
+            - box.state == 'open' or 'boots' in pc.inventory
+    
+    boot_gift:
+       - say: "That's what was in the package. [Janie takes boots out of the package, and gives them to you]"
+       - get_stuff: boots
+       - responses:
+          -
+            - "Oh.  I must be missing something..."
+            - explain_boots
+    
+    explain_boots:
+       - say: "The boots were a signal that he should leave town... that he'd gone too far this time."
+       - complete_quest: fedex
+       - responses:
+          -
+            - "You knew about this?  Who do you think killed him?"
+            - discuss_murder
+          -
+            - "I think I know who killed him."
+            - discuss_murder
+    
+    discuss_murder:
+       - say: "Look.  Just stay out of it.  It's not really your business anyway, Stranger.  Just forget we ever talked."
+       - responses:
+          -
+            - "Alright, Alright.  But I don't like it."
+            - end
+               
+    rewrap_box:
+       - say: "Give me that back! [Janie takes boots from PC and rewraps them].  Now, here.  And don't open it again."
+       - take_stuff: boots
+       - give_stuff: box
+       - responses:
+          -
+            - "OK, It will never happen again."
+            - old_pals
+            - box.close 
+            # (always returns true)
+            # PC has to get a rewrapped box, and box must be set to "closed" again.
+
+    gratitude: 
+        # if pc.hasSatisfiedQuest("beer") returns an integer representing 
+        # quality of beer, we can add more varied responses
+        - say: "Well aren't you just a thick slice of awesome."
+        - responses:
+           - 
+             - "I try, I try."
+             - old_pals
+    
+    rude_comeon:
+        - say: "[fondles weapon] I hope you can take it as well as you give it..."
+        - responses:
+            -
+              - "Any way you want it, that's the way you need it!"
+              - end
+ 
