@@ -116,7 +116,7 @@ class ContainerGUI():
         if self.container_gui.isVisible():
             self.container_gui.hide()
         
-    def setMouseCursor(self, image, dummy_image, type="native"): 
+    def setMouseCursor(self, image, dummy_image, mc_type="native"): 
         """Set the mouse cursor to an image.
            @type image: string
            @param image: The image you want to set the cursor to
@@ -128,16 +128,16 @@ class ContainerGUI():
         cursor = self.engine.getCursor()
         cursor_type = fife.CURSOR_IMAGE
         img_pool = self.engine.getImagePool()
-        if(type == "target"):
+        if(mc_type == "target"):
             target_cursor_id = img_pool.addResourceFromFile(image)  
             dummy_cursor_id = img_pool.addResourceFromFile(dummy_image)
-            cursor.set(cursor_type,target_dummy_cursor_id)
-            cursor.setDrag(cursor_type,target_cursor_id,-16,-16)
+            cursor.set(cursor_type, dummy_cursor_id)
+            cursor.setDrag(cursor_type, target_cursor_id,-16,-16)
         else:
             cursor_type = fife.CURSOR_IMAGE
             zero_cursor_id = img_pool.addResourceFromFile(image)
-            cursor.set(cursor_type,zero_cursor_id)
-            cursor.setDrag(cursor_type,zero_cursor_id)
+            cursor.set(cursor_type, zero_cursor_id)
+            cursor.setDrag(cursor_type, zero_cursor_id)
             
     def resetMouseCursor(self):
         """Reset cursor to default image.
