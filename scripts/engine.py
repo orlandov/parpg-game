@@ -45,11 +45,6 @@ class Engine:
         self.target_position = None
         self.target_map_name = None
         self.target_map_file = None
-        
-    def reset(self):
-        """Clears the data on a map reload so we don't have objects/npcs from
-           other maps hanging around.
-           @return: None"""
 
     def save(self, path, filename):
         """Writes the saver to a file.
@@ -259,9 +254,7 @@ class Engine:
         self.game_state.current_map_file = map_file
         self.game_state.current_map_name = map_name
         self.view.loadMap(map_name, str(map_file))
-        self.view.setActiveMap(map_name)
-        self.reset()
-        
+
         # If the map has been loaded, we might need to add some
         # agents to the PC and NPS
         for map_id in self.game_state.objects:
@@ -274,7 +267,7 @@ class Engine:
             self.game_state.PC.createBehaviour(self.view.active_map.agent_layer)
 
         # create the PC agent
-        self.view.active_map.addPC(self.game_state.PC.behaviour.agent)
+        self.view.active_map.addPC()
         self.game_state.PC.start()
 
     def handleMouseClick(self,position):

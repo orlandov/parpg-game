@@ -89,7 +89,8 @@ class PCBehaviour (ActorBehaviour):
     def onNewMap(self, layer):
         """Sets the agent onto the new layer.
         """
-        self.agent = layer.getInstance(self.parent.name)
+        self.agent.removeActionListener(self)
+        self.agent = layer.getInstance(self.parent.ID)
         self.agent.addActionListener(self)
         self.state = _AGENT_STATE_NONE
         self.idle_counter = 1

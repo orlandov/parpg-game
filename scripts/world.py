@@ -98,28 +98,27 @@ class World(EventListenerBase):
         
     def loadMap(self, map_name, filename):
         """Loads a map and stores it under the given name in the maps list.
-           @type map_name: text
+           @type map_name: String
            @param map_name: The name of the map to load 
-           @type filename: text
+           @type filename: String
            @param filename: File which contains the map to be loaded
-           @return: None
-        """
+           @return: None"""
         if not map_name in self.maps:
-            """Need to set active map before we load it because the map 
-            loader uses call backs that expect to find an active map. 
-            This needs to be reworked.
-            """
             map = Map(self.engine, self.data)
             self.maps[map_name] = map        
-            self.setActiveMap(map_name)
             map.load(filename)
+        else:
+            self.setActiveMap(map_name)
     
     def setActiveMap(self, map_name):
         """Sets the active map that is to be rendered.
-           @type map_name: text
+           @type map_name: String
            @param map_name: The name of the map to load 
-           @return: None
-        """
+           @return: None"""
+        # Turn off the camera on the old map before we turn on the camera
+        # on the new map.
+        self.active_map.cameras[self.active_map.my_cam_id].setEnabled(False)
+        # Make the new map active.
         self.active_map = self.maps[map_name]
         self.active_map.makeActive()
 
@@ -127,7 +126,7 @@ class World(EventListenerBase):
         """Display on screen the text of the object over the object.
            @type obj: fife.instance
            @param obj: object to draw over
-           @type text: text
+           @type text: String
            @param text: text to display over object
            @return: None"""
         obj.say(str(text), 1000)
@@ -192,7 +191,7 @@ class World(EventListenerBase):
             self.data.handleMouseClick(self.getCoords(scr_point))      
         elif(evt.getButton() == fife.MouseEvent.RIGHT):
             # is there an object here?
-            instances = self.active_map.cameras['main'].\
+            instances = self.active_map.cameras[self.active_map.my_cam_id].\
                             getMatchingInstances(scr_point, \
                                                  self.active_map.agent_layer)
             info = None
@@ -223,6 +222,7 @@ class World(EventListenerBase):
            @param position: X,Y coordinates passed from engine.changeMap
            @return: fife.Location
         """
+        print position
         coord = fife.DoublePoint3D(float(position[0]), float(position[1]), 0)
         location = fife.Location(self.active_map.agent_layer)
         location.setMapCoordinates(coord)
@@ -234,7 +234,7 @@ class World(EventListenerBase):
            @param evt: The event that fife caught
            @return: None"""
         click = fife.ScreenPoint(evt.getX(), evt.getY())
-        i=self.active_map.cameras['main'].getMatchingInstances(click, \
+        i=self.active_map.cameras[self.active_map.my_cam_id].getMatchingInstances(click, \
                                                 self.active_map.agent_layer)
         # no object returns an empty tuple
         if(i != ()):
@@ -273,7 +273,7 @@ class World(EventListenerBase):
            @param click: Screen coordinates
            @rtype: fife.Location
            @return: The map coordinates"""
-        coord = self.active_map.cameras["main"].toMapCoordinates(click, False)
+        coord = self.active_map.cameras[self.active_map.my_cam_id].toMapCoordinates(click, False)
         coord.z = 0
         location = fife.Location(self.active_map.agent_layer)
         location.setMapCoordinates(coord)

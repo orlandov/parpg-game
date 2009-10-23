@@ -1032,9 +1032,6 @@
             <i x="-0" o="shantyh" z="0.0" y="6" r="0"></i>
             <i x="1" o="shantyi" z="0.0" y="6" r="0"></i>
 
-            <!-- There must be one and one only PC character -->
-            <i x="0.0" o="player" z="0.0" y="0.0" r="0" id="PC" object_type="PlayerCharacter"></i>
-
             <!-- A sample door -->
             <i x="-2.0" o="shanty-door" z="0.0" y="6.0" r="0" id="shanty-door01" object_type="ShantyDoor" is_open="False"
                 name="Shanty Door" text="Looks like the entrance to the building." target_map_name="main-map" target_map="maps/map.xml"
@@ -1042,7 +1039,7 @@
 
         </instances>
     </layer>
-	<camera ref_cell_width="72" zoom="1.0" tilt="-60.0" id="main" ref_layer_id="ObjectLayer" ref_cell_height="38" rotation="45.0">
+	<camera ref_cell_width="72" zoom="1.0" tilt="-60.0" id="map2" ref_layer_id="ObjectLayer" ref_cell_height="38" rotation="45.0">
 	</camera>
 </map>
 
