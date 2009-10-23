@@ -1,4 +1,4 @@
-#!python
+#!/usr/bin/python
 
 #   This file is part of PARPG.
 
@@ -16,7 +16,6 @@
 #   along with PARPG.  If not, see <http://www.gnu.org/licenses/>.
 
 import logging
-import sys
 import itertools
 
 class EndException(Exception):
@@ -53,13 +52,13 @@ class DialogueEngine(object):
 
         self.callbacks = callbacks
         self.state = state
+        self.section_stack = []
 
     def run(self):
         """Start running the dialogue engine.
         @returns: list of lists (if requesting a response)
         @returns: None (if at the end of the script)"""
         start_section = self.tree['START']
-        self.section_stack = []
 
         npc_avatar_cb = self.callbacks.get('npc_avatar')
         if npc_avatar_cb:
@@ -113,12 +112,12 @@ class DialogueEngine(object):
                 if e.args:
                     stack = self.section_stack[:]
                     stack.reverse()
-                    for i,s in enumerate(stack):
-                       if s == e.args[0]:
-                           # remove the end of the section stack up to desired
-                           # section
-                           del self.section_stack[-i:]
-                           break
+                    for i, s in enumerate(stack):
+                        if s == e.args[0]:
+                            # remove the end of the section stack up to desired
+                            # section
+                            del self.section_stack[-i:]
+                            break
                 else:
                     self.section_stack.pop(-1)
                 response = None
