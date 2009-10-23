@@ -141,13 +141,17 @@ SECTIONS:
              - end
              - pc.questIsCurrent("fedex")
            -
+             - "So long, Janie.  Catch you later."
+             - end
+             - not pc.questIsCurrent("fedex")
+           -
              - "Uh, I opened the box."
              - open_box
              #- pc.questIsCurrent('fedex') and 'box' in pc.inventory and box.isOpen
              - box.state == "open"
            -
              - "I have some bad news.  I found your friend, Pekko.  In the water tank.  Dead."
-             - dead_delivery_target
+             - dead_pekko
              - pc.questIsCurrent('fedex') 
              # for this last conditional, we need some way of checking "partial" state of the 
              # quest - that the PC has found the dead Pekko, but for now we'll assume it's true
@@ -155,6 +159,9 @@ SECTIONS:
     help_beer:
         - say: "Well, what do you need?"
         - responses:
+           -
+             - "Where do you folks get water from.  The more pure, the better."
+             - help_water
            -
              - "Some kind of grain, or fruit or something."
              - help_grain
@@ -169,6 +176,13 @@ SECTIONS:
              - help_bottles
            - 
              - "I think I can handle it from here."
+             - back
+
+    help_water:
+        - say: "Oh, that is the one thing we have plenty of.  We have an old tanker trunk that we shovel the snow in and melt it.  You can see it from up here, but you have to go downstairs to tap it.  But the water's been tasting a little funny lately."
+        - responses:
+           -
+             - "Great, that's a huge help."
              - back
 
     help_grain:
@@ -204,14 +218,14 @@ SECTIONS:
         - responses:
            -
              - "Well, I figured since Pekko was dead and all..."
-             - dead_delivery_target
+             - dead_pekko
              - pc.questIsCurrent('fedex') 
              # pc.hasQuest("fedex") == "deadPekko" again might be tested here
            -
              - "I'm sorry, I was just curious."
              - rewrap_box
              
-    dead_delivery_target:
+    dead_pekko:
        - say: "He's dead?  Well, I'm too late then. I guess you can keep the boots, then."
        - responses:
           -

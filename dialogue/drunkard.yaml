@@ -1,0 +1,406 @@
+#   This file is part of PARPG.
+
+#   PARPG is free software: you can redistribute it and/or modify
+#   it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation, either version 3 of the License, or
+#   (at your option) any later version.
+
+#   PARPG is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
+
+#   You should have received a copy of the GNU General Public License
+#   along with PARPG.  If not, see <http://www.gnu.org/licenses/>.
+
+---
+NPC: Bart The Drunkard
+AVATAR: gui/icons/drunkard.png
+START: main_dialog
+
+SECTIONS:
+    main_dialog:
+        - say: "Hey there, back up... no need to gang up on a poor guy!"
+        - responses:
+            -
+              - "Gang up?  There's only one of me!"
+              - first_impression
+              - not pc.met('bart')
+            - 
+              - "Glad to see you're feeling better."
+              - gratitude
+              - pc.hasSatisfiedQuest('beer') and beer.quality > 1
+            - 
+              - "Same old Bart,  I see."
+              - old_pals
+              - pc.met('bart')
+            -
+              - "Ha, you better sleep it off, buddy."
+              - end
+
+    first_impression:
+        - say: "Oh... yeah... sorry.  My vision goes a little funny sometimes.  Name's Bart."
+        - meet: bart
+        - responses:
+            -
+              - "Are you drunk?"
+              - elaborate_beer
+              - pc.canAcceptQuest('beer')
+            # above should always be true since there is no other way to get the quest  
+            -
+              - "Wow, you're really hammered.  I'll come back when you're sober."
+              - end
+ 
+    elaborate_beer:
+        - say: "Well, not for much longer, unfortunately.  My stash is just about run dry.  But no one around here knows how to brew us up some more booze!"
+        - responses: 
+            - 
+              - "Well, I'll be glad to lend a hand to such a noble task. Assuming you guys will supply the raw materials."
+              - quest_beer
+            - 
+              - "Alcohol is work of the Devil!!"
+              - end
+        
+    quest_beer:           
+         - say:  "You sir, are a gentleman and a scholar.  I am sure folks around here will help you find what you need."
+         - start_quest: beer
+         - responses:
+           - 
+             - "You aren't even going to offer me a reward?"
+             - reward_query
+           - 
+             - "Well, I'll get right on it.  Finally, a worthwhile test of my scrounging skills."
+             - old_pals
+             
+    old_pals:
+         - say: "So what can I do for you?"
+         - responses:
+           -
+             - "Hey, Bart - here is my shopping list I need to brew us up something tasty.  Can you help?"
+             - help_beer
+             - pc.questIsCurrent("beer")
+             # and howtobeer.state == "read" - howtobeer is an object the PC starts with, it has to be read for the PC to know what he needs to make beer.
+           -
+             - "By the way, Bart, I am looking for a chap named 'Pekko', you know were I can find him?"
+             - help_fedex
+             - pc.questIsCurrent("fedex")
+           -
+             - "Hey, try my fantastic brew!"
+             - beer_tasting
+             - not not 'beer' in pc.inventory
+             # this is a bug in parser, bare string 'beer' cannot be first token
+           -
+             - "Did you hear about Pekko?"
+             - dead_pekko
+           -
+             - "Well, I am off to make some beer, wish me luck!"
+             - end
+             - pc.questIsCurrent('beer')
+           -
+             - "Adios, Bart"
+             - end
+             - not pc.questIsCurrent('beer')
+           -
+             - "Pekko was murdered.  And someone's responsible."
+             - murder_accuse
+             #- some conditional specifying that PC has found Pekko's body
+             # for these conditionals, we need some way of checking "partial" state of the 
+             # quest - that the PC has found the dead Pekko, but for now we'll assume it's true
+
+    help_beer:
+        - say: "Well, what do you need?"
+        - responses:
+           -
+             - "Where do you folks get water from.  The more pure, the better."
+             - help_water
+             #- I would like this option to disappear after it's been asked once
+             # the idea is that Bart's odd response is the clue that he killed Pekko
+             # and put the body in the tank.
+           -
+             - "Some kind of grain, or fruit or something."
+             - help_grain
+           -
+             - "I'm really looking for some brewer's yeast."
+             - help_yeast
+           -
+             - "I need a pot to cook the mash in."
+             - help_pot
+           -
+             - "It would be great if I had some bottles to put the brew in!"
+             - help_bottles
+           - 
+             - "I think I can handle it from here."
+             - back
+
+    help_water:
+        - say: "Water!  I dunno.  I never trust the stuff.  Guess you could melt snow or something."
+        - responses:
+           -
+             - "Yeah, I suppose I could at that.  What does everyone drink when the snow melts?"
+             - snow_melting
+
+    help_grain:
+        - say: "You mean like wheat, hops, barley?  I dunno about that, but if you poke around you should be able to find something with enough starch to ferment."
+        - responses:
+           -
+             - "Yeah, but where?"
+             - back
+
+    help_yeast:
+        - say: "Good luck finding that!"
+        - responses:
+           -
+             - "This is going to be harder than I thought"
+             - back
+
+    help_pot:
+        - say: "I'm pretty sure the quartermaster has one, back in the store room.  She can be hard to get stuff out of, though.  It's kind of her job to be stingy"
+        - responses:
+           -
+             - "Fantastic, I'll give the quartermaster a try."
+             - back
+
+    help_bottles:
+        - say: "I don't know, myself.  One of the scavenging teams must have brought in something."
+        - responses:
+           -
+             - "Scavenging teams?"
+             - explain_scavenging
+           -
+             - "OK, I'll poke around some more."
+             - back
+            
+    explain_scavenging:
+        - say: "Yeah, when the weather is good, we send out teams to dig around in the ruins and forests.  This place takes quite a bit of upkeep you know."
+        - responses:
+            -
+              - "Ah, makes sense."
+              - back help_beer
+              # Note: This could be another adventure hook for the PC to make some time as a scavanger.  Not for the demo
+
+    snow_melting:
+        - say: "Like I said, I never drink the stuff."
+        - responses:
+            -
+              - "Well, alrighty then."
+              - back help_beer
+              
+    reward_query:
+        - say: "I would think that getting your own booze ration would be reward enough!"
+        - responses: 
+           -
+             - "I am fond of a bender now and again, it's true."
+             - old_pals
+           -
+             - "Personally, I stay away from alcohol.  Dulls the senses.  But I suppose I'll help you out of the goodness of my heart."
+             - old_pals
+             
+    dead_pekko:
+       - say: "Dead, huh.  That's a shame."
+       - responses:
+          -
+            - "You seem really broken up about it."
+            - dead_discuss
+          -
+            - "You don't seem very surprised to hear."
+            - dead_discuss_ii
+    
+    dead_discuss:
+       - say: "The kid was a problem.  It's no surprise to me that someone had it in for him."
+       - responses:
+          -
+            - "So you are saying that a lot of people wanted him dead?"
+            - dead_discuss_ii
+          -
+            - "Had it in for him... I didn't say he was murdered!"
+            - murder_accuse
+    
+    dead_discuss_ii:
+       - say: "Well, I'm sure it was just an accident.  It's a dangerous world today."
+       - responses:
+          -
+            - "Accident, huh.  Interesting theory"
+            - back old_pals
+          -
+            - "Oh, I don't think it was an accident at all.  I think he was murdered."
+            - murder_accuse
+    
+    help_fedex:
+       - say: "That's what was in the package. [Janie takes boots out of the package, and gives them to you]"
+       - get_stuff: boots
+       - responses:
+          -
+            - "Oh.  I must be missing something..."
+            - explain_boots
+    
+    murder_accuse:
+       - say: "Wait... so .. you are the junior detective now?  How do you know he was murdered?"
+       - responses:
+          -
+            - "His head was caved in, and his arm was broken from being forced into the snow hopper at the top of the cistern."
+            - discuss_murder
+          -
+            - "I know he was murdered, and I know you did it.  But I don't know why."
+            - accuse_bart
+          -
+            - "I think we both know how he was killed, Bart.  The question remains, who do I tell."
+            - blackmail_bart
+            #- need some conditional to test that PC has not already reported murder.
+    
+    discuss_murder:
+       - say: "Maybe he just fuckin' fell."
+       - responses:
+          -
+            - "Maybe.  But I'll get to the bottom of this."
+            - end
+          - 
+            - "I don't think so, I think it was you.  The question is, why?"
+            - accuse_bart
+    
+    accuse_bart:
+        - say: "Look, stranger...  I don't know who you think you are but this isn't your place.  The fact is, Pekko didn't have many friends, and even his friends didn't even really like him."
+        - responses:
+            - 
+              - "What about Janie?"
+              - janie_pekko_connection
+              - pc.hasSatisfiedQuest('fedex')
+            -
+              - "Whatever, murderer.  I'll see you hang."
+              - end
+
+    blackmail_bart:
+        - say: "Oh, so that's how it's going to be.  And what is the cost of your silence?"
+        - responses:
+            - 
+              - "That's right, scumbag.  I'm going to squeeze you until you're dry."
+              - greedy_blackmail
+            - 
+              - "That's a pretty nice coat you go there, I'll take that..."
+              - light_blackmail
+            -
+              - "Hey, I'm not a greedy bastard.  How about you just owe me?"
+              - delayed_blackmail
+            -
+              - "Ha, just joshing with ya.  Near as I can tell the guy deserved it."
+              - feint_blackmail
+ 
+    greedy_blackmail:
+        - say: "You haven't got the guts.  My friends are powerful, and you ain't got nuthin' on me.  I'm calling your bluff."
+        - responses:
+            - 
+              - "Guess we'll find out HOW powerful, now, won't we!"
+              - emd
+
+    light_blackmail:
+        - say: "My coat, huh.  That's it?  I guess life is pretty cheap these days.  Here ya go."
+        - get_stuff: coat
+        - responses:
+            - 
+              - "Hey, pretty nice.  Fits too!  Catch ya later, Bart."
+              - end
+
+    delayed_blackmail:
+        - say: "OK, so I owe you one.  You never know when you might need a favor."
+        - responses:
+            - 
+              - "That's what I was thinking."
+              - old_pals
+
+    feint_blackmail:
+        - say: "Very funny.  You're OK by me, though."
+        - responses:
+            - 
+              - "Likewise, Bart.  This could be the result of a bee-you-ti-ful friendship"
+              - old_pals
+
+    janie_pekko_connection:
+        - say: "Ah, young Janie.  She's a good kid, and loyal.  Pekko brought here in here, you know. She owes him."
+        - responses:
+            - 
+              - "I see."
+              - back
+               
+    beer_tasting:
+       - say: "You are a genius, sir, a genius. [Bart holds bottle up to the light]  Looks great. How did it come out?"
+       - responses:
+          -
+            - "I think it's just about perfect"
+            - best_beer
+            - beer.quality >= 5
+          -
+            - "It took some doing, but I think I got it down."
+            - good_beer
+            - beer.quality == 4
+          -
+            - "I am pretty happy about it, given the circumstances."
+            - decent_beer
+            - beer.quality == 3
+          -
+            - "It's not my best work, but it will get you hammered."
+            - ok_beer
+            - beer.quality == 2
+          -
+            - "I hope it turned out OK."
+            - bad_beer
+            - beer.quality == 1
+          -
+            - "No promises on the the taste..."
+            - poisonous_beer
+            - beer.quality < 1
+            
+    best_beer: 
+        - say: "[ Bart drinks the beer] Let the church bells ring!  This stuff is awesome!"
+        - responses:
+           - 
+             - "Glad you like it!"
+             - old_pals
+            
+    good_beer: 
+        - say: "[ Bart drinks the beer] Nice job, Stranger.  You may fit in around here after all."
+        - complete_quest: beer
+        - responses:
+           - 
+             - "Everyone likes a good brew."
+             - old_pals
+            
+    decent_beer: 
+        - say: "[ Bart drinks the beer] It's got a decent bite, that's for sure. Drinkable, anyway."
+        - complete_quest: beer
+        - responses:
+           - 
+             - "A couple more batches and I can hopefully work the kinks out."
+             - old_pals
+            
+    ok_beer: 
+        - say: "[ Bart drinks the beer] Well, it's beer-like.  Odd aftertaste, though."
+        - complete_quest: beer
+        - responses:
+           - 
+             - "Yeah, it could use some malt and hops, but it was the best I could do considering."
+             - old_pals
+            
+    bad_beer: 
+        - say: "[ Bart drinks the beer, makes a face] You promise that this.. this... stuff will get me drunk???"
+        - complete_quest: beer
+        - responses:
+           - 
+             - "It ought to, if you drink enough of it."
+             - old_pals
+            
+    poisonous_beer: 
+        - say: "[ Bart drinks the beer, then sits down fast.] Oh... I uh... hmmm... are.. uh, you sure you did this right? [vomits]"
+        #- npc('Bart').poison('beer')
+        #- quest('beer').reset 
+        # Not sure how to implement these yet; may not be necessary for the demo
+        # "quest.reset" would mean to basically allow the PC to try again
+        - responses:
+           - 
+             - "Whoa... that's those old yams... yeah, gotta be the yams. My bad.  I'll try again."
+             - old_pals
+            
+    gratitude: 
+        - say: "Ah, Mysterious Stranger, Braumeister of the Frozen North.   Now, if we can only get that still up and runnning my good chap!"
+        - responses:
+           - 
+             - "I got some ideas on that, Bart... "
+             - old_pals
