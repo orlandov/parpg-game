@@ -51,7 +51,7 @@ class Engine:
            @type filename: string
            @param filename: the name of the file to write to
            @return: None"""
-        fname = '/'.join([path,filename])
+        fname = '/'.join([path, filename])
         try:
             f = open(fname, 'w')
         except(IOError):
@@ -60,8 +60,8 @@ class Engine:
         
         # can't pickle SwigPyObjects
         behaviours = {}
-        behaviour_player = self.game_state.PC.behaviour;
-        self.game_state.PC.behaviour = None;
+        behaviour_player = self.game_state.PC.behaviour
+        self.game_state.PC.behaviour = None
         
         # Backup the behaviours 
         for map_id in self.game_state.objects:
@@ -69,7 +69,7 @@ class Engine:
             for (object_id, npc) in self.game_state.objects[map_id].items():
                 if npc.trueAttr("NPC"):
                     behaviours[map_id][object_id] = npc.behaviour
-                    npc.behaviour = None;
+                    npc.behaviour = None
         
         # Pickle it 
         pickle.dump(self.game_state, f)
@@ -77,7 +77,7 @@ class Engine:
         
         # Restore behaviours
         for map_id in behaviours:
-            for (object_id,behaviour) in behaviours[map_id].items():
+            for (object_id, behaviour) in behaviours[map_id].items():
                 self.game_state.objects[map_id][object_id].behaviour = \
                     behaviours[map_id][object_id]
                 
@@ -162,7 +162,8 @@ class Engine:
                                             self.game_state.current_map_name) 
         if ref is None:
             # no, add it to the game state
-            self.game_state.objects[self.game_state.current_map_name][obj.ID] = obj
+            self.game_state.objects[self.game_state.current_map_name][obj.ID] \
+                                                                          = obj
         else:
             # yes, use the current game state data
             obj.X = ref.X
@@ -183,7 +184,8 @@ class Engine:
            @param ident: ID of object
            @rtype: boolean
            @return: Status of result (True/False)"""
-        for i in self.game_state.getObjectsFromMap(self.game_state.current_map_name):
+        for i in \
+           self.game_state.getObjectsFromMap(self.game_state.current_map_name):
             if (i.ID == ident):
                 # we found a match
                 return i
@@ -196,7 +198,7 @@ class Engine:
            @param obj_id: ID of object
            @rtype: list
            @return: List of text and callbacks"""
-        actions=[]
+        actions = []
         # note: ALWAYS check NPC's first!
         obj = self.game_state.getObjectById(obj_id, \
                                             self.game_state.current_map_name)
@@ -270,7 +272,7 @@ class Engine:
         self.view.active_map.addPC()
         self.game_state.PC.start()
 
-    def handleMouseClick(self,position):
+    def handleMouseClick(self, position):
         """Code called when user left clicks the screen.
            @type position: fife.ScreenPoint
            @param position: Screen position of click
