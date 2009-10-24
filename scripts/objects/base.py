@@ -207,13 +207,11 @@ class Container (object):
                 self.runScript('onTakeItem')
         except AttributeError :
             pass
+
+    def count (self):
+        return len(self.items)
+
         
-class Inventory (object):
-    """Aggregate class for things that have multiple Containers"""
-    def __init__ (self, **kwargs):
-        self.is_inventory = True
-        self.containers = []
-    
 class Living (object):
     def __init__ (self, **kwargs):
         self.is_living = True
@@ -246,9 +244,13 @@ class CharStats (object):
         self.is_charstats = True
         
 class Wearable (object):
-    def __init__ (self, **kwargs):
+    def __init__ (self, slots, **kwargs):
         """Allows the object to be worn somewhere on the body (e.g. pants)"""
         self.is_wearable = True
+        if isinstance(slots,tuple) :
+            self.slots = slots
+        else :
+            self.slots = (slots,)
     
 class Usable (object):
     """Allows the object to be used in some way (e.g. a Zippo lighter 

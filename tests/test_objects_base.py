@@ -33,7 +33,7 @@ class TestObjectsBase(unittest.TestCase):
                 Living.      __init__( self, **kwargs )
                 Scriptable.  __init__( self, **kwargs )
                 CharStats.   __init__( self, **kwargs )
-                Wearable.    __init__( self, **kwargs )
+                Wearable.    __init__( self, "left_arm", **kwargs )
                 Usable.      __init__( self, **kwargs )
                 Weapon.      __init__( self, **kwargs )
                 Destructable.__init__( self, **kwargs )

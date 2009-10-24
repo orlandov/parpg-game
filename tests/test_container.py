@@ -59,12 +59,15 @@ class  TestContainer(unittest.TestCase):
         container = self.NonScriptableContainer(5)
         self.assertEqual(container.items,[])
         self.assertEqual(self.item.in_container,None)
+        self.assertEqual(container.count(), 0)
         container.placeItem(self.item)
         self.assertEqual(container.items,[self.item])
         self.assertEqual(self.item.in_container, container)
+        self.assertEqual(container.count(), 1)
         self.assertRaises(ValueError, container.takeItem, self.item2)
         container.takeItem(self.item)
         self.assertEqual(container.items, [])
+        self.assertEqual(container.count(), 0)
 
     def testScripting(self):
         container = self.ScriptableContainer(5,scripts={'onPlaceItem':(self.onPlaceItem,(),{}),'onTakeItem':(self.onTakeItem,(),{})})

@@ -22,7 +22,7 @@ import pychan.widgets as widgets
 from pychan.tools import callbackWithArguments as cbwa
 from scripts.filebrowser import FileBrowser
 from scripts.context_menu import ContextMenu
-from scripts import inventory
+from scripts import inventorygui
 from scripts.popups import ExaminePopup, ContainerGUI
 from scripts.dialoguegui import DialogueGUI
 
@@ -53,8 +53,10 @@ class Hud(object):
             'toggleInventoryButton': self.toggleInventoryButton,
         }
 
-        self.inventory = inventory.Inventory(self.engine, \
-                                             inv_model, inv_callbacks)
+
+        self.inventory = inventorygui.InventoryGUI(self.engine, \
+                                                   inv_model, inv_callbacks)
+
         self.refreshReadyImages()
 
         self.save_game_callback = callbacks['saveGame']

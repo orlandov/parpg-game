@@ -17,6 +17,7 @@
 
 """Composite game object classes are kept here"""
 
+from hgext.inotify.linux.watcher import getter
 from base import *
 
 class ImmovableContainer(GameObject, Container, Lockable, Scriptable, 
@@ -30,6 +31,38 @@ class ImmovableContainer(GameObject, Container, Lockable, Scriptable,
         Trappable    .__init__(self, **kwargs)
         Destructable .__init__(self, **kwargs)
         self.blocking = True
+
+class CarryableContainer(GameObject, Container, Carryable):
+    """Composite class that will be used for backpack, pouches, etc."""
+    def __init__ (self, ID, **kwargs):
+        GameObject.__init__(self, ID, **kwargs)
+        Container.__init__(self, **kwargs)
+        Carryable.__init__(self,**kwargs)
+        self.own_weight = 0
+
+    def getWeight(self):
+        """Total weight of all items in container + container's own weight"""
+        return sum((item.weight for item in self.items), self.own_weight)
+
+
+    def setWeight(self, weight):
+        self.own_weight = weight
+
+    weight = property(getWeight, setWeight, "Total weight of container")
+
+    def __repr__(self):
+        return "[%s:%s "%(self.name, self.ID) +str(reduce((lambda a,b: a +', '+str(b)), self.items,""))+" ]"
+
+
+class SingleItemContainer (CarryableContainer) :
+    """Container that can only store a single item. This class can represent single-item inventory slots"""
+    def __init__ (self, ID, **kwargs):
+        CarryableContainer.__init__(self, ID,**kwargs)
+
+    def placeItem(self,item):
+        if len(self.items) > 0 :
+            raise ValueError ('%s is already busy' % self)
+        CarryableContainer.placeItem(self, item)
 
 class Door(GameObject, Lockable, Scriptable, Trappable):
     """Composite class that can be used to create doors on a map."""

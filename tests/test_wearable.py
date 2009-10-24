@@ -16,17 +16,16 @@
 # along with PARPG.  If not, see <http://www.gnu.org/licenses/>.
 
 import unittest
-from scripts.objects.base import Living
+from scripts.objects.base import Wearable
 
-class  TestLiving(unittest.TestCase):
+class  TestWearable(unittest.TestCase):
 
-    def testDie(self):
-        """Test Living mixin die ability"""
-        creature = Living();
-        self.assertTrue(creature.is_living)
-        creature.die()
-        self.assertFalse(creature.is_living)
+    def testInit(self):
+        """Test Wearable mixin's various forms of instantiation"""
+        apparel = Wearable("head");
+        self.assertEqual(apparel.slots,("head",))
+        apparel = Wearable(("head", "shoulders"))
+        self.assertEqual(apparel.slots,("head","shoulders"))
 
 if __name__ == '__main__':
     unittest.main()
-
