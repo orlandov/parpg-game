@@ -17,7 +17,7 @@
 
 """Composite game object classes are kept here"""
 
-from hgext.inotify.linux.watcher import getter
+# from hgext.inotify.linux.watcher import getter
 from base import *
 
 class ImmovableContainer(GameObject, Container, Lockable, Scriptable, 
