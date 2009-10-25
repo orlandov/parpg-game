@@ -82,7 +82,7 @@ class Hud(object):
            @return: None"""
         self.events_to_map = {"menuButton":self.displayMenu,}
         self.hud.mapEvents(self.events_to_map) 
-        # set HUD size accoriding to screen size
+        # set HUD size according to screen size
         screen_width = int(self.settings.readSetting('ScreenWidth'))
         self.hud.findChild(name="mainHudWindow").size = (screen_width, 65)
         self.hud.findChild(name="inventoryButton").position = \
@@ -214,26 +214,61 @@ class Hud(object):
            @return: None"""
         self.help_dialog.show()
 
+    def switchResolutions(self):
+        """ Sync the contents of the resolution box (windowed or fullscreen
+            resolutions to the selection made in the Fullscreen checkbox.
+            @return: None"""
+            
+        if self.options_menu.collectData('FullscreenBox'):
+            self.options_menu.distributeInitialData({
+                                'ResolutionBox' : self.resolutions_fullscreen
+                                                     })
+        else:
+            self.options_menu.distributeInitialData({
+                                'ResolutionBox' : self.resolutions_windowed
+                                                     })
+        
     def initializeOptionsMenu(self):
-        """Initalize the options menu.
+        """Initialize the options menu, this will generate a list of fullscreen
+           resolutions and a list of windowed resolutions. Next to this the 
+           current active settings are read and also selected in the matching
+           widgets.
            @return: None"""
+           
         self.options_menu = pychan.loadXML("gui/hud_options.xml")
         self.options_events = {"applyButton":self.applyOptions,
                                "closeButton":self.options_menu.hide,
                                "defaultsButton":self.setToDefaults,
+                               "FullscreenBox": self.switchResolutions,
                                "InitialVolumeSlider":self.updateVolumeText}
         
         settings = self.engine.getSettings()
+        # The settings need to be set to fullscreen for the call to 
+        # getPossibleResolutions() to function.
         current_fullscreen = settings.isFullScreen()
         settings.setFullScreen(True)
-        available_resolutions = settings.getPossibleResolutions()
+        
+        available_fullscreen_resolutions = settings.getPossibleResolutions()
+        available_windowed_resolutions = ((1920, 1200), (1920, 1080), \
+                                          (1856, 1392), (1792, 1344), \
+                                          (1680, 1050), (1600, 1200), \
+                                          (1600, 1024), (1440,  900), \
+                                          (1400, 1050), (1360,  768), \
+                                          (1280, 1024), (1280,  960), \
+                                          (1152,  864), (1024,  768))
+        # Filter too small resolutions from the fullscreen resolutions
+        self.resolutions_fullscreen = []
+        for x in available_fullscreen_resolutions:
+            if x[0] >= 1024 and x[1] >= 768:
+                self.resolutions_fullscreen.append(str(x[0]) + 'x' + str(x[1]))
 
-        # Filter too small resolutions
-        self.resolutions=[]
-        for x in available_resolutions:
-            if x[0]>=1024 and x[1]>=768:
-                self.resolutions.append(str(x[0])+'x'+str(x[1]))
-
+        # Filter too large resolution from the windowed resolutions 
+        self.resolutions_windowed = []
+        for x in available_windowed_resolutions:
+            if x[0] <= available_fullscreen_resolutions[0][0] and \
+            x[1] <= available_fullscreen_resolutions[0][1]:
+                self.resolutions_windowed.append(str(x[0]) + 'x' + str(x[1]))        
+        
         settings.setFullScreen(current_fullscreen)
         self.render_backends = ['OpenGL', 'SDL']
         self.render_number = 0
@@ -242,38 +277,46 @@ class Hud(object):
         initial_volume = float(self.settings.readSetting('InitialVolume'))
         initial_volume_text = str('Initial Volume: %.0f%s' %
                                 (int(initial_volume*10), "%"))
-        self.options_menu.distributeInitialData({
-                'ResolutionBox': self.resolutions,
-                'RenderBox': self.render_backends,
+        initial_data_to_distribute = {    
+                'RenderBox'          : self.render_backends,
                 'InitialVolumeLabel' : initial_volume_text
-                })
+                }
 
         s_fullscreen = self.settings.readSetting(name="FullScreen")
         s_sounds = self.settings.readSetting(name="PlaySounds")
         s_render = self.render_number
         s_volume = initial_volume
 
+        # Find the current active resolution so we can select it 
         screen_width = self.settings.readSetting(name="ScreenWidth")
         screen_height = self.settings.readSetting(name="ScreenHeight")
         index_res = str(screen_width + 'x' + screen_height)
         try:
-            s_resolution = self.resolutions.index(index_res)
+            if int(s_fullscreen) == 0:
+                s_resolution = self.resolutions_windowed.index(index_res)
+            else:
+                s_resolution = self.resolutions_fullscreen.index(index_res)
             resolution_in_list = True
         except:
             resolution_in_list = False
-
+            
         data_to_distribute = {
-                'FullscreenBox':int(s_fullscreen), 
-                'SoundsBox':int(s_sounds),
-                'RenderBox': s_render,
-                'InitialVolumeSlider':s_volume
+                'FullscreenBox'      : int(s_fullscreen), 
+                'SoundsBox'          : int(s_sounds),
+                'RenderBox'          : s_render,
+                'InitialVolumeSlider': s_volume
                 }
 
+        if int(s_fullscreen) == 0:
+            initial_data_to_distribute['ResolutionBox'] = self.resolutions_windowed
+        else:
+            initial_data_to_distribute['ResolutionBox'] = self.resolutions_fullscreen
+            
         if (resolution_in_list == True):
             data_to_distribute['ResolutionBox'] = s_resolution
 
+        self.options_menu.distributeInitialData(initial_data_to_distribute)
         self.options_menu.distributeData(data_to_distribute)
-
         self.options_menu.mapEvents(self.options_events)
 
     def saveGame(self):
@@ -431,7 +474,10 @@ class Hud(object):
         enable_fullscreen = self.options_menu.collectData('FullscreenBox')
         enable_sound = self.options_menu.collectData('SoundsBox')
         screen_resolution = self.options_menu.collectData('ResolutionBox')
-        partition = self.resolutions[screen_resolution].partition('x')
+        if enable_fullscreen:
+            partition = self.resolutions_fullscreen[screen_resolution].partition('x')
+        else:
+            partition = self.resolutions_windowed[screen_resolution].partition('x')
         screen_width = partition[0]
         screen_height = partition[2]
         render_backend = self.options_menu.collectData('RenderBox')
