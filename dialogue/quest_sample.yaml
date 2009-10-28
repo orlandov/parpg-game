@@ -1,0 +1,104 @@
+#   This file is part of PARPG.
+
+#   PARPG is free software: you can redistribute it and/or modify
+#   it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation, either version 3 of the License, or
+#   (at your option) any later version.
+
+#   PARPG is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
+
+#   You should have received a copy of the GNU General Public License
+#   along with PARPG.  If not, see <http://www.gnu.org/licenses/>.
+
+---
+NPC:  NPC
+AVATAR: gui/icons/npc.png
+START: main_dialog
+
+SECTIONS:
+    main_dialog:
+        - say: "Things are tough around here, let me tell you our problems"
+        - responses:
+            -
+              - "Here's your beer"
+              - finish_quest
+              - quest['beer'].isGoalValue("beer_gathered") and not quest.hasFinishedQuest('beer')
+
+            -
+              - "No problem (finished quest)"
+              - main_dialog
+              - quest.hasFinishedQuest('beer')
+
+            -
+              - "Give me a beer! (Cheater!)"
+              - give_beer
+              - quest.hasQuest('beer') and not quest.hasFinishedQuest('beer') and not quest['beer'].isGoalValue("beer_gathered")
+
+            -
+              - "I'm on it"
+              - main_dialog
+              - quest.hasQuest('beer') and not quest.hasFinishedQuest('beer')
+                #pc class should call this function (pc.hasQuest)
+
+            -
+              - "Sure, tell me all about it"
+              - listen_more
+              - not quest.hasQuest('beer') and not quest.hasFinishedQuest('beer')
+
+            -
+              - "That sounds boring. Bye."
+              - end
+
+    listen_more:
+        - say: "Raiders stole our cattle, our well was poisoned, and the beer is all gone!"
+        - responses:
+            # Raiders quest
+            -
+              - "I help you"
+              - quest_accept
+
+            -
+              - "Good luck with that"
+              - end
+
+            -
+              - "Fear not, gentle villager. I will return shortly with the antidote."
+              - back listen_more
+
+    quest_accept:
+        - say: "All your beer are belong to us!"
+        - start_quest: "quests/beer.yaml"
+        - responses:
+            -
+              - "Right..."
+              - main_dialog
+
+    give_beer:
+        - say: "Here's your beer..."
+        - increase_value:
+            quest: 'beer'
+            variable: "beer_gathered"
+            value: 1
+        - responses:
+            -
+              - "Thanks."
+              - main_dialog
+
+    finish_quest:
+        - say: "This is the good stuff! *hik*"
+        - complete_quest: 'beer'
+        - responses:
+            -
+              - "Sigh"
+              - main_dialog
+
+    stop_quest:
+        - say: "Jerk."
+        - delete_quest: 'beer'
+        - responses:
+            -
+              - "That's how they call me!"
+              - main_dialog

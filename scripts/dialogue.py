@@ -175,7 +175,6 @@ class DialogueEngine(object):
            @raises: BackException on "back" reply"""
 
         state = self.state
-
         self.section_stack.append(section_name)
 
         if len(self.section_stack) > 1:
@@ -185,6 +184,7 @@ class DialogueEngine(object):
         logging.debug("In runSection %s %s" % (section_name, \
                                                self.section_stack,))
         for command in itertools.cycle(self.getSection(section_name)):
+            logging.debug("command was %s" % (command,))
             if command.get("say"):
                 if self.callbacks.get('say'):
                     self.callbacks["say"](state, command["say"])
@@ -201,25 +201,44 @@ class DialogueEngine(object):
                 raise ResponseException(responses)
 
             elif command.get("start_quest"):
-                self.callbacks["start_quest"](state, \
-                                              command.get("start_quest"))
+                self.callbacks["start_quest"](state,
+                        command.get("start_quest"))
 
             elif command.get("complete_quest"):
-                self.callbacks["complete_quest"](state, \
-                                                 command.get("complete_quest"))
+                self.callbacks["complete_quest"](state,
+                        command.get("complete_quest"))
+
+            elif command.get("delete_quest"):
+                self.callbacks["delete_quest"](state,
+                        command.get("delete_quest"))
+
+            elif command.get("increase_value"):
+                self.callbacks["increase_value"](state,
+                        command.get("increase_value")["quest"],
+                        command.get("increase_value")["variable"],
+                        command.get("increase_value")["value"])
+
+            elif command.get("decrease_value"):
+                self.callbacks["decrease_value"](state,
+                        command.get("decrease_value")["quest"],
+                        command.get("decrease_value")["variable"],
+                        command.get("decrease_value")["value"])
+
+            elif command.get("set_value"):
+                self.callbacks["set_value"](state, 
+                        command.get("set_value")["quest"],
+                        command.get("set_value")["variable"],
+                        command.get("set_value")["value"])
 
             elif command.get("meet"):
-                self.callbacks["meet"](state, \
-                                                 command.get("meet"))
+                self.callbacks["meet"](state, command.get("meet"))
 
             elif command.get("get_stuff"):
-                self.callbacks["get_stuff"](state, \
-                                                 command.get("get_stuff"))
+                self.callbacks["get_stuff"](state, command.get("get_stuff"))
 
             elif command.get("take_stuff"):
-                self.callbacks["take_stuff"](state, \
-                                                 command.get("take_stuff"))
-                
+                self.callbacks["take_stuff"](state, command.get("take_stuff"))
+
             elif command.get("dialogue"):
                 command = command.get("dialogue")
                 if command == "end":
