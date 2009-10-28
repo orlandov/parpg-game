@@ -115,12 +115,12 @@ SECTIONS:
          - start_quest: fedex
          - get_stuff: box
          - responses:
-           - 
-             - "Why can't I open the box?"
-             - why_no_open
-           - 
-             - "You got it, boss."
-             - old_pals
+             - 
+               - "Why can't I open the box?"
+               - why_no_open
+             - 
+               - "You got it, boss."
+               - old_pals
  
     why_no_open:
         - say: "You are the nosiest little mailman anywhere, ain'tcha?  How about 'it's private.'?  If I wanted you to know what it was, I wouldn't have wasted a perfectly good box it, now would I?"
@@ -266,7 +266,7 @@ SECTIONS:
     rewrap_box:
        - say: "Give me that back! [Janie takes boots from PC and rewraps them].  Now, here.  And don't open it again."
        - take_stuff: boots
-       - give_stuff: box
+       - get_stuff: box
        - responses:
           -
             - "OK, It will never happen again."

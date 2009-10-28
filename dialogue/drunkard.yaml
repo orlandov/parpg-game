@@ -65,47 +65,47 @@ SECTIONS:
          - say:  "You sir, are a gentleman and a scholar.  I am sure folks around here will help you find what you need."
          - start_quest: quests/beer.yaml
          - responses:
-           - 
-             - "You aren't even going to offer me a reward?"
-             - reward_query
-           - 
-             - "Well, I'll get right on it.  Finally, a worthwhile test of my scrounging skills."
-             - old_pals
+             -
+               - "You aren't even going to offer me a reward?"
+               - reward_query
+             -
+               - "Well, I'll get right on it.  Finally, a worthwhile test of my scrounging skills."
+               - old_pals
              
     old_pals:
          - say: "So what can I do for you?"
          - responses:
-           -
-             - "Hey, Bart - here is my shopping list I need to brew us up something tasty.  Can you help?"
-             - help_beer
-             - quest.hasQuest("beer")
-             # and howtobeer.state == "read" - howtobeer is an object the PC starts with, it has to be read for the PC to know what he needs to make beer.
-           -
-             - "By the way, Bart, I am looking for a chap named 'Pekko', you know were I can find him?"
-             - help_fedex
-             - quest.hasQuest("fedex")
-           -
-             - "Hey, try my fantastic brew!"
-             - beer_tasting
-             - ('beer' in pc.inventory)
-             # this is a bug in parser, bare string 'beer' cannot be first token
-           -
-             - "Did you hear about Pekko?"
-             - dead_pekko
-           -
-             - "Well, I am off to make some beer, wish me luck!"
-             - end
-             - quest.hasQuest('beer')
-           -
-             - "Adios, Bart"
-             - end
-             - not quest.hasQuest('beer')
-           -
-             - "Pekko was murdered.  And someone's responsible."
-             - murder_accuse
-             #- some conditional specifying that PC has found Pekko's body
-             # for these conditionals, we need some way of checking "partial" state of the 
-             # quest - that the PC has found the dead Pekko, but for now we'll assume it's true
+             -
+               - "Hey, Bart - here is my shopping list I need to brew us up something tasty.  Can you help?"
+               - help_beer
+               - quest.hasQuest("beer")
+               # and howtobeer.state == "read" - howtobeer is an object the PC starts with, it has to be read for the PC to know what he needs to make beer.
+             -
+               - "By the way, Bart, I am looking for a chap named 'Pekko', you know were I can find him?"
+               - help_fedex
+               - quest.hasQuest("fedex")
+             -
+               - "Hey, try my fantastic brew!"
+               - beer_tasting
+               - ('beer' in pc.inventory)
+               # this is a bug in parser, bare string 'beer' cannot be first token
+             -
+               - "Did you hear about Pekko?"
+               - dead_pekko
+             -
+               - "Well, I am off to make some beer, wish me luck!"
+               - end
+               - quest.hasQuest('beer')
+             -
+               - "Adios, Bart"
+               - end
+               - not quest.hasQuest('beer')
+             -
+               - "Pekko was murdered.  And someone's responsible."
+               - murder_accuse
+               #- some conditional specifying that PC has found Pekko's body
+               # for these conditionals, we need some way of checking "partial" state of the 
+               # quest - that the PC has found the dead Pekko, but for now we'll assume it's true
 
     help_beer:
         - say: "Well, what do you need?"
