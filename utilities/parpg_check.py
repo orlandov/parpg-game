@@ -58,17 +58,6 @@ def print_matches(mod, matches):
         print "\t %s" % match.rstrip('\n')
     print
 
-def get_svn_revision(svn_dir):
-    """ Returns the current svn revision for the directory we are checking. """
-    try:
-        pout = os.popen("svn info %s" % svn_dir)
-        svn_rev =  [line for line in pout if re.match('^Revision', line)]
-    except:
-        pass
-    else:
-        return svn_rev[0]
-
-
 def main():
     # Check if pylint is installed
     try:
@@ -99,13 +88,7 @@ def main():
                 "all": "^[WECRF]:"}
     chk_type = opts.check_type
 
-    # Print the svn revision we are checking
-    try:
-        revision = get_svn_revision(base_directory)
-    except IndexError:
-        print "***** Unable to determine SVN Revision Number\n"
-    else:
-        print "***** Checking %s for %s.\n" % (revision.rstrip('\n'), chk_type)
+    print "***** Checking %s for %s.\n" % (os.path.abspath(base_directory), chk_type)
 
     # Start crawling for 'py' files
     for root, dirs, files in os.walk(base_directory):
