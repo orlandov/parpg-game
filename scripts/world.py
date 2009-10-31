@@ -234,8 +234,8 @@ class World(EventListenerBase):
            @param evt: The event that fife caught
            @return: None"""
         click = fife.ScreenPoint(evt.getX(), evt.getY())
-        i=self.active_map.cameras[self.active_map.my_cam_id].getMatchingInstances(click, \
-                                                self.active_map.agent_layer)
+        i=self.active_map.cameras[self.active_map.my_cam_id].\
+                getMatchingInstances(click, self.active_map.agent_layer)
         # no object returns an empty tuple
         if(i != ()):
             front_y = 0
@@ -247,8 +247,9 @@ class World(EventListenerBase):
                     # check if the object is on the foreground 
                     obj_map_coords = \
                                       obj.getLocation().getMapCoordinates()
-                    obj_screen_coords = self.active_map.cameras["main"]\
-                                    .toScreenCoordinates(obj_map_coords)
+                    obj_screen_coords = self.active_map.\
+                        cameras[self.active_map.my_cam_id]\
+                        .toScreenCoordinates(obj_map_coords)
                     
                     if obj_screen_coords.y > front_y:
                         #Object on the foreground
@@ -273,11 +274,22 @@ class World(EventListenerBase):
            @param click: Screen coordinates
            @rtype: fife.Location
            @return: The map coordinates"""
-        coord = self.active_map.cameras[self.active_map.my_cam_id].toMapCoordinates(click, False)
+        coord = self.active_map.cameras[self.active_map.my_cam_id].\
+                    toMapCoordinates(click, False)
         coord.z = 0
         location = fife.Location(self.active_map.agent_layer)
         location.setMapCoordinates(coord)
         return location
+    
+    def deleteMaps(self):
+        """Clear all currently loaded maps from FIFE as well as clear our
+            local map cache
+            @return: nothing"""
+        self.engine.getView().clearCameras()
+        self.engine.getModel().deleteMaps()
+        self.engine.getModel().deleteObjects()
+
+        self.maps = {}
 
     def pump(self):
         """Routine called during each frame. Our main loop is in ./run.py

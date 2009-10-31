@@ -112,9 +112,9 @@ class FileBrowser(object):
         """ File selection callback. """
         self._widget.hide()
         selection = self._widget.collectData('fileList')
-        data = self._widget.collectData('saveField')
 
         if self.save_file:
+            data = self._widget.collectData('saveField')
             if data:
                 if (data.split('.')[1] == 'dat'):
                     self.file_selected(self.path, \

@@ -53,10 +53,15 @@ class Engine:
            @return: None"""
         fname = '/'.join([path, filename])
         try:
-            f = open(fname, 'w')
+            f = open(fname, 'wb')
         except(IOError):
             sys.stderr.write("Error: Can't find save game: " + fname + "\n")
             return
+        
+        # save the PC coordinates before we destroy the behaviour
+        coords = self.game_state.PC.behaviour.agent.getLocation().\
+                    getMapCoordinates()
+        self.game_state.saved_pc_coordinates = (coords.x, coords.y)
         
         # can't pickle SwigPyObjects
         behaviours = {}
@@ -83,31 +88,45 @@ class Engine:
                 
         self.game_state.PC.behaviour = behaviour_player
 
-    def load(self, filename):
+    def load(self, path, filename):
         """Loads a saver from a file.
            @type filename: string
            @param filename: the name of the file (including path) to load from
            @return: None"""
-        
-        # TODO
-        # Remove what we are currently working with 
-        print "TODO: load"
-        self.view.active_map.view.clearCameras()
-        self.view.active_map.model.deleteMaps()
-        
+            
+        fname = '/'.join([path, filename])
+
         try:
-            f = open(filename, 'r')
+            f = open(fname, 'rb')
         except(IOError):
             sys.stderr.write("Error: Can't find save game file\n")
             return
+        
+        #Remove all currently loaded maps so we can start fresh
+        self.view.deleteMaps();
+        
         self.game_state = pickle.load(f)
         f.close()
         
-        # Make sure we're on the right map
+        # Recreate all the behaviours. These can't be saved because FIFE
+        # objects cannot be pickled
+        for map_id in self.game_state.objects:
+            for (object_id, npc) in self.game_state.objects[map_id].items():
+                if npc.trueAttr("NPC"):
+                    npc.createBehaviour(self.view.active_map.agent_layer)
+
+        # Fix the player behaviour
+        self.game_state.PC.createBehaviour(self.view.active_map.agent_layer)
+        
+        #In most maps we'll create the PC Instance internally. In these
+        #cases we need a target position
+        self.target_position = self.game_state.saved_pc_coordinates
+        
+        #Load the current map
         if self.game_state.current_map_file:
             self.loadMap(self.game_state.current_map_name, \
                          self.game_state.current_map_file) 
-
+            
     def createObject (self, layer, attributes, instance):
         """Create an object and add it to the current map.
            @type layer: fife.Layer
@@ -256,17 +275,6 @@ class Engine:
         self.game_state.current_map_file = map_file
         self.game_state.current_map_name = map_name
         self.view.loadMap(map_name, str(map_file))
-
-        # If the map has been loaded, we might need to add some
-        # agents to the PC and NPS
-        for map_id in self.game_state.objects:
-            for (object_id, npc) in self.game_state.objects[map_id].items():
-                if npc.trueAttr("NPC") and npc.behaviour == None:
-                    npc.createBehaviour(self.view.active_map.agent_layer)
-
-        # Fix the player behaviour
-        if self.game_state.PC.behaviour == None:
-            self.game_state.PC.createBehaviour(self.view.active_map.agent_layer)
 
         # create the PC agent
         self.view.active_map.addPC()

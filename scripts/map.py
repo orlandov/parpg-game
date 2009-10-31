@@ -79,9 +79,17 @@ class Map(fife.MapChangeListener):
         self.reset()
         self.map = loadMapFile(filename, self.engine, self.data)
         self.agent_layer = self.map.getLayer('ObjectLayer')
-
-        # if this is not the very first map load in the game carry over the PC instance
-        if self.data.target_position:
+        
+        #find out if a PC instance was created when the map was loaded
+        found = False
+        for inst in self.agent_layer.getInstances():
+            if inst.getId() == "PC":
+                found = True
+                break
+                
+        #If there is not a PC instance created yet than we construct the PC
+        #instance from what we have saved in the PC Game Object
+        if not found:
             x = float(self.data.target_position[0])
             y = float(self.data.target_position[1])
             z = 0
@@ -89,9 +97,18 @@ class Map(fife.MapChangeListener):
             inst = self.agent_layer.createInstance(pc_obj,\
                                             fife.ExactModelCoordinate(x,y,z),\
                                             "PC")
-            inst.setRotation(self.data.game_state.PC.behaviour.agent.getRotation())
             fife.InstanceVisual.create(inst)
-
+        #If the PC instance exists already then make sure it's set to correct
+        #location for this new map
+        elif self.data.target_position is not None:
+            pos = self.data.target_position
+            coord = fife.DoublePoint3D(float(pos[0]), float(pos[1]), 0)
+            location = fife.Location(self.agent_layer)
+            location.setMapCoordinates(coord)
+            inst.setLocation(location)
+        #else we are loading the first map and the PC position were set by
+        #the coordinates in the Map file
+            
         # it's possible there's no transition layer
         size = len('TransitionLayer')
         for layer in self.map.getLayers():
@@ -119,7 +136,7 @@ class Map(fife.MapChangeListener):
                                    str(TDS.readSetting("FontGlyphs", \
                                                        strip=False)))
         rend.changeDefaultFont(text)
-
+        
         # Make World aware that this is now the active map.
         self.data.view.active_map = self
                 

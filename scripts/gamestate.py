@@ -25,6 +25,9 @@ class GameState(object):
         self.objects = {}
         self.current_map_file = None
         self.current_map_name = None
+        #these coordinates are only used for saving and loading the game.
+        #They do not represent the pc's active location
+        self.saved_pc_coordinates = (0,0)
         
     def getObjectsFromMap(self, map_id):
         """Gets all objects that are currently on the given map.
@@ -44,4 +47,4 @@ class GameState(object):
             self.objects[map_id] = {}
         if obj_id in self.objects[map_id]:
             return self.objects[map_id][obj_id]
-
+        

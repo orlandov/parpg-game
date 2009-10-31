@@ -67,6 +67,7 @@ class PCBehaviour (ActorBehaviour):
         self.idle_counter = 1
         self.speed = float(TDS.readSetting("PCSpeed")) # TODO: rework/improve
         self.nextAction = None
+        self.agent = None
         
     def onInstanceActionFinished(self, instance, action):
         """@type instance: ???
@@ -89,7 +90,9 @@ class PCBehaviour (ActorBehaviour):
     def onNewMap(self, layer):
         """Sets the agent onto the new layer.
         """
-        self.agent.removeActionListener(self)
+        if self.agent is not None:
+            self.agent.removeActionListener(self)
+            
         self.agent = layer.getInstance(self.parent.ID)
         self.agent.addActionListener(self)
         self.state = _AGENT_STATE_NONE

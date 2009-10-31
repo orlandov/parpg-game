@@ -10,7 +10,9 @@
 	<import file="../objects/buildings/windmill/windmillc.xml"></import>
 	<import file="../objects/buildings/windmill/windmilld.xml"></import>
 	<import file="../objects/buildings/windmill/windmille.xml"></import>
-
+	
+	<import file="../objects/buildings/shanty/shanty-door.xml" />
+	
 	<layer grid_type="square" id="GroundLayer" x_scale="1.0" pathing="cell_edges_only" y_scale="1.0" rotation="0.0" x_offset="0.0" y_offset="0.0">
 		<instances>
 			<i r="0" z="0.0" x="1.0" o="grass-a" y="-1.0" ns="PARPG"></i>
@@ -1022,20 +1024,10 @@
             <i x="7" o="windmilld" z="0.0" y="-2" r="0"></i>
             <i x="8" o="windmille" z="0.0" y="-2" r="0"></i>
 
-            <i x="-4" o="shantya" z="0.0" y="3" r="0"></i>
-            <i x="-4" o="shantyb" z="0.0" y="4" r="0"></i>
-            <i x="-4" o="shantyc" z="0.0" y="5" r="0"></i>
-            <i x="-4" o="shantyd" z="0.0" y="6" r="0"></i>
-            <i x="-3" o="shantye" z="0.0" y="6" r="0"></i>
-            <i x="-2" o="shantyf" z="0.0" y="6" r="0"></i>
-            <i x="-1" o="shantyg" z="0.0" y="6" r="0"></i>
-            <i x="-0" o="shantyh" z="0.0" y="6" r="0"></i>
-            <i x="1" o="shantyi" z="0.0" y="6" r="0"></i>
-
             <!-- A sample door -->
             <i x="-2.0" o="shanty-door" z="0.0" y="6.0" r="0" id="shanty-door01" object_type="ShantyDoor" is_open="False"
                 name="Shanty Door" text="Looks like the entrance to the building." target_map_name="main-map" target_map="maps/map.xml"
-                target_x="0.0" target_y="0.0"></i>
+                target_x="5.0" target_y="5.0"></i>
 
         </instances>
     </layer>

@@ -13,6 +13,7 @@
 	<import file="../objects/objects/burning_barrel/burning_barrel.xml" />
 	<import file="../objects/agents/player/player.xml" />
 	<import file="../objects/buildings/container_house/container_house.xml" />
+    <import file="../objects/buildings/shanty/shanty-door.xml" />
 	<layer grid_type="square" id="GroundLayer" pathing="cell_edges_only" rotation="0.0" transparency="0" x_offset="0.0" x_scale="1.0" y_offset="0.0" y_scale="1.0">
 		<instances>
 			<i ns="PARPG" o="snow02" r="0" x="1.0" y="-1.0" z="0.0" />
@@ -1868,6 +1869,7 @@
 			<i o="block" r="0" x="0.0" y="-3.0" z="0.0" />
 			<i o="block" r="0" x="-1.0" y="-3.0" z="0.0" />
 			<i o="container_house" r="0" x="0.0" y="0.0" z="0.0" />
+            <i gfx="shanty-door" id="shanty-door01" is_open="False" name="Shanty Door" o="shanty-door" object_type="ShantyDoor" r="0" target_map="maps/map2.xml" target_map_name="map2" target_x="10.0" target_y="10.0" text="Looks like the entrance to the building." x="-2.0" xpos="-2.0" y="6.0" ypos="6.0" z="0.0" />
 			</instances>
 	</layer>
 
