@@ -67,9 +67,8 @@ class Map(fife.MapChangeListener):
         
     def makeActive(self):
         """Makes this map the active one.
-        """
+           @return: None"""
         self.cameras[self.my_cam_id].setEnabled(True)
-
         
     def load(self, filename):
         """Load a map given the filename.
@@ -119,8 +118,13 @@ class Map(fife.MapChangeListener):
         """ Initialize the camera.
         Note that if we have more than one camera in a map file
         we will have to rework how self.my_cam_id works. To make sure
-        the proper camera is set as the 'main' camera."""
+        the proper camera is set as the 'main' camera.
+        At this point we also set the viewport to the current resolution."""
         for cam in self.view.getCameras():
+            width = int(TDS.readSetting(name="ScreenWidth"))
+            height = int(TDS.readSetting(name="ScreenHeight"))
+            viewport = fife.Rect(0,0,width,height)
+            cam.setViewPort(viewport)
             self.my_cam_id = cam.getId()
             self.cameras[self.my_cam_id] = cam
         self.view.resetRenderers()
