@@ -116,11 +116,12 @@ class FileBrowser(object):
         if self.save_file:
             data = self._widget.collectData('saveField')
             if data:
-                if (data.split('.')[1] == 'dat'):
+                if (data.endswith(".dat")):
                     self.file_selected(self.path, \
                                 u2s(self._widget.collectData('saveField')))
                 else:
-                    self._warningMessage()
+                    self.file_selected(self.path, 
+                                       u2s(self._widget.collectData('saveField')) + '.dat')
                 return
             
 
