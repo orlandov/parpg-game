@@ -80,7 +80,13 @@ class World(EventListenerBase):
         if (TDS.readSetting("PlaySounds") == "1"):
             if(self.sounds.music_init == False):
                 self.sounds.playMusic("/music/preciouswasteland.ogg")
-                
+        
+        #The current highlighted object
+        self.highlight_obj = None
+        
+        #Last saved mouse coords
+        self.last_mousecoords = None
+    
     def quitGame(self):
         """Quits the game
         @return: None"""
@@ -233,13 +239,43 @@ class World(EventListenerBase):
            @type evt: fife.event
            @param evt: The event that fife caught
            @return: None"""
-        click = fife.ScreenPoint(evt.getX(), evt.getY())
+        self.last_mousecoords = fife.ScreenPoint(evt.getX(), evt.getY())
+        self.highlightFrontObject()
+
+    def highlightFrontObject(self):
+        """Highlights the object that is at the current mouse coordinates"""
+        if self.last_mousecoords:
+            front_obj = self.getObjectAtCoords(self.last_mousecoords)
+            if front_obj != None:
+                if self.highlight_obj == None or front_obj.getId() != self.highlight_obj.getId():
+                    if self.highlight_obj:
+                        self.displayObjectText(self.highlight_obj,"")
+                    self.active_map.outline_render.removeAllOutlines()
+                    self.highlight_obj = front_obj
+                    self.active_map.outline_render.addOutlined(self.highlight_obj, 0, \
+                                                               137, 255, 2)
+                        # get the text
+                    item = self.data.objectActive(self.highlight_obj.getId())
+                    if item is not None:
+                        self.displayObjectText(self.highlight_obj, item.name)
+            else:
+                if self.highlight_obj:
+                    self.displayObjectText(self.highlight_obj,"")
+                self.active_map.outline_render.removeAllOutlines()
+                self.highlight_obj = None
+                
+    def getObjectAtCoords(self, coords):
+        """Get the object which is at the given coords
+            @type coords: fife.Screenpoint
+            @param coords: Coordinates where to check for an object
+            @rtype: fife.Object
+            @return: An object or None"""
         i=self.active_map.cameras[self.active_map.my_cam_id].\
-                getMatchingInstances(click, self.active_map.agent_layer)
+            getMatchingInstances(coords, self.active_map.agent_layer)
         # no object returns an empty tuple
         if(i != ()):
             front_y = 0
-            front_obj = None
+            
 
             for obj in i:
                 # check to see if this in our list at all
@@ -254,19 +290,11 @@ class World(EventListenerBase):
                     if obj_screen_coords.y > front_y:
                         #Object on the foreground
                         front_y = obj_screen_coords.y
-                        front_obj = obj
-
-            if front_obj:                    
-                self.active_map.outline_render.removeAllOutlines() 
-                self.active_map.outline_render.addOutlined(front_obj, 0, \
-                                                               137, 255, 2)
-                # get the text
-                item = self.data.objectActive(front_obj.getId())
-                if(item is not None):
-                    self.displayObjectText(front_obj, item.name)
+                        return obj
+                    else:
+                        return None
         else:
-            # erase the outline
-            self.active_map.outline_render.removeAllOutlines()
+            return None		
 
     def getCoords(self, click):
         """Get the map location x, y coordinates from the screen coordinates
@@ -292,6 +320,5 @@ class World(EventListenerBase):
         self.maps = {}
 
     def pump(self):
-        """Routine called during each frame. Our main loop is in ./run.py
-           We ignore this main loop (but FIFE complains if it is missing)."""
-        pass
+        """Routine called during each frame. Our main loop is in ./run.py"""
+        self.highlightFrontObject()
