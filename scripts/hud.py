@@ -28,7 +28,7 @@ from scripts.dialoguegui import DialogueGUI
 
 class Hud(object):
     """Main Hud class"""
-    def __init__(self, engine, settings, inv_model, callbacks):
+    def __init__(self, engine, settings, inv_model, data, callbacks):
         """Initialise the instance.
            @type engine: fife.Engine
            @param engine: An instance of the fife engine
@@ -47,6 +47,7 @@ class Hud(object):
         self.hud = pychan.loadXML("gui/hud.xml")
         self.engine = engine
         self.settings = settings
+        self.data = data
 
         inv_callbacks = {
             'refreshReadyImages': self.refreshReadyImages,
@@ -616,5 +617,8 @@ class Hud(object):
            @type npc: actors.NonPlayerCharacter
            @param npc: the npc that we are having a dialogue with
            @return: None"""
-        dialogue = DialogueGUI(npc)
+        dialogue = DialogueGUI(
+                    npc,
+                    self.data.game_state.quest_engine,
+                    self.data.game_state.PC)
         dialogue.initiateDialogue()

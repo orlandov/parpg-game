@@ -20,62 +20,73 @@ import fife
 import pychan.widgets as widgets
 from scripts.dialogue import DialogueEngine
 
-class Player(object):
-    """A mock player object until we have a proper Player/Quest model"""
-    def __init__(self):
-        self.current_quests = set()
-        self.finished_quests = set()
-
-    def canAcceptQuest(self, quest):
-        return     quest not in self.finished_quests \
-               and quest not in self.current_quests
-
-    def hasSatisfiedQuest(self, quest):
-        return quest in self.current_quests
-
-    def startQuest(self, quest):
-        if quest in self.current_quests:
-            raise RuntimeError("Already have quest, %s" % quest)
-        self.current_quests.add(quest)
-
-    def completeQuest(self, quest):
-        self.finished_quests.add(quest)
-        self.current_quests.remove(quest)
-
 class DialogueGUI(object):
-    def __init__(self, npc):
+    def __init__(self, npc, quest_engine, pc):
+        self.pc = pc
+
+        # define dialogue engine callbacks
+        def start_quest(state, quest):
+            print "You've picked up the '%s' quest!" % quest
+            state['quest'].addQuest(quest)
+
+        def complete_quest(state, quest_id):
+            print "You've finished the quest %s" % quest_id
+            state['quest'].finishQuest(quest_id)
+
+        def delete_quest(state, quest_id):
+            print "You've deleted quest %s" % quest_id
+            state['quest'].deleteQuest(quest_id)
+
+        def increase_value(state, quest_id, variable, value):
+            print "Increased %s by %i"%(variable,value)
+            state['quest'][quest_id].increaseValue(variable,value)
+
+        def decrease_value(state, quest_id, variable, value):
+            print "Decreased %s by %i"%(variable,value)
+            state['quest'][quest_id].decreaseValue(variable,value)
+
+        def set_value(state,quest_id, variable, value):
+            print "Set %s to %i"%(variable,value)
+            state['quest'][quest_id].setValue(variable,value)
+
+        def meet(state, npc):
+            print "You've met %s!" % npc
+            state['pc'].meet(npc)
+
+        def get_stuff(state, thing):
+            if thing not in state['pc'].inventory:
+                state['pc'].inventory.add(thing)
+                print "You've now have the %s" % thing
+
+        def take_stuff(state,thing):
+            if thing in state['pc'].inventory:
+                state['pc'].inventory.remove(thing)
+                print "You no longer have the %s" % thing
+
         dialogue_callbacks = {
-            'say': self.handleSay,
-            'responses': self.handleResponses,
-            'start_quest': self.startQuest,
-            'complete_quest': self.completeQuest,
+            "complete_quest": complete_quest,
+            "decrease_value": decrease_value,
+            "delete_quest": delete_quest,
+            'end': self.handleEnd,
+            "get_stuff" : get_stuff,
+            "increase_value": increase_value,
+            "meet": meet,
             'npc_avatar': self.handleAvatarImage,
-            'end': self.handleEnd
+            'responses': self.handleResponses,
+            'say': self.handleSay,
+            "set_value": set_value,
+            "start_quest": start_quest,
+            "take_stuff" : take_stuff
         }
 
-        # For testing purposes we're just using a a dummy player object  here
-        # until we decide on a player/quest model.
-        # TODO
-        # link this up to the actual PC and NPC instances, so that state can
-        # be persistent.
-        pc = Player()
         self.npc = npc
         state = {
-            'pc': pc
+            'pc': self.pc,
+            'quest': quest_engine
         }
         self.dialogue_engine = DialogueEngine(npc.dialogue,
                                               dialogue_callbacks, state)
         self.dialogue_gui = pychan.loadXML("gui/dialogue.xml")
-
-    def startQuest(self, state, quest):
-        """Callback for starting a quest"""
-        print "You've picked up the '%s' quest!" % quest,
-        state['pc'].startQuest(quest)
-
-    def completeQuest(self, state, quest):
-        """Callback for starting a quest"""
-        print "You've finished the '%s' quest" % quest
-        state['pc'].completeQuest(quest)
 
     def initiateDialogue(self):
         """Callback for starting a quest"""

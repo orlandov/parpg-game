@@ -117,14 +117,30 @@ class PlayerCharacter (GameObject, Living, CharStats):
         self.is_PC = True
         
         # PC _has_ an inventory, he _is not_ one
-        self.inventory = None
+        self.inventory = set(('beer',))
+        self.peopleIknow = set()
         
         self.state = _AGENT_STATE_NONE
         self.layer_id = agent_layer.getId()
         self.createBehaviour(agent_layer)
     
+    def meet(self, npc):
+        """Record that the PC has met a certain NPC
+        @type npc: str
+        @param npc: The NPC's name or id"""
+        if npc in self.peopleIknow:
+            raise RuntimeError("I already know %s" % npc)
+        self.peopleIknow.add(npc)
+
+    def met(self, npc):
+        """Indicate whether the PC has met this npc before
+        @type npc: str
+        @param npc: The NPC's name or id
+        @return: None"""
+        return npc in self.peopleIknow
+
     def createBehaviour(self, layer):
-        """ Creates the behaviour for this actor.
+        """Creates the behaviour for this actor.
             @return None """
         self.behaviour = PCBehaviour(self, layer)
     
@@ -172,8 +188,8 @@ class PlayerCharacter (GameObject, Living, CharStats):
         boxLocation = tuple([int(float(i)) for i in location])
         l = fife.Location(self.behaviour.agent.getLocation())
         l.setLayerCoordinates(fife.ModelCoordinate(*boxLocation))
-        self.behaviour.agent.move('run', l, self.behaviour.speed)
-        
+        self.behaviour.agent.move('run', l, self.behaviour.speed+1)
+
 
 class NPCBehaviour(ActorBehaviour):
     def __init__(self, Parent = None, Layer = None):
@@ -204,7 +220,7 @@ class NPCBehaviour(ActorBehaviour):
             # Random walk is
             # rl = randint(-1, 1);ud = randint(-1, 1);x += rl;y += ud
         l = fife.Location(self.agent.getLocation())
-        l.setLayerCoordinates(fife.ModelCoordinate(*tuple([x, y])))
+        l.setLayerCoordinates(fife.ModelCoordinate(x, y))
         return l
 
     def onInstanceActionFinished(self, instance, action):

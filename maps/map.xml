@@ -1815,10 +1815,10 @@
 			<i o="block" r="0" x="8.0" y="-4.0" z="0.0" />
 			<i o="block" r="0" x="8.0" y="-3.0" z="0.0" />
 			<i gfx="long_coat_female" id="long_coat_female0" name="Aeon" o="long_coat_female" object_type="NonPlayerCharacter" r="0" text="A woman wearing a large coat" x="-5.0" xpos="-5.0" y="-3.0" ypos="-3.0" z="0.0" />
-			<i gfx="long_coat_male" id="long_coat_male0" name="The Judge" o="long_coat_male" object_type="NonPlayerCharacter" r="0" text="A man wearing a large coat" x="-5.0" xpos="-5.0" y="-4.0" ypos="-4.0" z="0.0" />
+                        <i gfx="long_coat_male" id="long_coat_male0" name="Drunkard" dialogue="dialogue/drunkard.yaml" o="long_coat_male" object_type="NonPlayerCharacter" r="0" text="A very drunk looking man" x="-5.0" xpos="-5.0" y="-4.0" ypos="-4.0" z="0.0" />
 			<i dialogue="dialogue/farmer.yaml" gfx="male_farmer_1" id="male_farmer0" name="Manslow" o="male_farmer_1" object_type="NonPlayerCharacter" r="0" text="A grimy looking farmer" x="-5.0" xpos="-5.0" y="-5.0" ypos="-5.0" z="0.0" />
 			<i gfx="male_traveler_1" id="male_traveler0" name="Gregor" o="male_traveler_1" object_type="NonPlayerCharacter" r="0" text="A wandering traveler" x="-5.0" xpos="-5.0" y="-6.0" ypos="-6.0" z="0.0" />
-			<i dialogue="dialogue/sample.yaml" gfx="npc_woman" id="woman01" name="Loranda" o="npc_woman" object_type="NonPlayerCharacter" r="0" text="A friendly woman" x="-5.0" xpos="-5.0" y="-7.0" ypos="-7.0" z="0.0" />
+			<i gfx="npc_woman" id="woman01" name="Tina" o="npc_woman" object_type="NonPlayerCharacter" r="0" text="A friendly woman" x="-5.0" xpos="-5.0" y="-7.0" ypos="-7.0" z="0.0" />
 			<i gfx="crate" id="crate01" is_open="False" locked="False" name="asdf" o="crate" object_type="WoodenCrate" r="0" text="A crate that is covered in grime and dirt. There doesn&apos;t seem to be anything remarkable about it" x="-3.0" xpos="-3.0" y="-4.0" ypos="-4.0" z="0.0" />
 			<i gfx="crate" id="crate02" is_open="False" locked="False" name="A dirty old crate" o="crate" object_type="WoodenCrate" r="0" text="A crate that is covered in grime and dirt. There doesn&apos;t seem to be anything remarkable about it" x="-4.0" xpos="-4.0" y="-6.0" ypos="-6.0" z="0.0" />
 			<i o="guard_tower" r="0" x="11.0" y="-12.0" z="0.0" />

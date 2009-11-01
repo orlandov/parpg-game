@@ -151,8 +151,12 @@ class DialogueEngine(object):
             responses = []
             for r in command.get('responses'):
                 cond = r[2:]
-                if not cond or eval(cond[0], state, {}):
-                    responses.append(r)
+                try:
+                    if not cond or eval(cond[0], state, {}):
+                        responses.append(r)
+                except Exception, e:
+                    print "Error in response conditional: %s" % (cond[0],)
+                    #raise e
 
             section = responses[response][1]
             logging.debug("User chose %s" % (section,))

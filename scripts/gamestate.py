@@ -16,12 +16,14 @@
 #   along with PARPG.  If not, see <http://www.gnu.org/licenses/>.
 
 from objects import base
+from scripts import quest_engine
 
 class GameState(object):
     """This class holds the current state of the game."""
     def __init__(self):
         """initialize attributes"""
         self.PC = None
+        self.quest_engine = quest_engine.QuestEngine()
         self.objects = {}
         self.current_map_file = None
         self.current_map_name = None

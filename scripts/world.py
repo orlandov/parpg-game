@@ -52,7 +52,7 @@ class World(EventListenerBase):
         self.engine = engine
         self.event_manager = engine.getEventManager()
         self.quitFunction = None
-        
+
         # self.data is an engine.Engine object, but is set in run.py
         self.data = None
         self.mouseCallback = None
@@ -61,6 +61,25 @@ class World(EventListenerBase):
         self.active_map = None
         self.maps = {}
 
+        self.action_number = 1
+
+        # init the sound
+        self.sounds = SoundEngine(engine)
+
+        # don't force restart if skipping to new section
+        if TDS.readSetting("PlaySounds") == "1":
+            if not self.sounds.music_init:
+                self.sounds.playMusic("/music/preciouswasteland.ogg")
+
+        # The current highlighted object
+        self.highlight_obj = None
+        
+        # Last saved mouse coords
+        self.last_mousecoords = None
+
+    def initHud(self):
+        """Initialize the hud member
+        @return: None"""
         # setup the inventory model
         # make slot 'A1' and 'A3' container daggers
         inv_model = {'A1':'dagger01', 'A3':'dagger01'}
@@ -70,22 +89,7 @@ class World(EventListenerBase):
             'loadGame': self.loadGame,
             'quitGame': self.quitGame,
         }
-        self.hud = hud.Hud(self.engine, TDS, inv_model, hud_callbacks)
-        self.action_number = 1
-
-        # init the sound
-        self.sounds = SoundEngine(engine)
-        
-        # don't force restart if skipping to new section
-        if (TDS.readSetting("PlaySounds") == "1"):
-            if(self.sounds.music_init == False):
-                self.sounds.playMusic("/music/preciouswasteland.ogg")
-        
-        #The current highlighted object
-        self.highlight_obj = None
-        
-        #Last saved mouse coords
-        self.last_mousecoords = None
+        self.hud = hud.Hud(self.engine, TDS, inv_model, self.data, hud_callbacks)
     
     def quitGame(self):
         """Quits the game
@@ -101,25 +105,25 @@ class World(EventListenerBase):
         """Loads the game state, delegates call to engine.Engine
            @return: None"""
         self.data.load(*args, **kwargs)
-        
+
     def loadMap(self, map_name, filename):
         """Loads a map and stores it under the given name in the maps list.
            @type map_name: String
-           @param map_name: The name of the map to load 
+           @param map_name: The name of the map to load
            @type filename: String
            @param filename: File which contains the map to be loaded
            @return: None"""
         if not map_name in self.maps:
             map = Map(self.engine, self.data)
-            self.maps[map_name] = map        
+            self.maps[map_name] = map
             map.load(filename)
         else:
             self.setActiveMap(map_name)
-    
+
     def setActiveMap(self, map_name):
         """Sets the active map that is to be rendered.
            @type map_name: String
-           @param map_name: The name of the map to load 
+           @param map_name: The name of the map to load
            @return: None"""
         # Turn off the camera on the old map before we turn on the camera
         # on the new map.
@@ -179,7 +183,7 @@ class World(EventListenerBase):
         if(key_val == key.ESCAPE):
             # Escape brings up the main menu
             self.hud.displayMenu()
-            # Hide the quit menu 
+            # Hide the quit menu
             self.hud.quit_window.hide()
         if(key_val == key.M):
             self.sounds.toggleMusic()
@@ -194,7 +198,7 @@ class World(EventListenerBase):
         self.hud.hideContextMenu()
         scr_point = fife.ScreenPoint(evt.getX(), evt.getY())
         if(evt.getButton() == fife.MouseEvent.LEFT):
-            self.data.handleMouseClick(self.getCoords(scr_point))      
+            self.data.handleMouseClick(self.getCoords(scr_point))
         elif(evt.getButton() == fife.MouseEvent.RIGHT):
             # is there an object here?
             instances = self.active_map.cameras[self.active_map.my_cam_id].\
@@ -203,13 +207,13 @@ class World(EventListenerBase):
             info = None
             for inst in instances:
                 # check to see if this is an active item
-                if(self.data.objectActive(inst.getId())):            
+                if(self.data.objectActive(inst.getId())):
                     # yes, get the data
                     info = self.data.getItemActions(inst.getId())
                     break
-                
+
             # take the menu items returned by the engine or show a
-            # default menu if no items    
+            # default menu if no items
             data = info or \
                 [["Walk", "Walk here", self.onWalk, self.getCoords(scr_point)]]
             # show the menu
@@ -280,13 +284,13 @@ class World(EventListenerBase):
             for obj in i:
                 # check to see if this in our list at all
                 if(self.data.objectActive(obj.getId())):
-                    # check if the object is on the foreground 
+                    # check if the object is on the foreground
                     obj_map_coords = \
                                       obj.getLocation().getMapCoordinates()
                     obj_screen_coords = self.active_map.\
                         cameras[self.active_map.my_cam_id]\
                         .toScreenCoordinates(obj_map_coords)
-                    
+
                     if obj_screen_coords.y > front_y:
                         #Object on the foreground
                         front_y = obj_screen_coords.y
@@ -308,7 +312,7 @@ class World(EventListenerBase):
         location = fife.Location(self.active_map.agent_layer)
         location.setMapCoordinates(coord)
         return location
-    
+
     def deleteMaps(self):
         """Clear all currently loaded maps from FIFE as well as clear our
             local map cache

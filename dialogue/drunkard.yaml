@@ -15,7 +15,7 @@
 
 ---
 NPC: Bart The Drunkard
-AVATAR: gui/icons/drunkard.png
+AVATAR: gui/icons/npc.png
 START: main_dialog
 
 SECTIONS:
@@ -188,12 +188,12 @@ SECTIONS:
     reward_query:
         - say: "I would think that getting your own booze ration would be reward enough!"
         - responses: 
-           -
-             - "I am fond of a bender now and again, it's true."
-             - old_pals
-           -
-             - "Personally, I stay away from alcohol.  Dulls the senses.  But I suppose I'll help you out of the goodness of my heart."
-             - old_pals
+            -
+              - "I am fond of a bender now and again, it's true."
+              - old_pals
+            -
+              - "Personally, I stay away from alcohol.  Dulls the senses.  But I suppose I'll help you out of the goodness of my heart."
+              - old_pals
              
     dead_pekko:
        - say: "Dead, huh.  That's a shame."
@@ -323,33 +323,36 @@ SECTIONS:
     beer_tasting:
        - say: "You are a genius, sir, a genius. [Bart holds bottle up to the light]  Looks great. How did it come out?"
        - responses:
+          # hardcoding the value here until the inventory code can be used in
+          # game
           -
             - "I think it's just about perfect"
             - best_beer
-            - beer.quality >= 5
-          -
-            - "It took some doing, but I think I got it down."
-            - good_beer
-            - beer.quality == 4
-          -
-            - "I am pretty happy about it, given the circumstances."
-            - decent_beer
-            - beer.quality == 3
-          -
-            - "It's not my best work, but it will get you hammered."
-            - ok_beer
-            - beer.quality == 2
-          -
-            - "I hope it turned out OK."
-            - bad_beer
-            - beer.quality == 1
-          -
-            - "No promises on the the taste..."
-            - poisonous_beer
-            - beer.quality < 1
+#             - beer.quality >= 5
+#           -
+#             - "It took some doing, but I think I got it down."
+#             - good_beer
+#             - beer.quality == 4
+#           -
+#             - "I am pretty happy about it, given the circumstances."
+#             - decent_beer
+#             - beer.quality == 3
+#           -
+#             - "It's not my best work, but it will get you hammered."
+#             - ok_beer
+#             - beer.quality == 2
+#           -
+#             - "I hope it turned out OK."
+#             - bad_beer
+#             - beer.quality == 1
+#           -
+#             - "No promises on the the taste..."
+#             - poisonous_beer
+#             - beer.quality < 1
             
     best_beer: 
         - say: "[ Bart drinks the beer] Let the church bells ring!  This stuff is awesome!"
+        - complete_quest: beer
         - responses:
            - 
              - "Glad you like it!"
