@@ -75,12 +75,14 @@ class PCBehaviour (ActorBehaviour):
            @type action: ???
            @param action: ???
            @return: None"""
-        if self.nextAction:
-            self.nextAction.execute()
-            self.nextAction = None
-            self.idle()
-        else:
-            self.idle()
+        
+        # First we reset the next behavior 
+        act = self.nextAction
+        self.nextAction = None 
+        self.idle()
+        
+        if act:
+            act.execute()
             
         if(action.getId() != 'stand'):
             self.idle_counter = 1
@@ -159,7 +161,7 @@ class PlayerCharacter (GameObject, Living, CharStats):
         self.behaviour.agent.setLocation(location)
 
     def approach(self, location, action = None):
-        """Approaches an npc and then ???.
+        """Approaches a location and then perform an action (if set).
            @type loc: fife.Location
            @param loc: the location to approach
            @type action: Action
@@ -171,6 +173,7 @@ class PlayerCharacter (GameObject, Living, CharStats):
         l = fife.Location(self.behaviour.agent.getLocation())
         l.setLayerCoordinates(fife.ModelCoordinate(*boxLocation))
         self.behaviour.agent.move('run', l, self.behaviour.speed)
+        
 
 class NPCBehaviour(ActorBehaviour):
     def __init__(self, Parent = None, Layer = None):

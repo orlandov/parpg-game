@@ -613,7 +613,8 @@ class Hud(object):
 
     def showDialogue(self, npc):
         """Show the NPC dialogue window
-           @type npc: ???
-           @param npc: the npc that we are having a dialogue with"""
+           @type npc: actors.NonPlayerCharacter
+           @param npc: the npc that we are having a dialogue with
+           @return: None"""
         dialogue = DialogueGUI(npc)
         dialogue.initiateDialogue()

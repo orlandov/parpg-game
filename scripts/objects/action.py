@@ -84,19 +84,43 @@ class TalkAction(Action):
     def __init__(self, engine, npc):
         """@type engine: Engine reference
            @param engine: A reference to the engine.
-           @type examineName: NonPlayerCharacter
-           @param examineName: NPC to interact with.
+           @type npc: NonPlayerCharacter
+           @param npc: NPC to interact with.
            """
         self.engine = engine
         self.npc = npc
         
     def execute(self):
-        """Talk with the NPC."""
+        """Talk with the NPC when we are close enough, otherwise
+           we move close.
+           @return: None"""
+        
         pc = self.engine.game_state.PC
-        pc.behaviour.agent.act('stand', self.npc.getLocation())
-
-        if self.npc.dialogue is not None:
-            self.npc.talk(pc)
-            self.engine.view.hud.showDialogue(self.npc)
+        npc_coordinates = self.npc.getLocation().getLayerCoordinates()
+        pc_coordinates = pc.behaviour.agent.getLocation().getLayerCoordinates()
+        
+        distance_squared = (npc_coordinates.x - pc_coordinates.x) *\
+                         (npc_coordinates.x - pc_coordinates.x) +\
+                         (npc_coordinates.y - pc_coordinates.y) *\
+                         (npc_coordinates.y - pc_coordinates.y)
+        
+        
+        # If we are too far away, we approach the NPC again
+        if distance_squared > 2:
+            pc.approach([self.npc.getLocation().\
+                         getLayerCoordinates().x, \
+                         self.npc.getLocation().\
+                         getLayerCoordinates().y], \
+                        TalkAction(self.engine,\
+                                   self.npc))        
         else:
-            self.npc.behaviour.agent.say("Leave me alone!", 1000)
+            pc.behaviour.agent.act('stand', self.npc.getLocation())
+    
+            if self.npc.dialogue is not None:
+                self.npc.talk(pc)
+                self.engine.view.hud.showDialogue(self.npc)
+            else:
+                self.npc.behaviour.agent.say("Leave me alone!", 1000)
+                
+            self.engine.game_state.PC.behaviour.idle()
+            self.engine.game_state.PC.nextAction = None 

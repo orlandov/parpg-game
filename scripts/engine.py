@@ -263,7 +263,7 @@ class Engine:
                                      getLayerCoordinates().x, \
                                      npc.getLocation().\
                                      getLayerCoordinates().y], \
-                                     TalkAction(self, npc))
+                                    TalkAction(self, npc))
 
     def loadMap(self, map_name, map_file):
         """Load a new map.
