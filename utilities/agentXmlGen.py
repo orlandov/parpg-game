@@ -29,8 +29,8 @@ def generateAgent(path, delay, x_off, y_off):
     @param path: Agent path 
     @type delay: string
     @param delay: Animation delay (used in animation.xml)
-    @type xoff: string
-    @param xoff: X offset (used in animation.xml)
+    @type x_off: string
+    @param x_off: X offset (used in animation.xml)
     @type y_off: string
     @param y_off: Y offset (used in animation.xml)
     @return True on success, False on failure
@@ -62,7 +62,7 @@ def generateAgent(path, delay, x_off, y_off):
                     f.write('\t\t<animation source="' + anim + '/' + angle 
                             + '/animation.xml" direction="' 
                             + str(int(angle)) + '" />\n')
-                    if not generateAnimation(angle_path,delay,xoff,y_off):
+                    if not generateAnimation(angle_path,delay,x_off,y_off):
                         log.error("Failed to create animation for " + anum\
                                    + " (angle: " + angle + ")")
             f.write('\t</action>\n')
@@ -97,7 +97,7 @@ def imageCompare(x,y):
     
     return 0
 
-def generateAnimation(path, delay, xoff, y_off):
+def generateAnimation(path, delay, x_off, y_off):
     """ Generate animation.xml for a given path.
     @type path: string 
     @param path: Agent path 
