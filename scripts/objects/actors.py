@@ -115,11 +115,8 @@ class PlayerCharacter (GameObject, Living, CharStats):
         CharStats.__init__( self, **kwargs )
 
         self.is_PC = True
-        
-        # PC _has_ an inventory, he _is not_ one
         self.inventory = set(('beer',))
         self.peopleIknow = set()
-        
         self.state = _AGENT_STATE_NONE
         self.layer_id = agent_layer.getId()
         self.createBehaviour(agent_layer)
@@ -158,6 +155,7 @@ class PlayerCharacter (GameObject, Living, CharStats):
            @param location: Screen position to run to.
            @return: None"""
         self.state = _AGENT_STATE_RUN
+        self.behaviour.nextAction = None
         self.behaviour.agent.move('run', location, self.behaviour.speed+1)
 
     def walk(self, location):
@@ -166,6 +164,7 @@ class PlayerCharacter (GameObject, Living, CharStats):
            @param location: Screen position to walk to.
            @return: None"""
         self.state = _AGENT_STATE_RUN
+        self.behaviour.nextAction = None 
         self.behaviour.agent.move('walk', location, self.behaviour.speed-1)
 
     def teleport(self, location):
@@ -174,6 +173,7 @@ class PlayerCharacter (GameObject, Living, CharStats):
            @param location: Target coordinates for PC.
            @return: None"""
         self.state = _AGENT_STATE_IDLE
+        self.behaviour.nextAction = None 
         self.behaviour.agent.setLocation(location)
 
     def approach(self, location, action = None):
