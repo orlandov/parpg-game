@@ -1,0 +1,5 @@
+<?fife type="object"?>
+<object id="hand_sticking_out" namespace="PARPG" blocking="1" static="1">
+    <image source="hand_sticking_out.png" direction="0" x_offset="0" y_offset="0" />
+</object>
+
