@@ -158,7 +158,6 @@ class Saver(object):
         for cam in cameras:
             if cam.getLocationRef().getMap().getId() != self.map.getId(): continue
             cell_dimensions = cam.getCellImageDimensions()
-            viewport = cam.getViewPort()
 
             attrib = {
                 'id': cam.getId(),
@@ -170,9 +169,6 @@ class Saver(object):
                 'ref_cell_height': str(cell_dimensions.y),
             }
 
-            if viewport != self.engine.getRenderBackend().getArea():
-                attrib['viewport'] = '%d,%d,%d,%d' % (viewport.x, viewport.y, viewport.w, viewport.h)
-                
             camera_element = Element('camera', attrib)
             camera_element.tail = "\n"
             self.map_element.append(camera_element)

@@ -1873,5 +1873,5 @@
 			</instances>
 	</layer>
 
-	<camera id="main" ref_cell_height="38" ref_cell_width="72" ref_layer_id="ObjectLayer" rotation="45.0" tilt="-60.0" viewport="0,0,1024,768" zoom="1.0" />
+	<camera id="main" ref_cell_height="38" ref_cell_width="72" ref_layer_id="ObjectLayer" rotation="45.0" tilt="-60.0" zoom="1.0" />
 </map>
