@@ -16,9 +16,13 @@
 ---
 NPC: Bart The Drunkard
 AVATAR: gui/icons/npc.png
-START: main_dialog
+START: intro
 
 SECTIONS:
+    intro:
+        - if: False
+          section: first_impression
+
     main_dialog:
         - say: "Hey there, back up... no need to gang up on a poor guy!"
         - responses:

@@ -189,6 +189,14 @@ class DialogueEngine(object):
                                                self.section_stack,))
         for command in itertools.cycle(self.getSection(section_name)):
             logging.debug("command was %s" % (command,))
+            if command.has_key('if'):
+                if not command.get("if"):
+                    continue
+                if eval(command.get('if'), state, {}):
+                    continue
+            else:
+                print "Nope"
+
             if command.get("say"):
                 if self.callbacks.get('say'):
                     self.callbacks["say"](state, command["say"])
@@ -239,6 +247,9 @@ class DialogueEngine(object):
 
             elif command.get("get_stuff"):
                 self.callbacks["get_stuff"](state, command.get("get_stuff"))
+
+            elif command.get("section"):
+                self.runSection(command.get("section"))
 
             elif command.get("take_stuff"):
                 self.callbacks["take_stuff"](state, command.get("take_stuff"))
