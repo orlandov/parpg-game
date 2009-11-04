@@ -134,12 +134,17 @@ class Saver(object):
             if inst_id:
                 attrib['id'] = inst_id
 
+            # if the object has an instance id, write out saved attributes
             if inst_id is not None and inst_id in loaders.data.objects:
+                skip_keys = ['gfx', 'xpos', 'ypos']
                 for key in loaders.data.objects[inst_id]:
-                    if key not in attrib and loaders.data.objects[inst_id][key]:
-                        print key
-                        attrib[key] = str(loaders.data.objects[inst_id][key])
-                        print key, attrib[key]
+                    # set value if we haven't written the key out yet and key
+                    # has a value in our attr stash (loaders.data.objects)
+                    if key in skip_keys or key in attrib \
+                        or key not in loaders.data.objects[inst_id]:
+                        continue
+
+                    attrib[key] = str(loaders.data.objects[inst_id][key])
 
             # the local_loader loader sets object_type as type, we have to
             # correct for that here but really we should fix that there
